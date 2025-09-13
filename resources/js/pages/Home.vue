@@ -1,8 +1,4 @@
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
-</script>
+<script setup lang="ts"></script>
 
 <template>
     <Head title="Почетна" />
@@ -22,7 +18,7 @@ const { t } = useI18n();
             <div class="text-[18px] font-normal lg:text-[22px]">F O U N D A T I O N</div>
         </div>
 
-        <p class="text-center text-[18px] font-bold leading-[1.2] text-white lg:text-[26px]">
+        <p class="text-center text-[18px] leading-[1.2] font-bold text-white lg:text-[26px]">
             Да внесеме топлина таму каде што е студено.<br />
             - Адријан Живков
         </p>
