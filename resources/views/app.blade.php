@@ -9,9 +9,9 @@
         $description = $meta['description'] ?? 'Фондацијата „Адријан Живков“ е посветена на поддршка на семејствата, донации за деца и хуманитарни активности во заедницата.';
         $url = url()->full();
         if (!isset($meta['image'])) {
-            $image = url()->to('/') . '/images/default-meta.jpg';
-            $width = 2880;
-            $height = 1620;
+            $image = url()->to('/') . '/images/meta/default.jpg';
+            $width = 1600;
+            $height = 900;
         } else {
             $image = $meta['image'];
             $width = $meta['width'];
