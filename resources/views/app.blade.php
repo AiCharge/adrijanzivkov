@@ -10,8 +10,8 @@
         $url = url()->full();
         if (!isset($meta['image'])) {
             $image = url()->to('/') . '/images/default-meta.jpg';
-            $width = 750;
-            $height = 430;
+            $width = 2880;
+            $height = 1620;
         } else {
             $image = $meta['image'];
             $width = $meta['width'];
