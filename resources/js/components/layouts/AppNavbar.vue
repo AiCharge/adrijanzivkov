@@ -42,22 +42,23 @@ const toggleMenu = () => {
             </button>
 
             <div class="hidden items-center gap-10 md:flex">
-                <Link href="#" :class="variant === NavbarVariant.Light ? 'text-white' : 'text-[#1E1E1E]'" class="text-[18px] font-[400]"
+                <Link href="/#about-adrijan" :class="variant === NavbarVariant.Light ? 'text-white' : 'text-[#1E1E1E]'" class="text-[18px] font-[400]"
                     >За Адријан</Link
                 >
-                <Link href="#" :class="variant === NavbarVariant.Light ? 'text-white' : 'text-[#1E1E1E]'" class="text-[18px] font-[400]"
+                <Link href="/#our-mission" :class="variant === NavbarVariant.Light ? 'text-white' : 'text-[#1E1E1E]'" class="text-[18px] font-[400]"
                     >Нашата мисија</Link
                 >
-                <Link href="#" :class="variant === NavbarVariant.Light ? 'text-white' : 'text-[#1E1E1E]'" class="text-[18px] font-[400]"
+                <Link href="/#contact" :class="variant === NavbarVariant.Light ? 'text-white' : 'text-[#1E1E1E]'" class="text-[18px] font-[400]"
                     >Контакт</Link
                 >
             </div>
-            <a
+            <Link
+                href="/#donations"
                 :class="variant === NavbarVariant.Light ? 'bg-white text-[#161A1D]' : 'bg-[#054A29] text-white'"
                 class="hidden cursor-pointer rounded-[8px] px-4 py-1 text-[18px] font-[500] md:block"
             >
                 Донирај
-            </a>
+            </Link>
 
             <transition
                 enter-active-class="transition ease-out duration-200"
@@ -70,7 +71,7 @@ const toggleMenu = () => {
                 <div v-if="isMenuOpen" class="absolute top-full right-0 left-0 z-50 mt-2 rounded-[16px] bg-white shadow-lg md:hidden">
                     <div class="flex flex-col gap-4 p-4">
                         <Link
-                            href="#"
+                            href="/#about-adrijan"
                             @click="toggleMenu"
                             :class="variant === NavbarVariant.Light ? 'text-[#161A1D]' : 'text-[#1E1E1E]'"
                             class="py-2 text-[18px] font-[400] transition-opacity hover:opacity-75"
@@ -78,7 +79,7 @@ const toggleMenu = () => {
                             За Адријан
                         </Link>
                         <Link
-                            href="#"
+                            href="/#our-mission"
                             @click="toggleMenu"
                             :class="variant === NavbarVariant.Light ? 'text-[#161A1D]' : 'text-[#1E1E1E]'"
                             class="py-2 text-[18px] font-[400] transition-opacity hover:opacity-75"
@@ -86,20 +87,21 @@ const toggleMenu = () => {
                             Нашата мисија
                         </Link>
                         <Link
-                            href="#"
+                            href="/#contact"
                             @click="toggleMenu"
                             :class="variant === NavbarVariant.Light ? 'text-[#161A1D]' : 'text-[#1E1E1E]'"
                             class="py-2 text-[18px] font-[400] transition-opacity hover:opacity-75"
                         >
                             Контакт
                         </Link>
-                        <a
+                        <Link
+                            href="/#donations"
                             @click="toggleMenu"
                             :class="variant === NavbarVariant.Light ? 'bg-[#054A29]' : 'bg-[#054A29]'"
                             class="rounded-[8px] px-4 py-2 text-center text-[18px] font-[500] text-white transition-opacity hover:opacity-90"
                         >
                             Донирај
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </transition>

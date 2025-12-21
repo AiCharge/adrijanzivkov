@@ -4,7 +4,7 @@ import AppSection from '@/components/base/sections/AppSection.vue';
 </script>
 
 <template>
-    <AppSection class="m-3 rounded-[16px] bg-[#054A29]">
+    <AppSection id="contact" class="m-3 rounded-[16px] bg-[#054A29]">
         <AppContainer> </AppContainer>
     </AppSection>
 </template>

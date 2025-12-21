@@ -4,7 +4,7 @@ import AppSection from '@/components/base/sections/AppSection.vue';
 </script>
 
 <template>
-    <AppSection>
+    <AppSection id="our-mission">
         <AppContainer>
             <div class="grid grid-cols-1 items-center gap-10 lg:grid-cols-2">
                 <div>

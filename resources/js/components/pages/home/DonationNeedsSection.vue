@@ -3,7 +3,7 @@ import AppSection from '@/components/base/sections/AppSection.vue';
 </script>
 
 <template>
-    <AppSection></AppSection>
+    <AppSection id="donations"></AppSection>
 </template>
 
 <style scoped></style>
