@@ -11,7 +11,7 @@ import AppSection from '@/components/base/sections/AppSection.vue';
                     <img src="/images/pages/home/our-mission-section/our-mission.webp" alt="Helping hands" class="w-fit" />
                 </div>
                 <div class="flex flex-col gap-4">
-                    <h3 class="text-[28px] font-bold tracking-[0] text-[#1E1E1E] lg:text-[40px]">Наша мисија</h3>
+                    <h3 class="text-[28px] font-bold tracking-[0] text-[#1E1E1E] lg:text-[40px]">Нашата мисија</h3>
                     <div class="flex max-w-[460px] flex-col gap-4">
                         <p class="text-[16px] leading-[20px] font-[400] lg:text-[18px] lg:leading-[100%]">
                             Мисијата на Фондацијата „Адријан Живков“ е да создаде трајна поддршка за поединци и семејства кои се соочуваат со тешки
