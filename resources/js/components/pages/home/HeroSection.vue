@@ -5,8 +5,8 @@ import AppNavbar from '@/components/layouts/AppNavbar.vue';
 
 <template>
     <div class="m-3 rounded-[16px] bg-[#054A29]">
-        <AppContainer class="py-5">
-            <AppNavbar />
+        <AppNavbar />
+        <AppContainer class="pb-5">
             <div class="grid grid-cols-1 items-center gap-10 pt-12 pb-2 md:grid-cols-2">
                 <div class="flex max-w-[500px] flex-col gap-5">
                     <h1 class="text-[32px] leading-[38px] font-bold tracking-[0] text-white lg:text-[44px] lg:leading-[44px]">
