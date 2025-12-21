@@ -10,7 +10,7 @@ interface Props {
     variant?: NavbarVariant;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
     variant: NavbarVariant.Light,
 });
 

@@ -1,5 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import AppSection from '@/components/base/sections/AppSection.vue';
+</script>
 
-<template></template>
+<template>
+    <AppSection></AppSection>
+</template>
 
 <style scoped></style>
