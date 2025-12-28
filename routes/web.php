@@ -7,4 +7,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('index');
 Route::resource('donation-needs', DonationNeedController::class)->only('show');
-Route::resource('news', NewsController::class)->only(['show']);
+Route::get('/news/{news:slug}', [NewsController::class, 'show'])->name('news.show');

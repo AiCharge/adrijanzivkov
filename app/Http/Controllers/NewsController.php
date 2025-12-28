@@ -7,7 +7,7 @@ use Inertia\Inertia;
 
 class NewsController extends Controller
 {
-    public function show(News $news)
+    public function show(News $news): \Inertia\Response
     {
         $imageUrl = $news->main_image_url;
 
