@@ -4,10 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\News;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class NewsController extends Controller
 {
-    public function show(News $news): \Inertia\Response
+    public function index(): Response
+    {
+        $news = News::latest()
+            ->paginate(12);
+
+        return Inertia::render('News/Index', [
+            'news' => $news,
+        ]);
+    }
+
+    public function show(News $news): Response
     {
         $imageUrl = $news->main_image_url;
 

@@ -5,6 +5,7 @@ import LogoLight from '@/components/logos/LogoLight.vue';
 import { NavbarVariant } from '@/enums/navbar-variant';
 import { Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { route } from 'ziggy-js';
 
 interface Props {
     variant?: NavbarVariant;
@@ -24,7 +25,7 @@ const toggleMenu = () => {
 <template>
     <nav :class="variant === NavbarVariant.Dark ? 'bg-white' : ''" class="rounded-[16px] py-5">
         <AppContainer class="flex items-center justify-between rounded-[16px]">
-            <Link href="/">
+            <Link :href="route('index')">
                 <LogoLight v-if="variant === NavbarVariant.Light" />
                 <LogoDark v-else />
             </Link>
@@ -32,7 +33,7 @@ const toggleMenu = () => {
             <button
                 @click="toggleMenu"
                 :class="variant === NavbarVariant.Light ? 'text-white' : 'text-[#1E1E1E]'"
-                class="focus:outline-none md:hidden"
+                class="focus:outline-none lg:hidden"
                 aria-label="Toggle menu"
             >
                 <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -41,21 +42,36 @@ const toggleMenu = () => {
                 </svg>
             </button>
 
-            <div class="hidden items-center gap-10 md:flex">
-                <Link href="/#about-adrijan" :class="variant === NavbarVariant.Light ? 'text-white' : 'text-[#1E1E1E]'" class="text-[18px] font-[400]"
+            <div class="hidden items-center gap-10 lg:flex">
+                <Link
+                    :href="route('index') + '#about-adrijan'"
+                    :class="variant === NavbarVariant.Light ? 'text-white' : 'text-[#1E1E1E]'"
+                    class="text-[18px] font-[400]"
                     >За Адријан</Link
                 >
-                <Link href="/#our-mission" :class="variant === NavbarVariant.Light ? 'text-white' : 'text-[#1E1E1E]'" class="text-[18px] font-[400]"
+                <Link
+                    :href="route('index') + '#our-mission'"
+                    :class="variant === NavbarVariant.Light ? 'text-white' : 'text-[#1E1E1E]'"
+                    class="text-[18px] font-[400]"
                     >Нашата мисија</Link
                 >
-                <Link href="/#contact" :class="variant === NavbarVariant.Light ? 'text-white' : 'text-[#1E1E1E]'" class="text-[18px] font-[400]"
+                <Link
+                    :href="route('news.index')"
+                    :class="variant === NavbarVariant.Light ? 'text-white' : 'text-[#1E1E1E]'"
+                    class="text-[18px] font-[400]"
+                    >Новости</Link
+                >
+                <Link
+                    :href="route('index') + '#contact'"
+                    :class="variant === NavbarVariant.Light ? 'text-white' : 'text-[#1E1E1E]'"
+                    class="text-[18px] font-[400]"
                     >Контакт</Link
                 >
             </div>
             <Link
-                href="/#donations"
+                :href="route('index') + '#donations'"
                 :class="variant === NavbarVariant.Light ? 'bg-white text-[#161A1D]' : 'bg-[#054A29] text-white'"
-                class="hidden cursor-pointer rounded-[8px] px-4 py-1 text-[18px] font-[500] md:block"
+                class="hidden cursor-pointer rounded-[8px] px-4 py-1 text-[18px] font-[500] lg:block"
             >
                 Донирај
             </Link>
@@ -68,10 +84,10 @@ const toggleMenu = () => {
                 leave-from-class="opacity-100 translate-y-0"
                 leave-to-class="opacity-0 translate-y-1"
             >
-                <div v-if="isMenuOpen" class="absolute top-full right-0 left-0 z-50 mt-2 rounded-[16px] bg-white shadow-lg md:hidden">
+                <div v-if="isMenuOpen" class="absolute top-full right-0 left-0 z-50 mt-2 rounded-[16px] bg-white shadow-lg lg:hidden">
                     <div class="flex flex-col gap-4 p-4">
                         <Link
-                            href="/#about-adrijan"
+                            :href="route('index') + '#about-adrijan'"
                             @click="toggleMenu"
                             :class="variant === NavbarVariant.Light ? 'text-[#161A1D]' : 'text-[#1E1E1E]'"
                             class="py-2 text-[18px] font-[400] transition-opacity hover:opacity-75"
@@ -79,7 +95,7 @@ const toggleMenu = () => {
                             За Адријан
                         </Link>
                         <Link
-                            href="/#our-mission"
+                            :href="route('index') + '#our-mission'"
                             @click="toggleMenu"
                             :class="variant === NavbarVariant.Light ? 'text-[#161A1D]' : 'text-[#1E1E1E]'"
                             class="py-2 text-[18px] font-[400] transition-opacity hover:opacity-75"
@@ -87,7 +103,15 @@ const toggleMenu = () => {
                             Нашата мисија
                         </Link>
                         <Link
-                            href="/#contact"
+                            :href="route('news.index')"
+                            @click="toggleMenu"
+                            :class="variant === NavbarVariant.Light ? 'text-[#161A1D]' : 'text-[#1E1E1E]'"
+                            class="py-2 text-[18px] font-[400] transition-opacity hover:opacity-75"
+                        >
+                            Новости
+                        </Link>
+                        <Link
+                            :href="route('index') + '#contact'"
                             @click="toggleMenu"
                             :class="variant === NavbarVariant.Light ? 'text-[#161A1D]' : 'text-[#1E1E1E]'"
                             class="py-2 text-[18px] font-[400] transition-opacity hover:opacity-75"
@@ -95,7 +119,7 @@ const toggleMenu = () => {
                             Контакт
                         </Link>
                         <Link
-                            href="/#donations"
+                            :href="route('index') + '#donations'"
                             @click="toggleMenu"
                             :class="variant === NavbarVariant.Light ? 'bg-[#054A29]' : 'bg-[#054A29]'"
                             class="rounded-[8px] px-4 py-2 text-center text-[18px] font-[500] text-white transition-opacity hover:opacity-90"

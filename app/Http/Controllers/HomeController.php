@@ -9,7 +9,7 @@ class HomeController extends Controller
 {
     public function __invoke()
     {
-        $latestNews = News::latest()->take(4)->get();
+        $latestNews = News::latest()->take(3)->get();
 
         return Inertia::render('Home', [
             'latestNews' => $latestNews,

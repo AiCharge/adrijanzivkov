@@ -3,6 +3,7 @@ import type { NewsInterface } from '@/interfaces/news-interface';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import dayjs from '@/lib/dayjs';
 import { Head, Link } from '@inertiajs/vue3';
+import { route } from 'ziggy-js';
 
 interface Props {
     news: NewsInterface;
@@ -20,7 +21,10 @@ defineOptions({
 
     <div class="min-h-screen py-8 md:py-12">
         <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-            <Link href="/#news" class="mb-8 inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition-colors hover:text-[#054A29]">
+            <Link
+                :href="route('news.index')"
+                class="mb-8 inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition-colors hover:text-[#054A29]"
+            >
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
