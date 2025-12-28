@@ -10,12 +10,8 @@
         $url = url()->full();
         if (!isset($meta['image'])) {
             $image = url()->to('/') . '/images/meta/default.jpg';
-            $width = 1600;
-            $height = 900;
         } else {
             $image = $meta['image'];
-            $width = $meta['width'];
-            $height = $meta['height'];
         }
     @endphp
 
@@ -28,9 +24,7 @@
     <meta property="og:description" content="{{ $description }}" />
     <meta property="og:image" content="{{ $image }}" />
     <meta property="og:image:secure_url" content="{{ $image }}" />
-    <meta property="og:image:width" content="{{ $width }}" />
     <meta property="og:site_name" content="adrijanzivkov.org" />
-    <meta property="og:image:height" content="{{ $height }}" />
     <meta name="twitter:url" content="{{ $url }}" />
     <meta name="twitter:title" content="{{ $title }}" />
     <meta name="twitter:description" content="{{ $description }}" />

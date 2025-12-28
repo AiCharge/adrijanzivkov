@@ -29,8 +29,6 @@ class NewsController extends Controller
                 'title' => $news->title,
                 'description' => $news->short_description,
                 'image' => $imageUrl,
-                'width' => 1200,
-                'height' => 630,
             ],
         ]);
     }
