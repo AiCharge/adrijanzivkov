@@ -151,6 +151,12 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'title' => 'Наслов',
+        'short_description' => 'Краток опис',
+        'main_image' => 'Главна слика',
+        'content' => 'Содржина',
+        'created_at' => 'Креиран',
+    ],
 
 ];
