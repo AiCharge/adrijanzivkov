@@ -24,3 +24,4 @@ class DonationNeedFactory extends Factory
         ];
     }
 }
+
