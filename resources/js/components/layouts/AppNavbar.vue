@@ -3,14 +3,11 @@ import AppContainer from '@/components/base/containers/AppContainer.vue';
 import LogoDark from '@/components/logos/LogoDark.vue';
 import LogoLight from '@/components/logos/LogoLight.vue';
 import { NavbarVariant } from '@/enums/navbar-variant';
+import type { AppNavbarPropsInterface } from '@/interfaces/AppNavbarPropsInterface';
 import { Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
-interface Props {
-    variant?: NavbarVariant;
-}
-
-withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<AppNavbarPropsInterface>(), {
     variant: NavbarVariant.Light,
 });
 

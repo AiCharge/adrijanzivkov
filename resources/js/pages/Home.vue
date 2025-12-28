@@ -4,21 +4,10 @@ import HeroSection from '@/components/pages/home/HeroSection.vue';
 import NewsSection from '@/components/pages/home/NewsSection.vue';
 import OurMissionSection from '@/components/pages/home/OurMissionSection.vue';
 import WhoIsAdrijanSection from '@/components/pages/home/WhoIsAdrijanSection.vue';
+import type { HomePagePropsInterface } from '@/interfaces/HomePagePropsInterface';
 import { Head } from '@inertiajs/vue3';
 
-interface News {
-    id: number;
-    title: string;
-    short_description: string;
-    main_image: string;
-    created_at: string;
-}
-
-interface Props {
-    latestNews?: News[];
-}
-
-defineProps<Props>();
+defineProps<HomePagePropsInterface>();
 </script>
 
 <template>

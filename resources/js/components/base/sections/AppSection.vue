@@ -1,9 +1,7 @@
 <script setup lang="ts">
-interface Props {
-    id?: string;
-}
+import type { AppSectionPropsInterface } from '@/interfaces/AppSectionPropsInterface';
 
-withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<AppSectionPropsInterface>(), {
     id: undefined,
 });
 </script>
