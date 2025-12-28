@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import type { NewsShowPropsInterface } from '@/interfaces/NewsShowPropsInterface';
+import type { NewsInterface } from '@/interfaces/news-interface';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import dayjs from '@/lib/dayjs';
 import { Head, Link } from '@inertiajs/vue3';
 
-defineProps<NewsShowPropsInterface>();
+interface Props {
+    news: NewsInterface;
+}
+
+defineProps<Props>();
 
 defineOptions({
     layout: DefaultLayout,

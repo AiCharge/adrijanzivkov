@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import AppContainer from '@/components/base/containers/AppContainer.vue';
 import AppSection from '@/components/base/sections/AppSection.vue';
-import type { NewsSectionPropsInterface } from '@/interfaces/NewsSectionPropsInterface';
+import type { NewsInterface } from '@/interfaces/news-interface';
 import dayjs from '@/lib/dayjs';
 import { Link } from '@inertiajs/vue3';
 
-defineProps<NewsSectionPropsInterface>();
+interface Props {
+    news?: NewsInterface[];
+}
+
+defineProps<Props>();
 </script>
 
 <template>
