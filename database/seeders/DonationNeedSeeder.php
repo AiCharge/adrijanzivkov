@@ -15,4 +15,3 @@ class DonationNeedSeeder extends Seeder
         DonationNeed::factory()->count(10)->create();
     }
 }
-
