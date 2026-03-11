@@ -19,11 +19,12 @@ defineOptions({
 <template>
     <Head :title="news.title" />
 
-    <div class="min-h-screen py-8 md:py-12">
-        <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+    <div class="min-h-screen py-10 md:py-16">
+        <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+            <!-- Back link -->
             <Link
                 :href="route('news.index')"
-                class="mb-8 inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition-colors hover:text-[#054A29]"
+                class="mb-8 inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-[#054A29]"
             >
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -31,30 +32,28 @@ defineOptions({
                 Назад кон новости
             </Link>
 
-            <article class="space-y-8">
-                <div class="relative aspect-video w-full overflow-hidden rounded-2xl bg-gray-100 shadow-lg">
+            <article>
+                <!-- Hero image -->
+                <div class="relative mb-10 aspect-video w-full overflow-hidden rounded-2xl bg-gray-100 shadow-lg">
                     <img :src="news.main_image_url" :alt="news.title" class="h-full w-full object-cover" />
                 </div>
 
-                <header class="space-y-4">
-                    <div class="flex items-center gap-4 text-sm text-gray-500">
-                        <time :datetime="news.created_at">
-                            {{ dayjs(news.created_at).format('D MMMM YYYY') }}
-                        </time>
-                    </div>
-
-                    <h1 class="text-3xl leading-tight font-bold text-gray-900 md:text-4xl lg:text-5xl">
+                <!-- Article header -->
+                <header class="mb-10">
+                    <time :datetime="news.created_at" class="mb-4 block text-xs font-semibold tracking-widest text-[#054A29] uppercase">
+                        {{ dayjs(news.created_at).format('D MMMM YYYY') }}
+                    </time>
+                    <h1 class="mb-5 text-3xl leading-tight font-bold tracking-tight text-gray-900 md:text-4xl lg:text-[44px]">
                         {{ news.title }}
                     </h1>
-
-                    <p class="text-xl leading-relaxed text-gray-600 md:text-2xl">
+                    <p class="text-lg leading-relaxed text-gray-500 md:text-xl">
                         {{ news.short_description }}
                     </p>
+                    <div class="mt-8 border-t border-gray-100"></div>
                 </header>
 
-                <div class="prose prose-lg prose-gray max-w-none">
-                    <div class="prose-content text-gray-700" v-html="news.content"></div>
-                </div>
+                <!-- Article body -->
+                <div class="prose-content text-gray-700" v-html="news.content"></div>
             </article>
         </div>
     </div>
@@ -73,8 +72,9 @@ defineOptions({
 
 .prose-content :deep(p) {
     margin-bottom: 1.75rem;
-    line-height: 1.8;
-    font-size: 1.125rem;
+    line-height: 1.85;
+    font-size: 1.0625rem;
+    color: #374151;
 }
 
 .prose-content :deep(h1),
@@ -86,24 +86,25 @@ defineOptions({
     font-weight: 700;
     color: #111827;
     line-height: 1.3;
+    letter-spacing: -0.02em;
 }
 
 .prose-content :deep(h1) {
-    font-size: 2.25rem;
+    font-size: 2rem;
     margin-top: 3rem;
 }
 
 .prose-content :deep(h2) {
-    font-size: 1.875rem;
+    font-size: 1.625rem;
     margin-top: 2.5rem;
 }
 
 .prose-content :deep(h3) {
-    font-size: 1.5rem;
+    font-size: 1.375rem;
 }
 
 .prose-content :deep(h4) {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
 }
 
 .prose-content :deep(ul),
@@ -114,35 +115,42 @@ defineOptions({
 }
 
 .prose-content :deep(li) {
-    margin-bottom: 0.875rem;
+    margin-bottom: 0.625rem;
     line-height: 1.7;
+    color: #374151;
 }
 
 .prose-content :deep(a) {
     color: #054a29;
     text-decoration: underline;
+    text-underline-offset: 3px;
     font-weight: 500;
     transition: color 0.2s;
 }
 
 .prose-content :deep(a:hover) {
-    color: #043922;
+    color: #033d22;
 }
 
 .prose-content :deep(blockquote) {
     border-left: 4px solid #054a29;
     padding-left: 1.5rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
     margin: 2rem 0;
     font-style: italic;
     color: #4b5563;
+    background-color: #f9fafb;
+    border-radius: 0 0.5rem 0.5rem 0;
 }
 
 .prose-content :deep(code) {
     background-color: #f3f4f6;
-    padding: 0.25rem 0.5rem;
+    padding: 0.2rem 0.45rem;
     border-radius: 0.375rem;
     font-size: 0.875em;
     font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+    color: #1f2937;
 }
 
 .prose-content :deep(pre) {

@@ -4,5 +4,3 @@ import 'dayjs/locale/mk';
 dayjs.locale('mk');
 
 export default dayjs;
-
-

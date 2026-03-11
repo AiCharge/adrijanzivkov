@@ -23,8 +23,8 @@ const toggleMenu = () => {
 </script>
 
 <template>
-    <nav :class="variant === NavbarVariant.Dark ? 'bg-white' : ''" class="rounded-[16px] py-5">
-        <AppContainer class="flex items-center justify-between rounded-[16px]">
+    <nav :class="variant === NavbarVariant.Dark ? 'border border-gray-100 bg-white shadow-sm' : ''" class="rounded-2xl py-4">
+        <AppContainer class="flex items-center justify-between">
             <Link :href="route('index')">
                 <LogoLight v-if="variant === NavbarVariant.Light" />
                 <LogoDark v-else />
@@ -32,100 +32,101 @@ const toggleMenu = () => {
 
             <button
                 @click="toggleMenu"
-                :class="variant === NavbarVariant.Light ? 'text-white' : 'text-[#1E1E1E]'"
-                class="focus:outline-none lg:hidden"
+                :class="variant === NavbarVariant.Light ? 'text-white hover:bg-white/10' : 'text-gray-700 hover:bg-gray-100'"
+                class="rounded-lg p-2 transition-colors focus:outline-none lg:hidden"
                 aria-label="Toggle menu"
             >
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path v-if="!isMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                     <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
 
-            <div class="hidden items-center gap-10 lg:flex">
+            <div class="hidden items-center gap-8 lg:flex">
                 <Link
                     :href="route('index') + '#about-adrijan'"
-                    :class="variant === NavbarVariant.Light ? 'text-white' : 'text-[#1E1E1E]'"
-                    class="text-[18px] font-[400]"
+                    :class="variant === NavbarVariant.Light ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-[#054A29]'"
+                    class="text-sm font-medium tracking-wide transition-colors duration-200"
                     >За Адријан</Link
                 >
                 <Link
                     :href="route('index') + '#our-mission'"
-                    :class="variant === NavbarVariant.Light ? 'text-white' : 'text-[#1E1E1E]'"
-                    class="text-[18px] font-[400]"
+                    :class="variant === NavbarVariant.Light ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-[#054A29]'"
+                    class="text-sm font-medium tracking-wide transition-colors duration-200"
                     >Нашата мисија</Link
                 >
                 <Link
                     :href="route('news.index')"
-                    :class="variant === NavbarVariant.Light ? 'text-white' : 'text-[#1E1E1E]'"
-                    class="text-[18px] font-[400]"
+                    :class="variant === NavbarVariant.Light ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-[#054A29]'"
+                    class="text-sm font-medium tracking-wide transition-colors duration-200"
                     >Новости</Link
                 >
                 <Link
                     :href="route('index') + '#contact'"
-                    :class="variant === NavbarVariant.Light ? 'text-white' : 'text-[#1E1E1E]'"
-                    class="text-[18px] font-[400]"
+                    :class="variant === NavbarVariant.Light ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-[#054A29]'"
+                    class="text-sm font-medium tracking-wide transition-colors duration-200"
                     >Контакт</Link
                 >
             </div>
+
             <Link
                 :href="route('index') + '#donations'"
-                :class="variant === NavbarVariant.Light ? 'bg-white text-[#161A1D]' : 'bg-[#054A29] text-white'"
-                class="hidden cursor-pointer rounded-[8px] px-4 py-1 text-[18px] font-[500] lg:block"
+                :class="variant === NavbarVariant.Light ? 'bg-white text-[#054A29] hover:bg-white/90' : 'bg-[#054A29] text-white hover:bg-[#033d22]'"
+                class="hidden cursor-pointer rounded-xl px-5 py-2 text-sm font-semibold shadow-sm transition-all duration-200 hover:shadow-md lg:block"
             >
                 Донирај
             </Link>
 
             <transition
                 enter-active-class="transition ease-out duration-200"
-                enter-from-class="opacity-0 translate-y-1"
+                enter-from-class="opacity-0 -translate-y-1"
                 enter-to-class="opacity-100 translate-y-0"
                 leave-active-class="transition ease-in duration-150"
                 leave-from-class="opacity-100 translate-y-0"
-                leave-to-class="opacity-0 translate-y-1"
+                leave-to-class="opacity-0 -translate-y-1"
             >
-                <div v-if="isMenuOpen" class="absolute top-full right-0 left-0 z-50 mt-2 rounded-[16px] bg-white shadow-lg lg:hidden">
-                    <div class="flex flex-col gap-4 p-4">
+                <div
+                    v-if="isMenuOpen"
+                    class="absolute top-full right-0 left-0 z-50 mt-2 rounded-2xl border border-gray-100 bg-white shadow-xl lg:hidden"
+                >
+                    <div class="flex flex-col p-3">
                         <Link
                             :href="route('index') + '#about-adrijan'"
                             @click="toggleMenu"
-                            :class="variant === NavbarVariant.Light ? 'text-[#161A1D]' : 'text-[#1E1E1E]'"
-                            class="py-2 text-[18px] font-[400] transition-opacity hover:opacity-75"
+                            class="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-[#054A29]"
                         >
                             За Адријан
                         </Link>
                         <Link
                             :href="route('index') + '#our-mission'"
                             @click="toggleMenu"
-                            :class="variant === NavbarVariant.Light ? 'text-[#161A1D]' : 'text-[#1E1E1E]'"
-                            class="py-2 text-[18px] font-[400] transition-opacity hover:opacity-75"
+                            class="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-[#054A29]"
                         >
                             Нашата мисија
                         </Link>
                         <Link
                             :href="route('news.index')"
                             @click="toggleMenu"
-                            :class="variant === NavbarVariant.Light ? 'text-[#161A1D]' : 'text-[#1E1E1E]'"
-                            class="py-2 text-[18px] font-[400] transition-opacity hover:opacity-75"
+                            class="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-[#054A29]"
                         >
                             Новости
                         </Link>
                         <Link
                             :href="route('index') + '#contact'"
                             @click="toggleMenu"
-                            :class="variant === NavbarVariant.Light ? 'text-[#161A1D]' : 'text-[#1E1E1E]'"
-                            class="py-2 text-[18px] font-[400] transition-opacity hover:opacity-75"
+                            class="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-[#054A29]"
                         >
                             Контакт
                         </Link>
-                        <Link
-                            :href="route('index') + '#donations'"
-                            @click="toggleMenu"
-                            :class="variant === NavbarVariant.Light ? 'bg-[#054A29]' : 'bg-[#054A29]'"
-                            class="rounded-[8px] px-4 py-2 text-center text-[18px] font-[500] text-white transition-opacity hover:opacity-90"
-                        >
-                            Донирај
-                        </Link>
+                        <div class="mt-2 border-t border-gray-100 pt-2">
+                            <Link
+                                :href="route('index') + '#donations'"
+                                @click="toggleMenu"
+                                class="block rounded-xl bg-[#054A29] px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-[#033d22]"
+                            >
+                                Донирај
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </transition>

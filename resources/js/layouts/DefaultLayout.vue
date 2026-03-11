@@ -4,8 +4,10 @@ import { NavbarVariant } from '@/enums/navbar-variant';
 </script>
 
 <template>
-    <div class="m-3">
-        <AppNavbar :variant="NavbarVariant.Dark" />
+    <div class="min-h-screen">
+        <div class="p-3 pb-0">
+            <AppNavbar :variant="NavbarVariant.Dark" />
+        </div>
         <slot />
     </div>
 </template>

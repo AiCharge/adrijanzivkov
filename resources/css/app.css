@@ -5,8 +5,20 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
+@theme {
+    --color-primary: #054a29;
+    --color-primary-dark: #033d22;
+    --color-primary-hover: #065c33;
+    --color-primary-muted: #0e5b36;
+    --color-primary-light: #e8f5ee;
+    --font-sans: 'Montserrat', sans-serif;
+}
+
 body {
     font-family: 'Montserrat', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #161a1d;
 }
 
 body,
