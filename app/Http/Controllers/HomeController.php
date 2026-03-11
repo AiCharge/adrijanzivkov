@@ -16,6 +16,12 @@ class HomeController extends Controller
         return Inertia::render('Home', [
             'latestNews' => $latestNews,
             'donationNeeds' => $donationNeeds,
+        ])->withViewData([
+            'meta' => [
+                'title' => 'Почетна',
+                'description' => 'Фондацијата „Адријан Живков" е посветена на поддршка на семејствата, донации за деца и хуманитарни активности во заедницата.',
+                'image' => url('/images/meta/default.jpg'),
+            ],
         ]);
     }
 }
