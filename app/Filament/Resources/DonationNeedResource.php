@@ -38,6 +38,11 @@ class DonationNeedResource extends Resource
                     ->fileAttachmentsVisibility('public')
                     ->required()
                     ->columnSpanFull(),
+                Forms\Components\RichEditor::make('sticky_content')
+                    ->label('Лепливa содржина (десна страна)')
+                    ->fileAttachmentsDisk('public')
+                    ->fileAttachmentsVisibility('public')
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('needed_amount')
                     ->label('Потребен износ (МКД)')
                     ->required()

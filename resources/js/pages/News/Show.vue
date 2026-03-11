@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AppContainer from '@/components/base/containers/AppContainer.vue';
 import type { NewsInterface } from '@/interfaces/news-interface';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import dayjs from '@/lib/dayjs';
@@ -20,7 +21,7 @@ defineOptions({
     <Head :title="news.title" />
 
     <div class="min-h-screen py-10 md:py-16">
-        <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+        <AppContainer>
             <!-- Back link -->
             <Link
                 :href="route('news.index')"
@@ -55,7 +56,7 @@ defineOptions({
                 <!-- Article body -->
                 <div class="prose-content text-gray-700" v-html="news.content"></div>
             </article>
-        </div>
+        </AppContainer>
     </div>
 </template>
 

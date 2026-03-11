@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AppContainer from '@/components/base/containers/AppContainer.vue';
 import type { NewsInterface } from '@/interfaces/news-interface';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import dayjs from '@/lib/dayjs';
@@ -37,7 +38,7 @@ defineOptions({
     <Head title="Новости" />
 
     <div class="min-h-screen py-10 md:py-16">
-        <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <AppContainer>
             <!-- Page header -->
             <div class="mb-12">
                 <p class="mb-2 text-xs font-semibold tracking-widest text-[#054A29] uppercase">Актуелно</p>
@@ -120,7 +121,7 @@ defineOptions({
                 </div>
                 <p class="text-sm font-medium text-gray-500">Нема достапни новости.</p>
             </div>
-        </div>
+        </AppContainer>
     </div>
 </template>
 

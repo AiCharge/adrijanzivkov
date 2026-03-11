@@ -14,6 +14,7 @@ class DonationNeed extends Model
     protected $fillable = [
         'title',
         'description',
+        'sticky_content',
         'image',
         'needed_amount',
     ];
