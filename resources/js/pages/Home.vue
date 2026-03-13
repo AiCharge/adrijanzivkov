@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AppFooter from '@/components/layouts/AppFooter.vue';
 import ContactSection from '@/components/pages/home/ContactSection.vue';
 import DonationNeedsSection from '@/components/pages/home/DonationNeedsSection.vue';
 import HeroSection from '@/components/pages/home/HeroSection.vue';
@@ -28,5 +29,6 @@ defineProps<Props>();
         <OurMissionSection />
         <DonationNeedsSection :donation-needs="donationNeeds" />
         <ContactSection />
+        <AppFooter />
     </div>
 </template>
