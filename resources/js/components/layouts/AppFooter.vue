@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AboutController from '@/actions/App/Http/Controllers/AboutController';
 import HomeController from '@/actions/App/Http/Controllers/HomeController';
 import { privacy, terms } from '@/actions/App/Http/Controllers/LegalController';
 import { index as newsIndex } from '@/actions/App/Http/Controllers/NewsController';
@@ -29,6 +30,9 @@ import { Link } from '@inertiajs/vue3';
                         </Link>
                         <Link :href="HomeController.url() + '#our-mission'" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]">
                             Нашата мисија
+                        </Link>
+                        <Link :href="AboutController.url()" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]">
+                            За фондацијата
                         </Link>
                         <Link :href="newsIndex.url()" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]"> Новости </Link>
                         <Link :href="HomeController.url() + '#contact'" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]">

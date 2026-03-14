@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import HomeController from '@/actions/App/Http/Controllers/HomeController';
+import { create as storyCreate } from '@/actions/App/Http/Controllers/StorySubmissionController';
 import AppContainer from '@/components/base/containers/AppContainer.vue';
 import AppNavbar from '@/components/layouts/AppNavbar.vue';
 import { Link } from '@inertiajs/vue3';
@@ -27,7 +28,7 @@ import { Link } from '@inertiajs/vue3';
                     </h1>
 
                     <p class="max-w-[420px] text-base leading-relaxed font-normal text-white/70 lg:text-lg">
-                        Нашата мисија е да донесеме надеж и поддршка таму каде што најмногу недостига – кај луѓе што се соочуваат со болест, неправда
+                        Нашата мисија е да донесеме надеж и поддршка таму каде што најмногу недостига, кај луѓе што се соочуваат со болест, неправда
                         или тежок животен предизвик.
                     </p>
 
@@ -37,15 +38,9 @@ import { Link } from '@inertiajs/vue3';
                             class="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-[#054A29] shadow-lg shadow-black/10 transition-all duration-200 hover:bg-white/90 hover:shadow-xl"
                         >
                             Донирај
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                            </svg>
                         </Link>
-                        <Link
-                            :href="HomeController.url() + '#about-adrijan'"
-                            class="text-sm font-medium text-white/70 transition-colors hover:text-white"
-                        >
-                            Дознај повеќе →
+                        <Link :href="storyCreate.url()" class="text-sm font-medium text-white/70 transition-colors hover:text-white">
+                            Побарај помош
                         </Link>
                     </div>
                 </div>

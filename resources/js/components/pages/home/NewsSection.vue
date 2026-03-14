@@ -26,9 +26,6 @@ defineProps<Props>();
                     class="hidden items-center gap-1.5 text-sm font-medium text-[#054A29] transition-colors hover:text-[#033d22] sm:flex"
                 >
                     Сите новости
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
                 </Link>
             </div>
 
@@ -56,17 +53,7 @@ defineProps<Props>();
                         <p class="mb-4 line-clamp-3 flex-1 text-sm leading-relaxed text-gray-500">
                             {{ item.short_description }}
                         </p>
-                        <div class="flex items-center gap-1 text-xs font-semibold text-[#054A29]">
-                            Прочитај повеќе
-                            <svg
-                                class="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                            </svg>
-                        </div>
+                        <div class="flex items-center text-xs font-semibold text-[#054A29]">Прочитај повеќе</div>
                     </div>
                 </Link>
             </div>
@@ -78,9 +65,6 @@ defineProps<Props>();
                     class="flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
                 >
                     Сите новости
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
                 </Link>
             </div>
 

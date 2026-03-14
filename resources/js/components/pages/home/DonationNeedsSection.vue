@@ -35,9 +35,6 @@ function stripHtml(html: string): string {
                     class="hidden items-center gap-1.5 text-sm font-medium text-[#054A29] transition-colors hover:text-[#033d22] sm:flex"
                 >
                     Сите потреби
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
                 </Link>
             </div>
 
@@ -95,9 +92,6 @@ function stripHtml(html: string): string {
                     class="flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
                 >
                     Сите потреби
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
                 </Link>
             </div>
 
