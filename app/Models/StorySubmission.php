@@ -10,14 +10,6 @@ class StorySubmission extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'phone',
-        'message',
-        'status',
-        'notes',
-    ];
-
     protected $attributes = [
         'status' => StorySubmissionStatus::New->value,
     ];

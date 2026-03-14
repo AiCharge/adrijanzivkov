@@ -25,7 +25,7 @@ class StorySubmissionForm
                     ->columnSpanFull(),
                 Forms\Components\Select::make('status')
                     ->label('Статус')
-                    ->options(fn () => collect(StorySubmissionStatus::cases())->mapWithKeys(fn ($s) => [$s->value => $s->label()]))
+                    ->options(StorySubmissionStatus::class)
                     ->required(),
                 Forms\Components\Textarea::make('notes')
                     ->label('Белешки')
