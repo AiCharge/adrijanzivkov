@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { privacy, terms } from '@/actions/App/Http/Controllers/LegalController';
+import { store } from '@/actions/App/Http/Controllers/StorySubmissionController';
 import AppContainer from '@/components/base/containers/AppContainer.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
-import { terms, privacy } from '@/actions/App/Http/Controllers/LegalController';
-import { store } from '@/actions/App/Http/Controllers/StorySubmissionController';
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { show as newsShow } from '@/actions/App/Http/Controllers/NewsController';
 import AppContainer from '@/components/base/containers/AppContainer.vue';
 import type { NewsInterface } from '@/interfaces/news-interface';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import dayjs from '@/lib/dayjs';
-import { index as newsIndex, show as newsShow } from '@/actions/App/Http/Controllers/NewsController';
 import { Head, Link, router } from '@inertiajs/vue3';
 
 interface PaginationLink {

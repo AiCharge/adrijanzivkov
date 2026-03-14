@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import AppContainer from '@/components/base/containers/AppContainer.vue';
-import LogoDark from '@/components/logos/LogoDark.vue';
-import LogoLight from '@/components/logos/LogoLight.vue';
 import HomeController from '@/actions/App/Http/Controllers/HomeController';
 import { index as newsIndex } from '@/actions/App/Http/Controllers/NewsController';
 import { create as storyCreate } from '@/actions/App/Http/Controllers/StorySubmissionController';
+import AppContainer from '@/components/base/containers/AppContainer.vue';
+import LogoDark from '@/components/logos/LogoDark.vue';
+import LogoLight from '@/components/logos/LogoLight.vue';
 import { NavbarVariant } from '@/enums/navbar-variant';
 import { Link } from '@inertiajs/vue3';
 import { ref } from 'vue';

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import HomeController from '@/actions/App/Http/Controllers/HomeController';
-import { terms, privacy } from '@/actions/App/Http/Controllers/LegalController';
+import { privacy, terms } from '@/actions/App/Http/Controllers/LegalController';
 import { index as newsIndex } from '@/actions/App/Http/Controllers/NewsController';
 import { create as storyCreate } from '@/actions/App/Http/Controllers/StorySubmissionController';
 import AppContainer from '@/components/base/containers/AppContainer.vue';
@@ -34,10 +34,7 @@ import { Link } from '@inertiajs/vue3';
                         <Link :href="HomeController.url() + '#contact'" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]">
                             Контакт
                         </Link>
-                        <Link
-                            :href="storyCreate.url()"
-                            class="text-sm font-semibold text-[#054A29] transition-colors hover:text-[#033d22]"
-                        >
+                        <Link :href="storyCreate.url()" class="text-sm font-semibold text-[#054A29] transition-colors hover:text-[#033d22]">
                             Побарај помош
                         </Link>
                     </nav>

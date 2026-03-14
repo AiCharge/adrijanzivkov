@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { index as newsIndex, show as newsShow } from '@/actions/App/Http/Controllers/NewsController';
 import AppContainer from '@/components/base/containers/AppContainer.vue';
 import AppSection from '@/components/base/sections/AppSection.vue';
 import type { NewsInterface } from '@/interfaces/news-interface';
 import dayjs from '@/lib/dayjs';
-import { index as newsIndex, show as newsShow } from '@/actions/App/Http/Controllers/NewsController';
 import { Link } from '@inertiajs/vue3';
 
 interface Props {

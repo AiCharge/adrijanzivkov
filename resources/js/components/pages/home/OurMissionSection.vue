@@ -65,6 +65,22 @@ import AppSection from '@/components/base/sections/AppSection.vue';
                                 надеж за иднината.
                             </p>
                         </div>
+                        <div class="flex gap-4">
+                            <div class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#054A29]/10">
+                                <svg class="h-4 w-4 text-[#054A29]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    />
+                                </svg>
+                            </div>
+                            <p class="text-sm leading-relaxed text-gray-600 lg:text-base">
+                                Фондацијата е финансирана исклучиво преку доброволни донации од пријателите и семејството на Адријан.
+                                <strong class="font-semibold text-gray-800">Не прифаќаме донации од трети лица.</strong>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

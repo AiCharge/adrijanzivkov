@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import HomeController from '@/actions/App/Http/Controllers/HomeController';
 import AppContainer from '@/components/base/containers/AppContainer.vue';
 import type { DonationNeedInterface } from '@/interfaces/donation-need-interface';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
-import HomeController from '@/actions/App/Http/Controllers/HomeController';
 import { Head, Link } from '@inertiajs/vue3';
 
 interface Props {

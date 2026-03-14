@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import HomeController from '@/actions/App/Http/Controllers/HomeController';
 import AppContainer from '@/components/base/containers/AppContainer.vue';
 import AppNavbar from '@/components/layouts/AppNavbar.vue';
-import HomeController from '@/actions/App/Http/Controllers/HomeController';
 import { Link } from '@inertiajs/vue3';
 </script>
 
@@ -41,7 +41,10 @@ import { Link } from '@inertiajs/vue3';
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                             </svg>
                         </Link>
-                        <Link :href="HomeController.url() + '#about-adrijan'" class="text-sm font-medium text-white/70 transition-colors hover:text-white">
+                        <Link
+                            :href="HomeController.url() + '#about-adrijan'"
+                            class="text-sm font-medium text-white/70 transition-colors hover:text-white"
+                        >
                             Дознај повеќе →
                         </Link>
                     </div>
