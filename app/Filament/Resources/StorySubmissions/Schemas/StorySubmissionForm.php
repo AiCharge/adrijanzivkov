@@ -13,7 +13,7 @@ class StorySubmissionForm
         return $schema
             ->components([
                 Forms\Components\TextInput::make('name')
-                    ->label('Ime и презиме')
+                    ->label('Име и презиме')
                     ->disabled(),
                 Forms\Components\TextInput::make('phone')
                     ->label('Телефонски број')

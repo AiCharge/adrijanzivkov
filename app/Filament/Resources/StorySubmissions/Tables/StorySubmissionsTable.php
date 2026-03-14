@@ -15,7 +15,7 @@ class StorySubmissionsTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Ime')
+                    ->label('Име')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('phone')
