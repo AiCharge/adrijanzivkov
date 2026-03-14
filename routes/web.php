@@ -14,6 +14,8 @@ Route::get('/news/{news:slug}', [NewsController::class, 'show'])->name('news.sho
 Route::get('/terms-of-use', [LegalController::class, 'terms'])->name('terms');
 Route::get('/privacy-policy', [LegalController::class, 'privacy'])->name('privacy');
 
+Route::resource('story-submissions', StorySubmissionController::class)->only(['create']);
+
 Route::middleware('throttle:4,1')->group(function () {
-    Route::resource('story-submissions', StorySubmissionController::class)->only(['create', 'store']);
+    Route::resource('story-submissions', StorySubmissionController::class)->only(['store']);
 });

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import AppContainer from '@/components/base/containers/AppContainer.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import { terms, privacy } from '@/actions/App/Http/Controllers/LegalController';
+import { store } from '@/actions/App/Http/Controllers/StorySubmissionController';
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
-import { route } from 'ziggy-js';
 
 defineOptions({
     layout: DefaultLayout,
@@ -20,7 +21,7 @@ const form = useForm({
 });
 
 function submit(): void {
-    form.post(route('story-submissions.store'), {
+    form.post(store.url(), {
         onSuccess: () => form.reset(),
     });
 }
@@ -100,14 +101,14 @@ function submit(): void {
                             <span class="text-sm leading-relaxed text-gray-600">
                                 Се согласувам со
                                 <Link
-                                    :href="route('terms')"
+                                    :href="terms.url()"
                                     target="_blank"
                                     class="font-medium text-[#054A29] underline underline-offset-2 hover:text-[#033d22]"
                                     >Условите на користење</Link
                                 >
                                 и
                                 <Link
-                                    :href="route('privacy')"
+                                    :href="privacy.url()"
                                     target="_blank"
                                     class="font-medium text-[#054A29] underline underline-offset-2 hover:text-[#033d22]"
                                     >Политиката за приватност</Link

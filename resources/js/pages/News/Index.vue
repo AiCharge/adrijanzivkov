@@ -3,8 +3,8 @@ import AppContainer from '@/components/base/containers/AppContainer.vue';
 import type { NewsInterface } from '@/interfaces/news-interface';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import dayjs from '@/lib/dayjs';
+import { index as newsIndex, show as newsShow } from '@/actions/App/Http/Controllers/NewsController';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { route } from 'ziggy-js';
 
 interface PaginationLink {
     url: string | null;
@@ -49,7 +49,7 @@ defineOptions({
                 <Link
                     v-for="item in news.data"
                     :key="item.id"
-                    :href="route('news.show', { news: item.slug })"
+                    :href="newsShow.url({ news: item.slug })"
                     class="group flex overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-gray-300 hover:shadow-md md:flex-row"
                 >
                     <div class="relative h-56 w-full overflow-hidden bg-gray-100 md:h-auto md:w-72 md:shrink-0">

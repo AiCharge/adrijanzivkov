@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import HomeController from '@/actions/App/Http/Controllers/HomeController';
+import { terms, privacy } from '@/actions/App/Http/Controllers/LegalController';
+import { index as newsIndex } from '@/actions/App/Http/Controllers/NewsController';
+import { create as storyCreate } from '@/actions/App/Http/Controllers/StorySubmissionController';
 import AppContainer from '@/components/base/containers/AppContainer.vue';
 import LogoDark from '@/components/logos/LogoDark.vue';
 import { Link } from '@inertiajs/vue3';
-import { route } from 'ziggy-js';
 </script>
 
 <template>
@@ -10,7 +13,7 @@ import { route } from 'ziggy-js';
         <AppContainer class="py-10">
             <div class="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
                 <div class="flex flex-col gap-4">
-                    <Link :href="route('index')">
+                    <Link :href="HomeController.url()">
                         <LogoDark />
                     </Link>
                     <p class="max-w-xs text-sm leading-relaxed text-gray-500">
@@ -21,18 +24,18 @@ import { route } from 'ziggy-js';
                 <div class="flex flex-col gap-3">
                     <p class="text-xs font-semibold tracking-widest text-gray-400 uppercase">Навигација</p>
                     <nav class="flex flex-col gap-2">
-                        <Link :href="route('index') + '#about-adrijan'" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]">
+                        <Link :href="HomeController.url() + '#about-adrijan'" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]">
                             За Адријан
                         </Link>
-                        <Link :href="route('index') + '#our-mission'" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]">
+                        <Link :href="HomeController.url() + '#our-mission'" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]">
                             Нашата мисија
                         </Link>
-                        <Link :href="route('news.index')" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]"> Новости </Link>
-                        <Link :href="route('index') + '#contact'" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]">
+                        <Link :href="newsIndex.url()" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]"> Новости </Link>
+                        <Link :href="HomeController.url() + '#contact'" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]">
                             Контакт
                         </Link>
                         <Link
-                            :href="route('story-submissions.create')"
+                            :href="storyCreate.url()"
                             class="text-sm font-semibold text-[#054A29] transition-colors hover:text-[#033d22]"
                         >
                             Побарај помош
@@ -43,8 +46,8 @@ import { route } from 'ziggy-js';
                 <div class="flex flex-col gap-3">
                     <p class="text-xs font-semibold tracking-widest text-gray-400 uppercase">Правни информации</p>
                     <nav class="flex flex-col gap-2">
-                        <Link :href="route('terms')" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]"> Услови на користење </Link>
-                        <Link :href="route('privacy')" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]">
+                        <Link :href="terms.url()" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]"> Услови на користење </Link>
+                        <Link :href="privacy.url()" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]">
                             Политика за приватност
                         </Link>
                     </nav>

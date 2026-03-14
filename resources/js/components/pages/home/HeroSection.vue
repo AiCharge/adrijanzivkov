@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import AppContainer from '@/components/base/containers/AppContainer.vue';
 import AppNavbar from '@/components/layouts/AppNavbar.vue';
+import HomeController from '@/actions/App/Http/Controllers/HomeController';
 import { Link } from '@inertiajs/vue3';
-import { route } from 'ziggy-js';
 </script>
 
 <template>
@@ -33,7 +33,7 @@ import { route } from 'ziggy-js';
 
                     <div class="flex flex-wrap items-center gap-4">
                         <Link
-                            :href="route('index') + '#donations'"
+                            :href="HomeController.url() + '#donations'"
                             class="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-[#054A29] shadow-lg shadow-black/10 transition-all duration-200 hover:bg-white/90 hover:shadow-xl"
                         >
                             Донирај
@@ -41,7 +41,7 @@ import { route } from 'ziggy-js';
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                             </svg>
                         </Link>
-                        <Link :href="route('index') + '#about-adrijan'" class="text-sm font-medium text-white/70 transition-colors hover:text-white">
+                        <Link :href="HomeController.url() + '#about-adrijan'" class="text-sm font-medium text-white/70 transition-colors hover:text-white">
                             Дознај повеќе →
                         </Link>
                     </div>

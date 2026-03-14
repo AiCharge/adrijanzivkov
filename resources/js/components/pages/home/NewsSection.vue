@@ -3,8 +3,8 @@ import AppContainer from '@/components/base/containers/AppContainer.vue';
 import AppSection from '@/components/base/sections/AppSection.vue';
 import type { NewsInterface } from '@/interfaces/news-interface';
 import dayjs from '@/lib/dayjs';
+import { index as newsIndex, show as newsShow } from '@/actions/App/Http/Controllers/NewsController';
 import { Link } from '@inertiajs/vue3';
-import { route } from 'ziggy-js';
 
 interface Props {
     news?: NewsInterface[];
@@ -22,7 +22,7 @@ defineProps<Props>();
                     <h2 class="text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">Новости</h2>
                 </div>
                 <Link
-                    :href="route('news.index')"
+                    :href="newsIndex.url()"
                     class="hidden items-center gap-1.5 text-sm font-medium text-[#054A29] transition-colors hover:text-[#033d22] sm:flex"
                 >
                     Сите новости
@@ -36,7 +36,7 @@ defineProps<Props>();
                 <Link
                     v-for="item in news"
                     :key="item.id"
-                    :href="route('news.show', { news: item.slug })"
+                    :href="newsShow.url({ news: item.slug })"
                     class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-gray-300 hover:shadow-lg"
                 >
                     <div class="relative w-full overflow-hidden bg-gray-100" style="padding-bottom: 56.25%">
@@ -74,7 +74,7 @@ defineProps<Props>();
             <!-- Mobile "all news" button -->
             <div v-if="news && news.length > 0" class="mt-8 sm:hidden">
                 <Link
-                    :href="route('news.index')"
+                    :href="newsIndex.url()"
                     class="flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
                 >
                     Сите новости

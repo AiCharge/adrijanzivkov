@@ -2,8 +2,8 @@
 import AppContainer from '@/components/base/containers/AppContainer.vue';
 import type { DonationNeedInterface } from '@/interfaces/donation-need-interface';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import HomeController from '@/actions/App/Http/Controllers/HomeController';
 import { Head, Link } from '@inertiajs/vue3';
-import { route } from 'ziggy-js';
 
 interface Props {
     donationNeed: DonationNeedInterface;
@@ -27,7 +27,7 @@ function formatAmount(amount: number): string {
         <AppContainer>
             <!-- Back link -->
             <Link
-                :href="route('index') + '#donations'"
+                :href="HomeController.url() + '#donations'"
                 class="mb-8 inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-[#054A29]"
             >
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
