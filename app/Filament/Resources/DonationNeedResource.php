@@ -84,11 +84,7 @@ class DonationNeedResource extends Resource
             ->recordActions([
                 Actions\EditAction::make(),
             ])
-            ->bulkActions([
-                Actions\BulkActionGroup::make([
-                    Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->bulkActions([]);
     }
 
     public static function getRelations(): array

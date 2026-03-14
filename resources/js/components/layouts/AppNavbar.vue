@@ -67,6 +67,16 @@ const toggleMenu = () => {
                     class="text-sm font-medium tracking-wide transition-colors duration-200"
                     >Контакт</Link
                 >
+                <Link
+                    :href="route('story-submissions.create')"
+                    :class="
+                        variant === NavbarVariant.Light
+                            ? 'border-white/30 text-white hover:bg-white/10'
+                            : 'border-[#054A29]/30 text-[#054A29] hover:bg-[#054A29]/5'
+                    "
+                    class="rounded-xl border px-4 py-1.5 text-sm font-semibold tracking-wide transition-colors duration-200"
+                    >Побарај помош</Link
+                >
             </div>
 
             <Link
@@ -117,6 +127,13 @@ const toggleMenu = () => {
                             class="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-[#054A29]"
                         >
                             Контакт
+                        </Link>
+                        <Link
+                            :href="route('story-submissions.create')"
+                            @click="toggleMenu"
+                            class="rounded-xl px-4 py-3 text-sm font-semibold text-[#054A29] transition-colors hover:bg-[#054A29]/5"
+                        >
+                            Побарај помош
                         </Link>
                         <div class="mt-2 border-t border-gray-100 pt-2">
                             <Link

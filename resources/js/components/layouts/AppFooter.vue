@@ -31,6 +31,12 @@ import { route } from 'ziggy-js';
                         <Link :href="route('index') + '#contact'" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]">
                             Контакт
                         </Link>
+                        <Link
+                            :href="route('story-submissions.create')"
+                            class="text-sm font-semibold text-[#054A29] transition-colors hover:text-[#033d22]"
+                        >
+                            Побарај помош
+                        </Link>
                     </nav>
                 </div>
 
