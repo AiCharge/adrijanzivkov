@@ -2,8 +2,8 @@
 import AppContainer from '@/components/base/containers/AppContainer.vue';
 import AppSection from '@/components/base/sections/AppSection.vue';
 import type { DonationNeedInterface } from '@/interfaces/donation-need-interface';
+import { index as donationIndex, show as donationShow } from '@/actions/App/Http/Controllers/DonationNeedController';
 import { Link } from '@inertiajs/vue3';
-import { route } from 'ziggy-js';
 
 interface Props {
     donationNeeds?: DonationNeedInterface[];
@@ -31,7 +31,7 @@ function stripHtml(html: string): string {
                     <h2 class="text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">Потреба за донации</h2>
                 </div>
                 <Link
-                    :href="route('donation-needs.index')"
+                    :href="donationIndex.url()"
                     class="hidden items-center gap-1.5 text-sm font-medium text-[#054A29] transition-colors hover:text-[#033d22] sm:flex"
                 >
                     Сите потреби
@@ -71,7 +71,7 @@ function stripHtml(html: string): string {
                         <p class="mb-5 line-clamp-3 flex-1 text-sm leading-relaxed text-gray-500">{{ stripHtml(item.description) }}</p>
 
                         <Link
-                            :href="route('donation-needs.show', { donation_need: item.id })"
+                            :href="donationShow.url(item.id)"
                             class="flex items-center justify-center gap-2 rounded-xl bg-[#054A29] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-[#033d22] hover:shadow-md"
                         >
                             Донирај
@@ -91,7 +91,7 @@ function stripHtml(html: string): string {
             <!-- Mobile "all needs" button -->
             <div v-if="donationNeeds && donationNeeds.length > 0" class="mt-8 sm:hidden">
                 <Link
-                    :href="route('donation-needs.index')"
+                    :href="donationIndex.url()"
                     class="flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
                 >
                     Сите потреби

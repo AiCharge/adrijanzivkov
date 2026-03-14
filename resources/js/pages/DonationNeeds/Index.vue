@@ -2,8 +2,8 @@
 import AppContainer from '@/components/base/containers/AppContainer.vue';
 import type { DonationNeedInterface } from '@/interfaces/donation-need-interface';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import { show as donationShow } from '@/actions/App/Http/Controllers/DonationNeedController';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { route } from 'ziggy-js';
 
 interface PaginationLink {
     url: string | null;
@@ -89,7 +89,7 @@ function stripHtml(html: string): string {
                             <p class="mb-5 line-clamp-3 flex-1 text-sm leading-relaxed text-gray-500">{{ stripHtml(item.description) }}</p>
 
                             <Link
-                                :href="route('donation-needs.show', { donation_need: item.id })"
+                                :href="donationShow.url(item.id)"
                                 class="flex items-center justify-center gap-2 rounded-xl bg-[#054A29] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-[#033d22] hover:shadow-md"
                             >
                                 Донирај

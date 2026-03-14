@@ -3,8 +3,8 @@ import AppContainer from '@/components/base/containers/AppContainer.vue';
 import type { NewsInterface } from '@/interfaces/news-interface';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import dayjs from '@/lib/dayjs';
+import { index as newsIndex } from '@/actions/App/Http/Controllers/NewsController';
 import { Head, Link } from '@inertiajs/vue3';
-import { route } from 'ziggy-js';
 
 interface Props {
     news: NewsInterface;
@@ -24,7 +24,7 @@ defineOptions({
         <AppContainer>
             <!-- Back link -->
             <Link
-                :href="route('news.index')"
+                :href="newsIndex.url()"
                 class="mb-8 inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-[#054A29]"
             >
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

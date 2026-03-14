@@ -2,10 +2,12 @@
 import AppContainer from '@/components/base/containers/AppContainer.vue';
 import LogoDark from '@/components/logos/LogoDark.vue';
 import LogoLight from '@/components/logos/LogoLight.vue';
+import HomeController from '@/actions/App/Http/Controllers/HomeController';
+import { index as newsIndex } from '@/actions/App/Http/Controllers/NewsController';
+import { create as storyCreate } from '@/actions/App/Http/Controllers/StorySubmissionController';
 import { NavbarVariant } from '@/enums/navbar-variant';
 import { Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import { route } from 'ziggy-js';
 
 interface Props {
     variant?: NavbarVariant;
@@ -44,33 +46,43 @@ const toggleMenu = () => {
 
             <div class="hidden items-center gap-8 lg:flex">
                 <Link
-                    :href="route('index') + '#about-adrijan'"
+                    :href="HomeController.url() + '#about-adrijan'"
                     :class="variant === NavbarVariant.Light ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-[#054A29]'"
                     class="text-sm font-medium tracking-wide transition-colors duration-200"
                     >За Адријан</Link
                 >
                 <Link
-                    :href="route('index') + '#our-mission'"
+                    :href="HomeController.url() + '#our-mission'"
                     :class="variant === NavbarVariant.Light ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-[#054A29]'"
                     class="text-sm font-medium tracking-wide transition-colors duration-200"
                     >Нашата мисија</Link
                 >
                 <Link
-                    :href="route('news.index')"
+                    :href="newsIndex.url()"
                     :class="variant === NavbarVariant.Light ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-[#054A29]'"
                     class="text-sm font-medium tracking-wide transition-colors duration-200"
                     >Новости</Link
                 >
                 <Link
-                    :href="route('index') + '#contact'"
+                    :href="HomeController.url() + '#contact'"
                     :class="variant === NavbarVariant.Light ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-[#054A29]'"
                     class="text-sm font-medium tracking-wide transition-colors duration-200"
                     >Контакт</Link
                 >
+                <Link
+                    :href="storyCreate.url()"
+                    :class="
+                        variant === NavbarVariant.Light
+                            ? 'border-white/30 text-white hover:bg-white/10'
+                            : 'border-[#054A29]/30 text-[#054A29] hover:bg-[#054A29]/5'
+                    "
+                    class="rounded-xl border px-4 py-1.5 text-sm font-semibold tracking-wide transition-colors duration-200"
+                    >Побарај помош</Link
+                >
             </div>
 
             <Link
-                :href="route('index') + '#donations'"
+                :href="HomeController.url() + '#donations'"
                 :class="variant === NavbarVariant.Light ? 'bg-white text-[#054A29] hover:bg-white/90' : 'bg-[#054A29] text-white hover:bg-[#033d22]'"
                 class="hidden cursor-pointer rounded-xl px-5 py-2 text-sm font-semibold shadow-sm transition-all duration-200 hover:shadow-md lg:block"
             >
@@ -91,36 +103,43 @@ const toggleMenu = () => {
                 >
                     <div class="flex flex-col p-3">
                         <Link
-                            :href="route('index') + '#about-adrijan'"
+                            :href="HomeController.url() + '#about-adrijan'"
                             @click="toggleMenu"
                             class="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-[#054A29]"
                         >
                             За Адријан
                         </Link>
                         <Link
-                            :href="route('index') + '#our-mission'"
+                            :href="HomeController.url() + '#our-mission'"
                             @click="toggleMenu"
                             class="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-[#054A29]"
                         >
                             Нашата мисија
                         </Link>
                         <Link
-                            :href="route('news.index')"
+                            :href="newsIndex.url()"
                             @click="toggleMenu"
                             class="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-[#054A29]"
                         >
                             Новости
                         </Link>
                         <Link
-                            :href="route('index') + '#contact'"
+                            :href="HomeController.url() + '#contact'"
                             @click="toggleMenu"
                             class="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-[#054A29]"
                         >
                             Контакт
                         </Link>
+                        <Link
+                            :href="storyCreate.url()"
+                            @click="toggleMenu"
+                            class="rounded-xl px-4 py-3 text-sm font-semibold text-[#054A29] transition-colors hover:bg-[#054A29]/5"
+                        >
+                            Побарај помош
+                        </Link>
                         <div class="mt-2 border-t border-gray-100 pt-2">
                             <Link
-                                :href="route('index') + '#donations'"
+                                :href="HomeController.url() + '#donations'"
                                 @click="toggleMenu"
                                 class="block rounded-xl bg-[#054A29] px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-[#033d22]"
                             >

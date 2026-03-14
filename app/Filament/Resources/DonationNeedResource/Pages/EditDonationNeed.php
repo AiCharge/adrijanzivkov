@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\DonationNeedResource\Pages;
 
 use App\Filament\Resources\DonationNeedResource;
-use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
 class EditDonationNeed extends EditRecord
@@ -12,8 +11,6 @@ class EditDonationNeed extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        return [
-            Actions\DeleteAction::make(),
-        ];
+        return [];
     }
 }
