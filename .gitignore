@@ -22,6 +22,7 @@ yarn-error.log
 /auth.json
 /resources/js/actions
 /resources/js/routes
+/.ai
 /.fleet
 /.idea
 /.junie

@@ -29,7 +29,7 @@ defineProps<Props>();
                 </Link>
             </div>
 
-            <div v-if="news && news.length > 0" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div v-if="news && news.length > 0" class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
                 <Link
                     v-for="item in news"
                     :key="item.id"
@@ -43,14 +43,16 @@ defineProps<Props>();
                             class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                     </div>
-                    <div class="flex flex-1 flex-col p-5">
-                        <div class="mb-3 text-xs font-medium text-gray-400">
+                    <div class="flex flex-1 flex-col p-4 sm:p-5">
+                        <div class="mb-2 text-xs font-medium text-gray-400 sm:mb-3">
                             {{ dayjs(item.created_at).format('D MMMM YYYY') }}
                         </div>
-                        <h3 class="mb-3 line-clamp-2 text-base leading-snug font-semibold text-gray-900 transition-colors group-hover:text-[#054A29]">
+                        <h3
+                            class="mb-2 line-clamp-2 text-sm leading-snug font-semibold text-gray-900 transition-colors group-hover:text-[#054A29] sm:mb-3 sm:text-base"
+                        >
                             {{ item.title }}
                         </h3>
-                        <p class="mb-4 line-clamp-3 flex-1 text-sm leading-relaxed text-gray-500">
+                        <p class="mb-3 line-clamp-2 flex-1 text-sm leading-relaxed text-gray-500 sm:mb-4 sm:line-clamp-3">
                             {{ item.short_description }}
                         </p>
                         <div class="flex items-center text-xs font-semibold text-[#054A29]">Прочитај повеќе</div>
