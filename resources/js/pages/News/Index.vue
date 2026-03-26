@@ -50,7 +50,7 @@ defineOptions({
                     v-for="item in news.data"
                     :key="item.id"
                     :href="newsShow.url({ news: item.slug })"
-                    class="group flex overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-gray-300 hover:shadow-md md:flex-row"
+                    class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-gray-300 hover:shadow-md md:flex-row"
                 >
                     <div class="relative h-56 w-full overflow-hidden bg-gray-100 md:h-auto md:w-72 md:shrink-0">
                         <img
