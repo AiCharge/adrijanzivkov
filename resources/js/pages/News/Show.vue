@@ -5,12 +5,54 @@ import type { NewsInterface } from '@/interfaces/news-interface';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import dayjs from '@/lib/dayjs';
 import { Head, Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 interface Props {
     news: NewsInterface;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
+
+const processedContent = computed(() => {
+    if (!props.news.content) return '';
+    if (typeof document === 'undefined') return props.news.content;
+
+    const doc = new DOMParser().parseFromString(props.news.content, 'text/html');
+    const children = Array.from(doc.body.children);
+
+    const isImageBlock = (el: Element): boolean => {
+        if (el.tagName === 'IMG') return true;
+        if (el.tagName === 'FIGURE' && el.querySelector('img')) return true;
+        if ((el.tagName === 'P' || el.tagName === 'DIV') && el.children.length === 1 && el.children[0].tagName === 'IMG') return true;
+        return false;
+    };
+
+    let result = '';
+    let i = 0;
+
+    while (i < children.length) {
+        const el = children[i];
+        if (isImageBlock(el)) {
+            const group: Element[] = [el];
+            let j = i + 1;
+            while (j < children.length && isImageBlock(children[j])) {
+                group.push(children[j]);
+                j++;
+            }
+            if (group.length >= 2) {
+                result += '<div class="image-grid-2col">' + group.map((g) => g.outerHTML).join('') + '</div>';
+            } else {
+                result += el.outerHTML;
+            }
+            i = j;
+        } else {
+            result += el.outerHTML;
+            i++;
+        }
+    }
+
+    return result;
+});
 
 defineOptions({
     layout: DefaultLayout,
@@ -47,14 +89,11 @@ defineOptions({
                     <h1 class="mb-5 text-3xl leading-tight font-bold tracking-tight text-gray-900 md:text-4xl lg:text-[44px]">
                         {{ news.title }}
                     </h1>
-                    <p class="text-lg leading-relaxed text-gray-500 md:text-xl">
-                        {{ news.short_description }}
-                    </p>
                     <div class="mt-8 border-t border-gray-100"></div>
                 </header>
 
                 <!-- Article body -->
-                <div class="prose-content text-gray-700" v-html="news.content"></div>
+                <div class="prose-content text-gray-700" v-html="processedContent"></div>
             </article>
         </AppContainer>
     </div>
@@ -69,6 +108,36 @@ defineOptions({
     box-shadow:
         0 10px 15px -3px rgb(0 0 0 / 0.1),
         0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.prose-content :deep(.image-grid-2col) {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    margin-bottom: 2.5rem;
+}
+
+@media (min-width: 768px) {
+    .prose-content :deep(.image-grid-2col) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.prose-content :deep(.image-grid-2col > p),
+.prose-content :deep(.image-grid-2col > figure),
+.prose-content :deep(.image-grid-2col > div) {
+    margin: 0;
+    overflow: hidden;
+    border-radius: 1rem;
+}
+
+.prose-content :deep(.image-grid-2col img) {
+    margin-top: 0;
+    margin-bottom: 0;
+    border-radius: 1rem;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
 }
 
 .prose-content :deep(p) {
