@@ -9,7 +9,7 @@ class DonationNeedController extends Controller
 {
     public function index()
     {
-        $donationNeeds = DonationNeed::latest()->paginate(9);
+        $donationNeeds = DonationNeed::notArchived()->latest()->paginate(9);
 
         return Inertia::render('DonationNeeds/Index', compact('donationNeeds'))
             ->withViewData([

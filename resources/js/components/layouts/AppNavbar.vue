@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AboutController from '@/actions/App/Http/Controllers/AboutController';
+import { index as donationNeedsIndex } from '@/actions/App/Http/Controllers/DonationNeedController';
 import HomeController from '@/actions/App/Http/Controllers/HomeController';
 import { index as newsIndex } from '@/actions/App/Http/Controllers/NewsController';
 import { create as storyCreate } from '@/actions/App/Http/Controllers/StorySubmissionController';
@@ -65,6 +66,12 @@ const toggleMenu = () => {
                     >Новости</Link
                 >
                 <Link
+                    :href="donationNeedsIndex.url()"
+                    :class="variant === NavbarVariant.Light ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-[#054A29]'"
+                    class="text-sm font-medium tracking-wide transition-colors duration-200"
+                    >Донации</Link
+                >
+                <Link
                     :href="HomeController.url() + '#contact'"
                     :class="variant === NavbarVariant.Light ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-[#054A29]'"
                     class="text-sm font-medium tracking-wide transition-colors duration-200"
@@ -123,6 +130,13 @@ const toggleMenu = () => {
                             class="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-[#054A29]"
                         >
                             Новости
+                        </Link>
+                        <Link
+                            :href="donationNeedsIndex.url()"
+                            @click="toggleMenu"
+                            class="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-[#054A29]"
+                        >
+                            Донации
                         </Link>
                         <Link
                             :href="HomeController.url() + '#contact'"

@@ -17,7 +17,20 @@ class DonationNeed extends Model
         'sticky_content',
         'image',
         'needed_amount',
+        'archived_at',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'archived_at' => 'datetime',
+        ];
+    }
+
+    public function scopeNotArchived($query): void
+    {
+        $query->whereNull('archived_at');
+    }
 
     protected $appends = [
         'image_url',

@@ -10,7 +10,9 @@ use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class DonationNeedResource extends Resource
 {
@@ -61,6 +63,7 @@ class DonationNeedResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->withoutGlobalScopes())
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
                     ->label('Слика')
@@ -73,15 +76,53 @@ class DonationNeedResource extends Resource
                     ->label('Потребен износ')
                     ->money('MKD')
                     ->sortable(),
+                Tables\Columns\IconColumn::make('archived_at')
+                    ->label('Архивирано')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-archive-box')
+                    ->falseIcon('heroicon-o-check-circle')
+                    ->trueColor('warning')
+                    ->falseColor('success')
+                    ->getStateUsing(fn (DonationNeed $record): bool => $record->archived_at !== null),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Креиран')
                     ->dateTime()
                     ->sortable(),
             ])
             ->filters([
-                //
+                TernaryFilter::make('archived_at')
+                    ->label('Архивирани')
+                    ->nullable()
+                    ->placeholder('Сите')
+                    ->trueLabel('Само архивирани')
+                    ->falseLabel('Само активни')
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereNotNull('archived_at'),
+                        false: fn (Builder $query) => $query->whereNull('archived_at'),
+                        blank: fn (Builder $query) => $query,
+                    ),
             ])
             ->recordActions([
+                Actions\Action::make('archive')
+                    ->label('Архивирај')
+                    ->icon('heroicon-o-archive-box')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->modalHeading('Архивирај донациска потреба')
+                    ->modalDescription('Дали сте сигурни дека сакате да ја архивирате оваа донациска потреба? Таа нема да биде видлива на сајтот.')
+                    ->modalSubmitActionLabel('Архивирај')
+                    ->action(fn (DonationNeed $record) => $record->update(['archived_at' => now()]))
+                    ->visible(fn (DonationNeed $record): bool => $record->archived_at === null),
+                Actions\Action::make('unarchive')
+                    ->label('Врати')
+                    ->icon('heroicon-o-arrow-uturn-left')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Врати донациска потреба')
+                    ->modalDescription('Дали сте сигурни дека сакате да ја вратите оваа донациска потреба? Таа ќе биде повторно видлива на сајтот.')
+                    ->modalSubmitActionLabel('Врати')
+                    ->action(fn (DonationNeed $record) => $record->update(['archived_at' => null]))
+                    ->visible(fn (DonationNeed $record): bool => $record->archived_at !== null),
                 Actions\EditAction::make(),
             ])
             ->bulkActions([]);

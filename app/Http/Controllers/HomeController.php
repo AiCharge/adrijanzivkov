@@ -11,7 +11,7 @@ class HomeController extends Controller
     public function __invoke()
     {
         $latestNews = News::latest()->take(3)->get();
-        $donationNeeds = DonationNeed::latest()->take(6)->get();
+        $donationNeeds = DonationNeed::notArchived()->latest()->take(6)->get();
 
         return Inertia::render('Home', [
             'latestNews' => $latestNews,
