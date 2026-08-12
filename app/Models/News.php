@@ -36,7 +36,7 @@ class News extends Model
     {
         return Attribute::make(
             get: fn () => $this->main_image
-                ? asset(Storage::disk(config('filesystems.media.disk'))->url($this->main_image))
+                ? Storage::url($this->main_image)
                 : null,
         );
     }

@@ -41,13 +41,9 @@ class NewsResource extends Resource
                     ->label('Главна слика')
                     ->image()
                     ->required()
-                    ->disk(config('filesystems.media.disk'))
-                    ->visibility(config('filesystems.media.visibility'))
                     ->directory('news'),
                 Forms\Components\RichEditor::make('content')
                     ->label('Содржина')
-                    ->fileAttachmentsDisk(config('filesystems.media.disk'))
-                    ->fileAttachmentsVisibility(config('filesystems.media.visibility'))
                     ->required()
                     ->columnSpanFull(),
             ]);
@@ -58,8 +54,7 @@ class NewsResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('main_image')
-                    ->label('Слика')
-                    ->disk(config('filesystems.media.disk')),
+                    ->label('Слика'),
                 Tables\Columns\TextColumn::make('title')
                     ->label('Наслов')
                     ->searchable()
