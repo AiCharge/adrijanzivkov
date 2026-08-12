@@ -36,14 +36,14 @@ class DonationNeedResource extends Resource
                     ->maxLength(255),
                 Forms\Components\RichEditor::make('description')
                     ->label('Опис')
-                    ->fileAttachmentsDisk('public')
-                    ->fileAttachmentsVisibility('public')
+                    ->fileAttachmentsDisk(config('filesystems.media.disk'))
+                    ->fileAttachmentsVisibility(config('filesystems.media.visibility'))
                     ->required()
                     ->columnSpanFull(),
                 Forms\Components\RichEditor::make('sticky_content')
                     ->label('Лепливa содржина (десна страна)')
-                    ->fileAttachmentsDisk('public')
-                    ->fileAttachmentsVisibility('public')
+                    ->fileAttachmentsDisk(config('filesystems.media.disk'))
+                    ->fileAttachmentsVisibility(config('filesystems.media.visibility'))
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('needed_amount')
                     ->label('Потребен износ (МКД)')
@@ -54,8 +54,8 @@ class DonationNeedResource extends Resource
                     ->label('Слика')
                     ->image()
                     ->required()
-                    ->disk('public')
-                    ->visibility('public')
+                    ->disk(config('filesystems.media.disk'))
+                    ->visibility(config('filesystems.media.visibility'))
                     ->directory('donation-needs'),
             ]);
     }
@@ -67,7 +67,7 @@ class DonationNeedResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
                     ->label('Слика')
-                    ->disk('public'),
+                    ->disk(config('filesystems.media.disk')),
                 Tables\Columns\TextColumn::make('title')
                     ->label('Наслов')
                     ->searchable()

@@ -77,4 +77,27 @@ return [
         public_path('storage') => storage_path('app/public'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Media Uploads
+    |--------------------------------------------------------------------------
+    |
+    | Admin panel uploads (cover images and rich text attachments) are written
+    | to the disk configured here. Local disks are ephemeral on Laravel Cloud
+    | — wiped on every deploy and not shared between replicas — so set
+    | MEDIA_DISK=s3 there and attach a bucket.
+    |
+    | Cloudflare R2, which backs Laravel Cloud object storage, does not support
+    | per-object ACLs. A "public" visibility makes Filament call
+    | storePubliclyAs(), which sends an ACL header and fails against R2, so set
+    | MEDIA_VISIBILITY=private there. A bucket created as public still serves
+    | its objects publicly; R2 applies visibility at the bucket level.
+    |
+    */
+
+    'media' => [
+        'disk' => env('MEDIA_DISK', 'public'),
+        'visibility' => env('MEDIA_VISIBILITY', 'public'),
+    ],
+
 ];

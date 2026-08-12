@@ -41,13 +41,13 @@ class NewsResource extends Resource
                     ->label('Главна слика')
                     ->image()
                     ->required()
-                    ->disk('public')
-                    ->visibility('public')
+                    ->disk(config('filesystems.media.disk'))
+                    ->visibility(config('filesystems.media.visibility'))
                     ->directory('news'),
                 Forms\Components\RichEditor::make('content')
                     ->label('Содржина')
-                    ->fileAttachmentsDisk('public')
-                    ->fileAttachmentsVisibility('public')
+                    ->fileAttachmentsDisk(config('filesystems.media.disk'))
+                    ->fileAttachmentsVisibility(config('filesystems.media.visibility'))
                     ->required()
                     ->columnSpanFull(),
             ]);
@@ -59,7 +59,7 @@ class NewsResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('main_image')
                     ->label('Слика')
-                    ->disk('public'),
+                    ->disk(config('filesystems.media.disk')),
                 Tables\Columns\TextColumn::make('title')
                     ->label('Наслов')
                     ->searchable()

@@ -40,7 +40,7 @@ class DonationNeed extends Model
     {
         return Attribute::make(
             get: fn () => $this->image
-                ? asset(Storage::url($this->image))
+                ? asset(Storage::disk(config('filesystems.media.disk'))->url($this->image))
                 : null,
         );
     }
