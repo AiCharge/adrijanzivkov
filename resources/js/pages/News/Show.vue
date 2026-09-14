@@ -36,7 +36,7 @@ defineOptions({
             <article class="mx-auto max-w-3xl">
                 <!-- Hero image -->
                 <div class="relative mb-10 aspect-video w-full overflow-hidden rounded-2xl bg-gray-100 shadow-lg">
-                    <img :src="news.main_image_url" :alt="news.title" class="h-full w-full object-cover" />
+                    <img :src="news.main_image_url ?? undefined" :alt="news.title" class="h-full w-full object-cover" />
                 </div>
 
                 <!-- Article header -->
