@@ -8,7 +8,7 @@ export default defineConfig({
     plugins: [
         wayfinder(),
         laravel({
-            input: ['resources/js/app.ts'],
+            input: ['resources/js/app.ts', 'resources/js/admin.ts'],
             ssr: 'resources/js/ssr.ts',
             refresh: true,
         }),

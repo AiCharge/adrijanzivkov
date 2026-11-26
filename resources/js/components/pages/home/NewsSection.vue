@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { index as newsIndex, show as newsShow } from '@/actions/App/Http/Controllers/NewsController';
+import { index as newsIndex } from '@/actions/App/Http/Controllers/NewsController';
+import NewsCard from '@/components/base/cards/NewsCard.vue';
 import AppContainer from '@/components/base/containers/AppContainer.vue';
+import SectionHeading from '@/components/base/headings/SectionHeading.vue';
 import AppSection from '@/components/base/sections/AppSection.vue';
 import type { NewsInterface } from '@/interfaces/news-interface';
-import dayjs from '@/lib/dayjs';
 import { Link } from '@inertiajs/vue3';
 
 interface Props {
@@ -16,64 +17,31 @@ defineProps<Props>();
 <template>
     <AppSection id="news">
         <AppContainer>
-            <div class="mb-10 flex items-end justify-between">
-                <div>
-                    <p class="mb-1.5 text-xs font-semibold tracking-widest text-[#054A29] uppercase">Актуелно</p>
-                    <h2 class="text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">Новости</h2>
-                </div>
+            <SectionHeading
+                v-reveal
+                eyebrow="Актуелно"
+                title="Новости"
+                link-label="Сите новости"
+                :link-href="newsIndex.url()"
+                class="mb-10 md:mb-12"
+            />
+
+            <div v-if="news && news.length > 0" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <NewsCard v-for="(item, index) in news" :key="item.id" v-reveal="index * 100" :news="item" />
+            </div>
+
+            <div v-if="news && news.length > 0" class="mt-8 md:hidden">
                 <Link
                     :href="newsIndex.url()"
-                    class="hidden items-center gap-1.5 text-sm font-medium text-[#054A29] transition-colors hover:text-[#033d22] sm:flex"
+                    class="flex items-center justify-center rounded-full border border-gray-300 bg-white px-6 py-3.5 text-sm font-semibold text-gray-900 transition-colors hover:border-primary hover:text-primary"
                 >
                     Сите новости
                 </Link>
             </div>
 
-            <div v-if="news && news.length > 0" class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-                <Link
-                    v-for="item in news"
-                    :key="item.id"
-                    :href="newsShow.url({ news: item.slug })"
-                    class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-gray-300 hover:shadow-lg"
-                >
-                    <div class="relative w-full overflow-hidden bg-gray-100" style="padding-bottom: 56.25%">
-                        <img
-                            :src="item.main_image_url || ''"
-                            :alt="item.title"
-                            class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                    </div>
-                    <div class="flex flex-1 flex-col p-4 sm:p-5">
-                        <div class="mb-2 text-xs font-medium text-gray-400 sm:mb-3">
-                            {{ dayjs(item.created_at).format('D MMMM YYYY') }}
-                        </div>
-                        <h3
-                            class="mb-2 line-clamp-2 text-sm leading-snug font-semibold text-gray-900 transition-colors group-hover:text-[#054A29] sm:mb-3 sm:text-base"
-                        >
-                            {{ item.title }}
-                        </h3>
-                        <p class="mb-3 line-clamp-2 flex-1 text-sm leading-relaxed text-gray-500 sm:mb-4 sm:line-clamp-3">
-                            {{ item.short_description }}
-                        </p>
-                        <div class="flex items-center text-xs font-semibold text-[#054A29]">Прочитај повеќе</div>
-                    </div>
-                </Link>
-            </div>
-
-            <!-- Mobile "all news" button -->
-            <div v-if="news && news.length > 0" class="mt-8 sm:hidden">
-                <Link
-                    :href="newsIndex.url()"
-                    class="flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
-                >
-                    Сите новости
-                </Link>
-            </div>
-
-            <!-- Empty state -->
-            <div v-if="!news || news.length === 0" class="flex flex-col items-center justify-center py-16 text-center">
-                <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100">
-                    <svg class="h-7 w-7 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div v-else class="flex flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white py-16 text-center">
+                <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary-light">
+                    <svg class="h-7 w-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
@@ -87,5 +55,3 @@ defineProps<Props>();
         </AppContainer>
     </AppSection>
 </template>
-
-<style scoped></style>

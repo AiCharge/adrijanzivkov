@@ -25,6 +25,10 @@ declare module '@inertiajs/core' {
 }
 
 declare module 'vue' {
+    interface GlobalDirectives {
+        vReveal: typeof import('@/lib/reveal').reveal;
+    }
+
     interface ComponentCustomProperties {
         $inertia: typeof Router;
         $page: Page;

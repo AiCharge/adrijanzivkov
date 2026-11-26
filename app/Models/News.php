@@ -22,9 +22,23 @@ class News extends Model
 
         static::creating(function ($news) {
             if (empty($news->slug)) {
-                $news->slug = Str::slug($news->title);
+                $news->slug = static::uniqueSlugFor($news->title);
             }
         });
+    }
+
+    public static function uniqueSlugFor(string $title): string
+    {
+        $baseSlug = Str::slug($title);
+        $slug = $baseSlug;
+        $suffix = 2;
+
+        while (static::query()->where('slug', $slug)->exists()) {
+            $slug = "{$baseSlug}-{$suffix}";
+            $suffix++;
+        }
+
+        return $slug;
     }
 
     public function getRouteKeyName(): string

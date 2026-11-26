@@ -5,6 +5,7 @@ import { createSSRApp, DefineComponent, h } from 'vue';
 import { renderToString } from 'vue/server-renderer';
 import type { Config } from 'ziggy-js';
 import { ZiggyVue } from 'ziggy-js';
+import { reveal } from './lib/reveal';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -20,6 +21,7 @@ createServer(
 
                 return createSSRApp({ render: () => h(App, props) })
                     .use(plugin)
+                    .directive('reveal', reveal)
                     .use(ZiggyVue, {
                         ...ziggy,
                         location: new URL(ziggy.location),

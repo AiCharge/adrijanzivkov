@@ -6,7 +6,7 @@ import { NavbarVariant } from '@/enums/navbar-variant';
 
 <template>
     <div class="flex min-h-screen flex-col">
-        <div class="p-3 pb-0">
+        <div class="sticky top-0 z-40 px-3 pt-3">
             <AppNavbar :variant="NavbarVariant.Dark" />
         </div>
         <main class="grow">
@@ -15,5 +15,3 @@ import { NavbarVariant } from '@/enums/navbar-variant';
         <AppFooter />
     </div>
 </template>
-
-<style scoped></style>

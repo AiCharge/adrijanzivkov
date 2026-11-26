@@ -9,15 +9,25 @@ import LogoDark from '@/components/logos/LogoDark.vue';
 import LogoLight from '@/components/logos/LogoLight.vue';
 import { NavbarVariant } from '@/enums/navbar-variant';
 import { Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 interface Props {
     variant?: NavbarVariant;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
     variant: NavbarVariant.Light,
 });
+
+const isLight = computed(() => props.variant === NavbarVariant.Light);
+
+const links = [
+    { label: 'За фондацијата', href: AboutController.url() },
+    { label: 'Нашата мисија', href: HomeController.url() + '#our-mission' },
+    { label: 'Новости', href: newsIndex.url() },
+    { label: 'Донации', href: donationNeedsIndex.url() },
+    { label: 'Контакт', href: HomeController.url() + '#contact' },
+];
 
 const isMenuOpen = ref(false);
 
@@ -27,75 +37,58 @@ const toggleMenu = () => {
 </script>
 
 <template>
-    <nav :class="variant === NavbarVariant.Dark ? 'border border-gray-100 bg-white shadow-sm' : ''" class="rounded-2xl py-4">
-        <AppContainer class="flex items-center justify-between">
-            <Link :href="route('index')">
-                <LogoLight v-if="variant === NavbarVariant.Light" />
+    <nav :class="isLight ? '' : 'rounded-2xl border border-gray-200 bg-white'" class="relative z-40 py-4">
+        <AppContainer class="flex items-center justify-between gap-6">
+            <Link :href="HomeController.url()" class="shrink-0">
+                <LogoLight v-if="isLight" />
                 <LogoDark v-else />
             </Link>
 
-            <button
-                @click="toggleMenu"
-                :class="variant === NavbarVariant.Light ? 'text-white hover:bg-white/10' : 'text-gray-700 hover:bg-gray-100'"
-                class="rounded-lg p-2 transition-colors focus:outline-none lg:hidden"
-                aria-label="Toggle menu"
-            >
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path v-if="!isMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
+            <div class="hidden items-center gap-8 xl:flex">
+                <Link
+                    v-for="link in links"
+                    :key="link.label"
+                    :href="link.href"
+                    :class="isLight ? 'text-white/75 hover:text-white' : 'text-gray-600 hover:text-primary'"
+                    class="text-sm font-medium whitespace-nowrap transition-colors duration-200"
+                >
+                    {{ link.label }}
+                </Link>
+            </div>
 
-            <div class="hidden items-center gap-8 lg:flex">
-                <Link
-                    :href="AboutController.url()"
-                    :class="variant === NavbarVariant.Light ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-[#054A29]'"
-                    class="text-sm font-medium tracking-wide transition-colors duration-200"
-                    >За фондацијата</Link
-                >
-                <Link
-                    :href="HomeController.url() + '#our-mission'"
-                    :class="variant === NavbarVariant.Light ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-[#054A29]'"
-                    class="text-sm font-medium tracking-wide transition-colors duration-200"
-                    >Нашата мисија</Link
-                >
-                <Link
-                    :href="newsIndex.url()"
-                    :class="variant === NavbarVariant.Light ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-[#054A29]'"
-                    class="text-sm font-medium tracking-wide transition-colors duration-200"
-                    >Новости</Link
-                >
-                <Link
-                    :href="donationNeedsIndex.url()"
-                    :class="variant === NavbarVariant.Light ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-[#054A29]'"
-                    class="text-sm font-medium tracking-wide transition-colors duration-200"
-                    >Донации</Link
-                >
-                <Link
-                    :href="HomeController.url() + '#contact'"
-                    :class="variant === NavbarVariant.Light ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-[#054A29]'"
-                    class="text-sm font-medium tracking-wide transition-colors duration-200"
-                    >Контакт</Link
-                >
+            <div class="hidden shrink-0 items-center gap-3 xl:flex">
                 <Link
                     :href="storyCreate.url()"
                     :class="
-                        variant === NavbarVariant.Light
+                        isLight
                             ? 'border-white/30 text-white hover:bg-white/10'
-                            : 'border-[#054A29]/30 text-[#054A29] hover:bg-[#054A29]/5'
+                            : 'border-gray-300 text-gray-900 hover:border-primary hover:text-primary'
                     "
-                    class="rounded-xl border px-4 py-1.5 text-sm font-semibold tracking-wide transition-colors duration-200"
-                    >Побарај помош</Link
+                    class="rounded-full border px-5 py-2.5 text-sm font-semibold whitespace-nowrap transition-colors duration-200"
                 >
+                    Побарај помош
+                </Link>
+                <Link
+                    :href="HomeController.url() + '#donations'"
+                    :class="isLight ? 'bg-white text-primary hover:bg-primary-light' : 'bg-primary text-white hover:bg-primary-dark'"
+                    class="rounded-full px-5 py-2.5 text-sm font-semibold whitespace-nowrap transition-colors duration-200"
+                >
+                    Донирај
+                </Link>
             </div>
 
-            <Link
-                :href="HomeController.url() + '#donations'"
-                :class="variant === NavbarVariant.Light ? 'bg-white text-[#054A29] hover:bg-white/90' : 'bg-[#054A29] text-white hover:bg-[#033d22]'"
-                class="hidden cursor-pointer rounded-xl px-5 py-2 text-sm font-semibold shadow-sm transition-all duration-200 hover:shadow-md lg:block"
+            <button
+                @click="toggleMenu"
+                :class="isLight ? 'border-white/30 text-white hover:bg-white/10' : 'border-gray-200 text-gray-700 hover:bg-gray-100'"
+                class="rounded-full border p-2.5 transition-colors focus:outline-none xl:hidden"
+                :aria-expanded="isMenuOpen"
+                aria-label="Toggle menu"
             >
-                Донирај
-            </Link>
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path v-if="!isMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h16" />
+                    <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
 
             <transition
                 enter-active-class="transition ease-out duration-200"
@@ -105,71 +98,36 @@ const toggleMenu = () => {
                 leave-from-class="opacity-100 translate-y-0"
                 leave-to-class="opacity-0 -translate-y-1"
             >
-                <div
-                    v-if="isMenuOpen"
-                    class="absolute top-full right-0 left-0 z-50 mt-2 rounded-2xl border border-gray-100 bg-white shadow-xl lg:hidden"
-                >
-                    <div class="flex flex-col p-3">
+                <div v-if="isMenuOpen" class="absolute top-full right-3 left-3 z-50 mt-2 rounded-2xl border border-gray-200 bg-white p-3 xl:hidden">
+                    <div class="flex flex-col">
                         <Link
-                            :href="AboutController.url()"
+                            v-for="link in links"
+                            :key="link.label"
+                            :href="link.href"
                             @click="toggleMenu"
-                            class="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-[#054A29]"
+                            class="rounded-xl px-4 py-3 text-base font-medium text-gray-700 transition-colors hover:bg-primary-light hover:text-primary"
                         >
-                            За фондацијата
-                        </Link>
-                        <Link
-                            :href="HomeController.url() + '#our-mission'"
-                            @click="toggleMenu"
-                            class="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-[#054A29]"
-                        >
-                            Нашата мисија
-                        </Link>
-                        <Link
-                            :href="newsIndex.url()"
-                            @click="toggleMenu"
-                            class="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-[#054A29]"
-                        >
-                            Новости
-                        </Link>
-                        <Link
-                            :href="donationNeedsIndex.url()"
-                            @click="toggleMenu"
-                            class="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-[#054A29]"
-                        >
-                            Донации
-                        </Link>
-                        <Link
-                            :href="HomeController.url() + '#contact'"
-                            @click="toggleMenu"
-                            class="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-[#054A29]"
-                        >
-                            Контакт
+                            {{ link.label }}
                         </Link>
                         <Link
                             :href="storyCreate.url()"
                             @click="toggleMenu"
-                            class="rounded-xl px-4 py-3 text-sm font-semibold text-[#054A29] transition-colors hover:bg-[#054A29]/5"
+                            class="rounded-xl px-4 py-3 text-base font-semibold text-primary transition-colors hover:bg-primary-light"
                         >
                             Побарај помош
                         </Link>
-                        <div class="mt-2 border-t border-gray-100 pt-2">
-                            <Link
-                                :href="HomeController.url() + '#donations'"
-                                @click="toggleMenu"
-                                class="block rounded-xl bg-[#054A29] px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-[#033d22]"
-                            >
-                                Донирај
-                            </Link>
-                        </div>
+                    </div>
+                    <div class="mt-2 border-t border-gray-100 pt-3">
+                        <Link
+                            :href="HomeController.url() + '#donations'"
+                            @click="toggleMenu"
+                            class="block rounded-full bg-primary px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
+                        >
+                            Донирај
+                        </Link>
                     </div>
                 </div>
             </transition>
         </AppContainer>
     </nav>
 </template>
-
-<style scoped>
-nav {
-    position: relative;
-}
-</style>

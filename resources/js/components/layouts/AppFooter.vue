@@ -7,55 +7,67 @@ import { create as storyCreate } from '@/actions/App/Http/Controllers/StorySubmi
 import AppContainer from '@/components/base/containers/AppContainer.vue';
 import LogoDark from '@/components/logos/LogoDark.vue';
 import { Link } from '@inertiajs/vue3';
+
+const navigationLinks = [
+    { label: 'За Адријан', href: HomeController.url() + '#about-adrijan' },
+    { label: 'Нашата мисија', href: HomeController.url() + '#our-mission' },
+    { label: 'За фондацијата', href: AboutController.url() },
+    { label: 'Новости', href: newsIndex.url() },
+    { label: 'Контакт', href: HomeController.url() + '#contact' },
+];
+
+const legalLinks = [
+    { label: 'Услови на користење', href: terms.url() },
+    { label: 'Политика за приватност', href: privacy.url() },
+];
 </script>
 
 <template>
-    <footer class="border-t border-gray-100 bg-white">
-        <AppContainer class="py-10">
-            <div class="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
-                <div class="flex flex-col gap-4">
-                    <Link :href="HomeController.url()">
+    <footer class="mt-10 border-t border-gray-200 bg-white md:mt-16">
+        <AppContainer class="pt-14 pb-8 md:pt-16">
+            <div class="grid grid-cols-1 gap-10 md:grid-cols-12">
+                <div class="flex flex-col gap-5 md:col-span-6">
+                    <Link :href="HomeController.url()" class="w-fit">
                         <LogoDark />
                     </Link>
-                    <p class="max-w-xs text-sm leading-relaxed text-gray-500">
+                    <p class="max-w-xs text-sm leading-relaxed text-gray-600">
                         Фондација посветена на помош, надеж и инспирација за луѓе кои имаат потреба.
                     </p>
                 </div>
 
-                <div class="flex flex-col gap-3">
-                    <p class="text-xs font-semibold tracking-widest text-gray-400 uppercase">Навигација</p>
-                    <nav class="flex flex-col gap-2">
-                        <Link :href="HomeController.url() + '#about-adrijan'" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]">
-                            За Адријан
+                <div class="flex flex-col gap-4 md:col-span-3">
+                    <p class="text-xs font-semibold tracking-[0.2em] text-gray-400 uppercase">Навигација</p>
+                    <nav class="flex flex-col gap-3">
+                        <Link
+                            v-for="link in navigationLinks"
+                            :key="link.label"
+                            :href="link.href"
+                            class="w-fit text-sm text-gray-600 transition-colors hover:text-primary"
+                        >
+                            {{ link.label }}
                         </Link>
-                        <Link :href="HomeController.url() + '#our-mission'" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]">
-                            Нашата мисија
-                        </Link>
-                        <Link :href="AboutController.url()" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]">
-                            За фондацијата
-                        </Link>
-                        <Link :href="newsIndex.url()" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]"> Новости </Link>
-                        <Link :href="HomeController.url() + '#contact'" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]">
-                            Контакт
-                        </Link>
-                        <Link :href="storyCreate.url()" class="text-sm font-semibold text-[#054A29] transition-colors hover:text-[#033d22]">
+                        <Link :href="storyCreate.url()" class="w-fit text-sm font-semibold text-primary transition-colors hover:text-primary-dark">
                             Побарај помош
                         </Link>
                     </nav>
                 </div>
 
-                <div class="flex flex-col gap-3">
-                    <p class="text-xs font-semibold tracking-widest text-gray-400 uppercase">Правни информации</p>
-                    <nav class="flex flex-col gap-2">
-                        <Link :href="terms.url()" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]"> Услови на користење </Link>
-                        <Link :href="privacy.url()" class="text-sm text-gray-600 transition-colors hover:text-[#054A29]">
-                            Политика за приватност
+                <div class="flex flex-col gap-4 md:col-span-3">
+                    <p class="text-xs font-semibold tracking-[0.2em] text-gray-400 uppercase">Правни информации</p>
+                    <nav class="flex flex-col gap-3">
+                        <Link
+                            v-for="link in legalLinks"
+                            :key="link.label"
+                            :href="link.href"
+                            class="w-fit text-sm text-gray-600 transition-colors hover:text-primary"
+                        >
+                            {{ link.label }}
                         </Link>
                     </nav>
                 </div>
             </div>
 
-            <div class="mt-10 border-t border-gray-100 pt-6 text-center text-xs text-gray-400">
+            <div class="mt-12 border-t border-gray-200 pt-6 text-xs text-gray-400">
                 &copy; {{ new Date().getFullYear() }} Фондација „Адријан Живков". Сите права задржани.
             </div>
         </AppContainer>

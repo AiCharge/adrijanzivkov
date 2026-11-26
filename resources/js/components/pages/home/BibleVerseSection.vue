@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import AppContainer from '@/components/base/containers/AppContainer.vue';
-import AppSection from '@/components/base/sections/AppSection.vue';
 import { computed } from 'vue';
 
 const verses = [
@@ -50,25 +49,28 @@ const verse = computed(() => verses[Math.floor(Math.random() * verses.length)]);
 </script>
 
 <template>
-    <AppSection>
-        <AppContainer>
-            <div class="mx-auto flex max-w-2xl flex-col items-center gap-5 text-center">
-                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#054A29]/10">
-                    <svg class="h-5 w-5 text-[#054A29]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="1.75"
-                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                        />
-                    </svg>
-                </div>
-
-                <blockquote class="flex flex-col gap-3">
-                    <p class="text-lg leading-relaxed font-medium text-gray-700 italic lg:text-xl">„{{ verse.text }}"</p>
-                    <cite class="text-sm font-semibold tracking-wide text-[#054A29] not-italic">{{ verse.reference }}</cite>
-                </blockquote>
-            </div>
-        </AppContainer>
-    </AppSection>
+    <section class="px-3">
+        <div v-reveal class="rounded-3xl bg-primary-light py-16 md:py-24">
+            <AppContainer>
+                <figure class="mx-auto flex max-w-3xl flex-col items-center gap-8 text-center">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-white text-primary">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="1.75"
+                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                            />
+                        </svg>
+                    </span>
+                    <blockquote>
+                        <p class="text-xl leading-relaxed font-medium text-balance text-gray-900 italic md:text-2xl lg:text-[28px] lg:leading-snug">
+                            „{{ verse.text }}"
+                        </p>
+                    </blockquote>
+                    <figcaption class="text-sm font-semibold tracking-[0.15em] text-primary uppercase">{{ verse.reference }}</figcaption>
+                </figure>
+            </AppContainer>
+        </div>
+    </section>
 </template>

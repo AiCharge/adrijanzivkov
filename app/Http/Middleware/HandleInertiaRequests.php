@@ -18,6 +18,14 @@ class HandleInertiaRequests extends Middleware
     protected $rootView = 'app';
 
     /**
+     * The admin panel has its own root view, with its own stylesheet and scripts.
+     */
+    public function rootView(Request $request): string
+    {
+        return $request->routeIs('admin.*') ? 'admin' : $this->rootView;
+    }
+
+    /**
      * Determines the current asset version.
      *
      * @see https://inertiajs.com/asset-versioning
@@ -39,6 +47,9 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'name' => config('app.name'),
+            'auth' => [
+                'user' => $request->user()?->only(['id', 'name', 'email']),
+            ],
             'ziggy' => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),

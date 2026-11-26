@@ -3,6 +3,7 @@ import HomeController from '@/actions/App/Http/Controllers/HomeController';
 import AppContainer from '@/components/base/containers/AppContainer.vue';
 import type { DonationNeedInterface } from '@/interfaces/donation-need-interface';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import { formatAmount } from '@/lib/format';
 import { Head, Link } from '@inertiajs/vue3';
 
 interface Props {
@@ -14,40 +15,37 @@ defineProps<Props>();
 defineOptions({
     layout: DefaultLayout,
 });
-
-function formatAmount(amount: number): string {
-    return new Intl.NumberFormat('mk-MK').format(amount);
-}
 </script>
 
 <template>
     <Head :title="donationNeed.title" />
 
-    <div class="min-h-screen py-10 md:py-16">
+    <div class="py-10 md:py-16">
         <AppContainer>
-            <!-- Back link -->
             <Link
                 :href="HomeController.url() + '#donations'"
-                class="mb-8 inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-[#054A29]"
+                class="group inline-flex animate-rise items-center gap-2 text-sm font-semibold text-gray-600 transition-colors hover:text-primary"
             >
-                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                <svg
+                    class="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m6 6-6-6 6-6" />
                 </svg>
                 Назад кон донации
             </Link>
 
-            <div class="grid grid-cols-1 gap-10 lg:grid-cols-5 lg:items-start">
-                <!-- Left: image + description -->
-                <div class="order-2 lg:order-1 lg:col-span-3">
-                    <!-- Hero image -->
-                    <div class="mb-8 overflow-hidden rounded-2xl bg-gray-100 shadow-lg">
-                        <img :src="donationNeed.image_url || ''" :alt="donationNeed.title" class="h-full w-full object-cover" />
+            <div class="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-start lg:gap-12">
+                <div class="order-2 flex flex-col gap-8 lg:order-1 lg:col-span-7">
+                    <div class="animate-rise overflow-hidden rounded-2xl bg-gray-100 [animation-delay:80ms]">
+                        <img :src="donationNeed.image_url || ''" :alt="donationNeed.title" class="w-full animate-zoom-out object-cover" />
                     </div>
 
-                    <!-- Title + amount badge -->
-                    <div class="mb-6">
-                        <div class="mb-3 inline-flex items-center gap-1.5 rounded-full bg-[#054A29]/10 px-3 py-1">
-                            <svg class="h-3.5 w-3.5 text-[#054A29]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="flex flex-col gap-4">
+                        <div class="inline-flex w-fit items-center gap-1.5 rounded-full bg-primary-light px-3 py-1">
+                            <svg class="h-3.5 w-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
@@ -55,138 +53,39 @@ function formatAmount(amount: number): string {
                                     d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                                 />
                             </svg>
-                            <span class="text-xs font-semibold text-[#054A29]"
-                                >Потребен износ: {{ formatAmount(donationNeed.needed_amount) }} МКД</span
-                            >
+                            <span class="text-xs font-semibold text-primary">Потребен износ: {{ formatAmount(donationNeed.needed_amount) }} МКД</span>
                         </div>
-                        <h1 class="text-2xl font-bold tracking-tight text-gray-900 md:text-3xl lg:text-4xl">
+                        <h1 class="text-3xl leading-[1.1] font-bold tracking-tight text-balance text-gray-900 md:text-4xl lg:text-5xl">
                             {{ donationNeed.title }}
                         </h1>
                     </div>
 
-                    <div class="border-t border-gray-100 pt-6">
-                        <p class="mb-4 text-sm font-semibold tracking-widest text-gray-400 uppercase">За оваа потреба</p>
-                        <div class="prose-content text-gray-700" v-html="donationNeed.description"></div>
+                    <div v-reveal class="border-t border-gray-200 pt-8">
+                        <p class="mb-6 text-xs font-semibold tracking-[0.2em] text-gray-400 uppercase">За оваа потреба</p>
+                        <div class="prose-content" v-html="donationNeed.description"></div>
                     </div>
                 </div>
 
-                <!-- Right: sticky card -->
-                <div class="order-1 lg:sticky lg:top-8 lg:order-2 lg:col-span-2">
-                    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-                        <!-- Amount header -->
-                        <div class="bg-[#054A29] px-6 py-5">
-                            <p class="mb-1 text-xs font-semibold tracking-widest text-white/70 uppercase">Потребен износ</p>
-                            <p class="text-3xl font-bold text-white">
+                <aside class="order-1 animate-rise [animation-delay:160ms] lg:sticky lg:top-28 lg:order-2 lg:col-span-5">
+                    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+                        <div class="bg-primary px-7 py-7">
+                            <p class="text-xs font-semibold tracking-[0.2em] text-white/60 uppercase">Потребен износ</p>
+                            <p class="mt-2 text-4xl font-bold tracking-tight text-white">
                                 {{ formatAmount(donationNeed.needed_amount) }}
-                                <span class="text-xl font-semibold text-white/80">МКД</span>
+                                <span class="text-xl font-semibold text-white/70">МКД</span>
                             </p>
                         </div>
 
-                        <!-- Sticky rich-text content -->
-                        <div v-if="donationNeed.sticky_content" class="p-6">
-                            <div class="prose-content text-gray-700" v-html="donationNeed.sticky_content"></div>
-                        </div>
+                        <div class="p-7">
+                            <div v-if="donationNeed.sticky_content" class="prose-content prose-content-sm" v-html="donationNeed.sticky_content"></div>
 
-                        <!-- Fallback note when no sticky content set -->
-                        <div v-else class="p-6">
-                            <div class="rounded-xl bg-gray-50 px-4 py-3">
-                                <p class="text-xs leading-relaxed text-gray-500">
-                                    Секоја донација, колку и да е мала, прави разлика. Благодариме на вашата поддршка и несебичност.
-                                </p>
-                            </div>
+                            <p v-else class="rounded-xl bg-primary-light px-4 py-3 text-sm leading-relaxed text-gray-700">
+                                Секоја донација, колку и да е мала, прави разлика. Благодариме на вашата поддршка и несебичност.
+                            </p>
                         </div>
                     </div>
-                </div>
+                </aside>
             </div>
         </AppContainer>
     </div>
 </template>
-
-<style scoped>
-.prose-content :deep(img) {
-    margin-top: 2.5rem;
-    margin-bottom: 2.5rem;
-    border-radius: 1rem;
-    width: 100%;
-    box-shadow:
-        0 10px 15px -3px rgb(0 0 0 / 0.1),
-        0 4px 6px -4px rgb(0 0 0 / 0.1);
-}
-
-.prose-content :deep(p) {
-    margin-bottom: 1.25rem;
-    line-height: 1.75;
-    font-size: 0.9375rem;
-    color: #374151;
-}
-
-.prose-content :deep(h1),
-.prose-content :deep(h2),
-.prose-content :deep(h3),
-.prose-content :deep(h4) {
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-    font-weight: 700;
-    color: #111827;
-    line-height: 1.3;
-    letter-spacing: -0.02em;
-}
-
-.prose-content :deep(h1) {
-    font-size: 1.75rem;
-    margin-top: 2.5rem;
-}
-.prose-content :deep(h2) {
-    font-size: 1.5rem;
-    margin-top: 2rem;
-}
-.prose-content :deep(h3) {
-    font-size: 1.25rem;
-}
-.prose-content :deep(h4) {
-    font-size: 1.0625rem;
-}
-
-.prose-content :deep(ul),
-.prose-content :deep(ol) {
-    margin-top: 1.25rem;
-    margin-bottom: 1.25rem;
-    padding-left: 1.5rem;
-}
-
-.prose-content :deep(li) {
-    margin-bottom: 0.5rem;
-    line-height: 1.7;
-    color: #374151;
-}
-
-.prose-content :deep(a) {
-    color: #054a29;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    font-weight: 500;
-    transition: color 0.2s;
-}
-
-.prose-content :deep(a:hover) {
-    color: #033d22;
-}
-
-.prose-content :deep(blockquote) {
-    border-left: 4px solid #054a29;
-    padding-left: 1.25rem;
-    padding-top: 0.25rem;
-    padding-bottom: 0.25rem;
-    margin: 1.5rem 0;
-    font-style: italic;
-    color: #4b5563;
-    background-color: #f9fafb;
-    border-radius: 0 0.5rem 0.5rem 0;
-}
-
-.prose-content :deep(hr) {
-    border: none;
-    border-top: 1px solid #e5e7eb;
-    margin: 2rem 0;
-}
-</style>

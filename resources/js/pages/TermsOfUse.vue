@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import AppContainer from '@/components/base/containers/AppContainer.vue';
+import AppSection from '@/components/base/sections/AppSection.vue';
+import PageHero from '@/components/base/sections/PageHero.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import { Head } from '@inertiajs/vue3';
 
@@ -11,15 +13,16 @@ defineOptions({
 <template>
     <Head title="Услови на користење" />
 
-    <div class="min-h-screen py-10 md:py-16">
-        <AppContainer>
-            <div class="mx-auto max-w-3xl">
-                <h1 class="mb-2 text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">Услови на користење</h1>
-                <p class="mb-10 text-sm text-gray-400">Последно ажурирање: март 2026</p>
+    <PageHero title="Услови на користење" description="Последно ажурирање: март 2026" />
 
-                <div class="space-y-10 text-gray-700">
+    <AppSection>
+        <AppContainer>
+            <div v-reveal class="mx-auto max-w-3xl rounded-2xl border border-gray-200 bg-white p-6 sm:p-10 md:p-14">
+                <div
+                    class="flex flex-col divide-y divide-gray-100 leading-relaxed text-gray-700 [&_section]:py-8 [&_section:first-child]:pt-0 [&_section:last-child]:pb-0"
+                >
                     <section>
-                        <h2 class="mb-3 text-xl font-semibold text-gray-900">1. Општи одредби</h2>
+                        <h2 class="mb-4 text-xl font-bold tracking-tight text-gray-900 md:text-2xl">1. Општи одредби</h2>
                         <p class="leading-relaxed">
                             Добредојдовте на веб-страницата <strong>adrijanzivkov.org</strong> (во натамошниот текст: „Страницата"). Со пристапувањето
                             и користењето на оваа Страница, вие се согласувате со овие Услови на користење. Ве молиме прочитајте ги внимателно пред да
@@ -28,7 +31,7 @@ defineOptions({
                     </section>
 
                     <section>
-                        <h2 class="mb-3 text-xl font-semibold text-gray-900">2. Цел на Страницата</h2>
+                        <h2 class="mb-4 text-xl font-bold tracking-tight text-gray-900 md:text-2xl">2. Цел на Страницата</h2>
                         <p class="leading-relaxed">
                             Страницата служи како платформа преку која Фондацијата ги презентира своите активности, споделува приказни на луѓе кои се
                             соочуваат со тешкотии и овозможува видливост за лицата кои имаат потреба од помош. Целта на Фондацијата е да инспирира
@@ -42,7 +45,7 @@ defineOptions({
                     </section>
 
                     <section>
-                        <h2 class="mb-3 text-xl font-semibold text-gray-900">3. Автентичност на приказните</h2>
+                        <h2 class="mb-4 text-xl font-bold tracking-tight text-gray-900 md:text-2xl">3. Автентичност на приказните</h2>
                         <p class="leading-relaxed">
                             Фондацијата вложува напори за проверка на идентитетот и ситуацијата на лицата чии приказни се објавуваат на Страницата.
                             Сепак,
@@ -58,7 +61,7 @@ defineOptions({
                     </section>
 
                     <section>
-                        <h2 class="mb-3 text-xl font-semibold text-gray-900">4. Донации</h2>
+                        <h2 class="mb-4 text-xl font-bold tracking-tight text-gray-900 md:text-2xl">4. Донации</h2>
                         <p class="leading-relaxed">
                             Фондацијата <strong>не собира, не прима, не обработува и не посредува со парични средства</strong> во никаква форма.
                             Улогата на Фондацијата е исклучиво да ги презентира потребите на лицата кои бараат помош, со цел да им овозможи видливост
@@ -81,7 +84,7 @@ defineOptions({
                     </section>
 
                     <section>
-                        <h2 class="mb-3 text-xl font-semibold text-gray-900">5. Интелектуална сопственост</h2>
+                        <h2 class="mb-4 text-xl font-bold tracking-tight text-gray-900 md:text-2xl">5. Интелектуална сопственост</h2>
                         <p class="leading-relaxed">
                             Сите содржини на Страницата, вклучувајќи текст, фотографии, логоа, графики и дизајн, се сопственост на Фондацијата или се
                             користат со дозвола на нивните сопственици. Забранета е нивна употреба, репродукција, дистрибуција или модификација без
@@ -90,12 +93,12 @@ defineOptions({
                     </section>
 
                     <section>
-                        <h2 class="mb-3 text-xl font-semibold text-gray-900">6. Ограничување на одговорноста</h2>
+                        <h2 class="mb-4 text-xl font-bold tracking-tight text-gray-900 md:text-2xl">6. Ограничување на одговорноста</h2>
                         <p class="leading-relaxed">
                             Страницата се обезбедува „таква каква што е", без гаранции за непрекинат пристап или отсуство на грешки. Фондацијата не
                             сноси одговорност за:
                         </p>
-                        <ul class="mt-3 list-disc space-y-2 pl-6 leading-relaxed">
+                        <ul class="mt-3 list-disc space-y-2 pl-6 leading-relaxed marker:text-primary">
                             <li>загуби настанати поради донации базирани на неверификувани информации;</li>
                             <li>технички проблеми, прекини во работата на Страницата или губење на податоци;</li>
                             <li>содржини на надворешни веб-страници до кои Страницата може да упатува;</li>
@@ -104,9 +107,9 @@ defineOptions({
                     </section>
 
                     <section>
-                        <h2 class="mb-3 text-xl font-semibold text-gray-900">7. Однесување на корисниците</h2>
+                        <h2 class="mb-4 text-xl font-bold tracking-tight text-gray-900 md:text-2xl">7. Однесување на корисниците</h2>
                         <p class="leading-relaxed">Со користењето на Страницата, корисниците се обврзуваат дека нема да:</p>
-                        <ul class="mt-3 list-disc space-y-2 pl-6 leading-relaxed">
+                        <ul class="mt-3 list-disc space-y-2 pl-6 leading-relaxed marker:text-primary">
                             <li>шират лажни, навредливи или злонамерни информации;</li>
                             <li>се обидуваат да го нарушат функционирањето на Страницата;</li>
                             <li>ги злоупотребуваат личните податоци на трети лица објавени на Страницата;</li>
@@ -115,7 +118,7 @@ defineOptions({
                     </section>
 
                     <section>
-                        <h2 class="mb-3 text-xl font-semibold text-gray-900">8. Измени на условите</h2>
+                        <h2 class="mb-4 text-xl font-bold tracking-tight text-gray-900 md:text-2xl">8. Измени на условите</h2>
                         <p class="leading-relaxed">
                             Фондацијата го задржува правото да ги измени овие Услови на користење во секое време. Измените стапуваат на сила со
                             нивното објавување на Страницата. Продолженото користење на Страницата по објавувањето на измените се смета за прифаќање
@@ -124,7 +127,7 @@ defineOptions({
                     </section>
 
                     <section>
-                        <h2 class="mb-3 text-xl font-semibold text-gray-900">9. Применливо право</h2>
+                        <h2 class="mb-4 text-xl font-bold tracking-tight text-gray-900 md:text-2xl">9. Применливо право</h2>
                         <p class="leading-relaxed">
                             Овие Услови на користење се уредуваат и толкуваат во согласност со законодавството на Република Северна Македонија. За
                             сите спорови кои произлегуваат од или се поврзани со употребата на Страницата, надлежен е судот во Скопје.
@@ -132,12 +135,12 @@ defineOptions({
                     </section>
 
                     <section>
-                        <h2 class="mb-3 text-xl font-semibold text-gray-900">10. Контакт</h2>
+                        <h2 class="mb-4 text-xl font-bold tracking-tight text-gray-900 md:text-2xl">10. Контакт</h2>
                         <p class="leading-relaxed">
                             За прашања поврзани со овие Услови на користење, можете да не контактирате на:
                             <a
                                 href="mailto:adrijanfoundation@gmail.com"
-                                class="font-medium text-[#054A29] underline underline-offset-2 hover:text-[#033d22]"
+                                class="font-medium text-primary underline underline-offset-2 hover:text-primary-dark"
                             >
                                 adrijanfoundation@gmail.com
                             </a>
@@ -146,5 +149,5 @@ defineOptions({
                 </div>
             </div>
         </AppContainer>
-    </div>
+    </AppSection>
 </template>

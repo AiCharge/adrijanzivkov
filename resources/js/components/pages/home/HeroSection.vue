@@ -7,50 +7,53 @@ import { Link } from '@inertiajs/vue3';
 </script>
 
 <template>
-    <div class="relative m-3 overflow-hidden rounded-2xl bg-[#054A29]">
-        <!-- Subtle decorative circles -->
-        <div class="pointer-events-none absolute top-0 right-0 h-80 w-80 translate-x-1/3 -translate-y-1/3 rounded-full bg-white/5"></div>
-        <div class="pointer-events-none absolute bottom-0 left-0 h-48 w-48 -translate-x-1/3 translate-y-1/3 rounded-full bg-white/5"></div>
-
+    <div class="m-3 rounded-3xl bg-primary">
         <AppNavbar />
 
-        <AppContainer class="relative pb-12 md:pb-16">
-            <div class="grid grid-cols-1 items-center gap-10 pt-10 md:grid-cols-2 md:pt-14">
-                <div class="flex max-w-[520px] flex-col gap-6">
-                    <!-- Badge -->
-                    <div class="inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5">
-                        <div class="h-1.5 w-1.5 rounded-full bg-emerald-300"></div>
-                        <span class="text-xs font-semibold tracking-widest text-white/80 uppercase">Фондација Адријан Живков</span>
-                    </div>
+        <AppContainer class="pt-10 pb-12 md:pt-16 md:pb-16 lg:pt-20 lg:pb-20">
+            <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
+                <div class="flex flex-col gap-7 lg:col-span-6">
+                    <p class="animate-rise text-xs font-semibold tracking-[0.2em] text-white/60 uppercase">Фондација Адријан Живков</p>
 
-                    <h1 class="text-[36px] leading-[1.15] font-bold tracking-tight text-white lg:text-[52px]">
+                    <h1
+                        class="animate-rise text-[40px] leading-[1.05] font-bold tracking-tight text-balance text-white [animation-delay:80ms] sm:text-5xl lg:text-[64px]"
+                    >
                         Да внесеме топлина таму каде што е студено.
                     </h1>
 
-                    <p class="max-w-[420px] text-base leading-relaxed font-normal text-white/70 lg:text-lg">
+                    <p class="max-w-[480px] animate-rise text-base leading-relaxed text-white/70 [animation-delay:160ms] lg:text-lg">
                         Нашата мисија е да донесеме надеж и поддршка таму каде што најмногу недостига, кај луѓе што се соочуваат со болест, неправда
                         или тежок животен предизвик.
                     </p>
 
-                    <div class="flex flex-wrap items-center gap-4">
+                    <div class="flex animate-rise flex-wrap items-center gap-3 pt-2 [animation-delay:240ms]">
                         <Link
                             :href="HomeController.url() + '#donations'"
-                            class="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-[#054A29] shadow-lg shadow-black/10 transition-all duration-200 hover:bg-white/90 hover:shadow-xl"
+                            class="group inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-primary transition-colors duration-200 hover:bg-primary-light"
                         >
                             Донирај
+                            <svg
+                                class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-6-6 6 6-6 6" />
+                            </svg>
                         </Link>
-                        <Link :href="storyCreate.url()" class="text-sm font-medium text-white/70 transition-colors hover:text-white">
+                        <Link
+                            :href="storyCreate.url()"
+                            class="inline-flex items-center rounded-full border border-white/30 px-7 py-3.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/10"
+                        >
                             Побарај помош
                         </Link>
                     </div>
                 </div>
 
-                <div class="flex justify-center lg:justify-end">
-                    <img src="/images/pages/home/hero-section/hero-image.webp" alt="" class="w-full max-w-[520px]" />
+                <div class="flex animate-rise justify-center [animation-delay:200ms] lg:col-span-6 lg:justify-end">
+                    <img src="/images/pages/home/hero-section/hero-image.webp" alt="" class="w-full max-w-[520px] animate-zoom-out" />
                 </div>
             </div>
         </AppContainer>
     </div>
 </template>
-
-<style scoped></style>

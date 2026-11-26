@@ -7,7 +7,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.5",
-        "filament/filament": "^5.12",
         "inertiajs/inertia-laravel": "^3.8",
         "laravel/framework": "^13.44.1",
         "laravel/tinker": "^3.2",
@@ -43,7 +42,6 @@
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi",
-            "@php artisan filament:upgrade",
             "@php artisan wayfinder:generate --ansi"
         ],
         "post-update-cmd": [
