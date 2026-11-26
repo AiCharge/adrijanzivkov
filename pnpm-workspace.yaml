@@ -1,4 +1,4 @@
 allowBuilds:
-  esbuild: true
-  vue-demi: true
   '@tailwindcss/oxide': true
+  '@parcel/watcher': false
+  esbuild: false

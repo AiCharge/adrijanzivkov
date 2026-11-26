@@ -1,0 +1,152 @@
+{#- About the foundation. Was pages/About.vue. `facts`, `values` and `principles` come from src/routes/about.rs. -#}
+{% extends "layouts/default.html" %}
+{% import "components/sections.html" as sections %}
+
+{% block content %}
+{#- The hero has a photo beside the text, so it's written out here instead of using `page_hero`. -#}
+<div class="m-3 rounded-3xl bg-primary">
+    <div class="mx-auto w-full max-w-7xl px-5 py-14 sm:px-6 md:py-20 lg:px-8 lg:py-24">
+        <div class="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-16">
+            <div class="flex flex-col gap-6 lg:col-span-7">
+                <p class="animate-rise text-xs font-semibold tracking-[0.2em] text-white/60 uppercase">За фондацијата</p>
+                <h1 class="animate-rise text-4xl leading-[1.05] font-bold tracking-tight text-balance text-white [animation-delay:80ms] md:text-5xl lg:text-6xl">
+                    Фондација „Адријан Живков"
+                </h1>
+                <div class="animate-rise [animation-delay:240ms]">
+                    <div class="flex flex-col gap-6">
+                        <blockquote class="border-l-2 border-white/30 pl-5">
+                            <p class="text-base leading-relaxed text-white/80 italic lg:text-lg">
+                                „Во тие кобни моменти, Адријан херојски и без двоумење го жртвуваше сопствениот живот, обидувајќи се да спаси што е можно поголем
+                                број луѓе."
+                            </p>
+                        </blockquote>
+
+                        <p class="max-w-lg text-base leading-relaxed text-white/70">
+                            Основана во чест на Адријан Живков, млад херој кој го даде животот за другите. Нашата мисија е да ја продолжиме неговата приказна
+                            преку дела на солидарност и помош.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="animate-rise [animation-delay:200ms] lg:col-span-5">
+                <div class="flex justify-center lg:justify-end">
+                    <img src="/images/pages/home/who-is-adrijan-section/adrijan-desktop.webp" alt="Адријан Живков" class="hidden w-full max-w-sm animate-zoom-out rounded-2xl lg:block" />
+                    <img src="/images/pages/home/who-is-adrijan-section/adrijan-mobile.webp" alt="Адријан Живков" class="w-full max-w-sm animate-zoom-out rounded-2xl lg:hidden" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="py-10 md:py-20">
+    <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
+            <div data-reveal class="flex flex-col gap-4 lg:col-span-4">
+                <p class="text-xs font-semibold tracking-[0.2em] text-primary uppercase">Неговата приказна</p>
+                <h2 class="text-3xl leading-[1.1] font-bold tracking-tight text-gray-900 md:text-4xl lg:text-[44px]">Кој беше Адријан?</h2>
+            </div>
+
+            <div data-reveal="120" class="flex flex-col gap-5 text-base leading-relaxed text-gray-600 lg:col-span-8 lg:text-lg">
+                <p>
+                    Адријан Живков беше млад човек со исклучително голема душа. Пријател, син и брат кој воодушевуваше со својата топлина,
+                    насмевка и несебичност. Животот го живееше со грижа за луѓето околу него.
+                </p>
+                <p>
+                    На 16 март 2025 година, во дискотеката „Пулс" во Кочани, настана трагедија која засекогаш ја промени Македонија. Во настанот
+                    загинаа 63 лица, а уште 193 беа повредени.
+                </p>
+                <p>
+                    Во тие хаотични моменти, Адријан покажа каков човек навистина беше. Наместо да побегне, се врати по своите пријатели, помагаше
+                    на непознати и го жртвуваше сопствениот живот за другите. Неговото дело останува.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="bg-white py-10 md:py-20">
+    <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center lg:gap-16">
+            <div data-reveal class="flex flex-col gap-6 lg:col-span-6">
+                <p class="text-xs font-semibold tracking-[0.2em] text-primary uppercase">Зошто постоиме</p>
+                <h2 class="text-3xl leading-[1.1] font-bold tracking-tight text-gray-900 md:text-4xl lg:text-[44px]">
+                    Зошто ја основавме фондацијата?
+                </h2>
+                <div class="flex flex-col gap-4 text-base leading-relaxed text-gray-600">
+                    <p>
+                        Фондацијата „Адријан Живков" ја основавме неговите пријатели и семејство, луѓе кои го познаваа, го сакаа и сè уште го
+                        носат во срцето. Не сакавме болката да остане само болка. Сакавме да ја претвориме во нешто трајно: во помош, во надеж и
+                        во светлина за оние кои имаат потреба.
+                    </p>
+                    <p>
+                        Адријан живееше за другите. Најмалку што можевме да направиме е да го продолжиме тоа. Секој пат кога помагаме на некого,
+                        тој е присутен.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-4 lg:col-span-6">
+                {% for fact in facts %}
+                <div data-reveal="{{ loop.index0 * 100 }}" class="rounded-2xl border border-gray-200 p-6">
+                    <p class="mb-1 text-xs font-semibold tracking-[0.2em] text-primary uppercase">{{ fact.label }}</p>
+                    <p class="text-lg font-bold text-gray-900">{{ fact.value }}</p>
+                    <p class="mt-1 text-sm text-gray-600">{{ fact.text }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-10 md:py-20">
+    <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+        {% call sections::section_heading("Нашите вредности", "Вредностите кои го водеа Адријан", description = "Овие вредности не се само зборови. Тие беа начинот на кој Адријан живееше секој ден.", centered = true, class = "mb-12") %}{% endcall %}
+
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {% for value in values %}
+            <div data-reveal="{{ loop.index0 * 100 }}" class="flex flex-col gap-6 rounded-2xl border border-gray-200 bg-white p-8">
+                <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-light text-primary">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="{{ value.icon }}" />
+                    </svg>
+                </span>
+                <div class="flex flex-col gap-2">
+                    <h3 class="text-xl font-bold text-gray-900">{{ value.title }}</h3>
+                    <p class="text-sm leading-relaxed text-gray-600">{{ value.text }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="bg-white py-10 md:py-20">
+    <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
+            <div data-reveal class="flex flex-col gap-4 lg:col-span-4">
+                <p class="text-xs font-semibold tracking-[0.2em] text-primary uppercase">Транспарентност</p>
+                <h2 class="text-3xl leading-[1.1] font-bold tracking-tight text-gray-900 md:text-4xl lg:text-[44px]">Како работиме</h2>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-8">
+                {% for principle in principles %}
+                <div data-reveal="{{ (loop.index0 % 2) * 100 }}" class="flex flex-col gap-5 rounded-2xl border border-gray-200 p-6">
+                    <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-light text-primary">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="{{ principle.icon }}" />
+                        </svg>
+                    </span>
+                    <div class="flex flex-col gap-1.5">
+                        <h3 class="font-semibold text-gray-900">{{ principle.title }}</h3>
+                        <p class="text-sm leading-relaxed text-gray-600">{{ principle.text }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% call sections::help_cta() %}{% endcall %}
+{% endblock %}

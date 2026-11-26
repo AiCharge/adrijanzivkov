@@ -38,3 +38,12 @@ pnpm-debug.log
 .Trashes
 ehthumbs.db
 Thumbs.db
+# Rust build output
+/target
+
+# Built from assets/css by `pnpm run build`
+/public/css
+
+# Runtime files Laravel leaves behind when you switch back to main
+/storage/framework
+/storage/logs

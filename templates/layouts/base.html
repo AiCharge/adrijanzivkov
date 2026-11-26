@@ -1,0 +1,42 @@
+{#-
+    The HTML shell of every page, like Laravel's resources/views/app.blade.php.
+    Each page's struct has a `layout` field (see src/site.rs) with the values used here.
+    Pages fill the `body` block, usually through layouts/default.html.
+-#}
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{{ layout.tab_title }}</title>
+
+    <meta name="description" content="{{ layout.description }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ layout.url }}">
+    <meta property="og:title" content="{{ layout.share_title }}">
+    <meta property="og:description" content="{{ layout.description }}">
+    <meta property="og:image" content="{{ layout.image }}">
+    <meta property="og:image:secure_url" content="{{ layout.image }}">
+    <meta property="og:site_name" content="adrijanzivkov.org">
+    <meta name="twitter:url" content="{{ layout.url }}">
+    <meta name="twitter:title" content="{{ layout.share_title }}">
+    <meta name="twitter:description" content="{{ layout.description }}">
+    <meta name="twitter:image" content="{{ layout.image }}">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+    {#- Marks that JavaScript runs, before the page paints, so the scroll-reveal styles in app.css
+        only hide content when the script that reveals it will run. #}
+    <script>document.documentElement.classList.add('js');</script>
+
+    <link rel="stylesheet" href="/css/app.css">
+    <script src="/js/app.js" defer></script>
+</head>
+<body class="font-sans antialiased">
+{% block body %}{% endblock %}
+</body>
+</html>
