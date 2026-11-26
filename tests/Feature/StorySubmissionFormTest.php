@@ -2,9 +2,6 @@
 
 use App\Enums\StorySubmissionStatus;
 use App\Models\StorySubmission;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('stores a story submitted from the public form as new', function () {
     $this->post(route('story-submissions.store'), [
