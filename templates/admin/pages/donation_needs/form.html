@@ -1,0 +1,82 @@
+{#- Creating and editing a donation need: `donation_need` is `Some(need)` when editing.
+    Was DonationNeeds/Create.vue, Edit.vue and DonationNeedFields.vue. -#}
+{% extends "admin/layouts/app.html" %}
+{% import "admin/components/ui.html" as ui %}
+{% import "admin/components/icons.html" as icons %}
+
+{% block content %}
+<div class="max-w-4xl space-y-6">
+    {% call ui::back_link("/admin/donation-needs", "Донации") %}{% endcall %}
+
+    {% if let Some(need) = donation_need %}
+        {% call ui::page_header(need.title, format!("Додадено на {}", need.created_at_label())) %}
+            {% if need.is_archived() %}
+                {% call ui::badge("warning", "Архивирано") %}{% endcall %}
+                <button type="button" data-dialog-open="unarchive" class="ui-btn ui-btn-outline">{% call icons::icon("archive-restore") %}{% endcall %} Врати</button>
+                {% call ui::confirm_dialog("unarchive", "Врати донациска потреба", "Дали сте сигурни дека сакате да ја вратите оваа донациска потреба? Таа ќе биде повторно видлива на сајтот.", format!("/admin/donation-needs/{}/unarchive", need.id), "Врати", ctx.csrf_token, format!("/admin/donation-needs/{}/edit", need.id)) %}{% endcall %}
+            {% else %}
+                {% call ui::badge("success", "Активно") %}{% endcall %}
+                <a href="/donation-needs/{{ need.id }}" target="_blank" rel="noopener" class="ui-btn ui-btn-outline">{% call icons::icon("external-link") %}{% endcall %} Види на сајтот</a>
+                <button type="button" data-dialog-open="archive" class="ui-btn ui-btn-outline">{% call icons::icon("archive") %}{% endcall %} Архивирај</button>
+                {% call ui::confirm_dialog("archive", "Архивирај донациска потреба", "Дали сте сигурни дека сакате да ја архивирате оваа донациска потреба? Таа нема да биде видлива на сајтот.", format!("/admin/donation-needs/{}/archive", need.id), "Архивирај", ctx.csrf_token, format!("/admin/donation-needs/{}/edit", need.id)) %}{% endcall %}
+            {% endif %}
+        {% endcall %}
+    {% else %}
+        {% call ui::page_header("Нова донациска потреба", "Потребата се појавува на сајтот веднаш штом ќе се зачува.") %}{% endcall %}
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" class="space-y-6" data-submitting
+          action="{% if let Some(need) = donation_need %}/admin/donation-needs/{{ need.id }}{% else %}/admin/donation-needs{% endif %}">
+        <input type="hidden" name="_token" value="{{ ctx.csrf_token }}">
+
+        <div class="ui-card">
+            <div class="ui-card-content grid gap-6 md:grid-cols-2">
+                <div class="ui-field">
+                    <label for="title" class="ui-label">Наслов</label>
+                    <input id="title" name="title" value="{{ values.title }}" required maxlength="255" class="ui-input" {% if errors.has("title") %}aria-invalid="true"{% endif %}>
+                    {% call ui::field_error(errors, "title") %}{% endcall %}
+                </div>
+
+                <div class="ui-field">
+                    <label for="needed_amount" class="ui-label">Потребен износ (МКД)</label>
+                    <input id="needed_amount" name="needed_amount" type="number" inputmode="numeric" min="1" step="1" value="{{ values.needed_amount }}" required class="ui-input" {% if errors.has("needed_amount") %}aria-invalid="true"{% endif %}>
+                    {% call ui::field_error(errors, "needed_amount") %}{% endcall %}
+                </div>
+
+                <div class="ui-field md:col-span-2">
+                    <label for="image" class="ui-label">Слика</label>
+                    {% if let Some(need) = donation_need %}
+                        {% call ui::image_input("image", need.image_url(), errors.has("image")) %}{% endcall %}
+                    {% else %}
+                        {% call ui::image_input("image", "", errors.has("image")) %}{% endcall %}
+                    {% endif %}
+                    {% call ui::field_error(errors, "image") %}{% endcall %}
+                </div>
+
+                <div class="ui-field md:col-span-2">
+                    <label for="description" class="ui-label">Опис</label>
+                    {% call ui::rich_editor("description", values.description, errors.has("description")) %}{% endcall %}
+                    {% call ui::field_error(errors, "description") %}{% endcall %}
+                </div>
+
+                <div class="ui-field md:col-span-2">
+                    <label for="sticky_content" class="ui-label">Леплива содржина (десна страна)</label>
+                    {% call ui::rich_editor("sticky_content", values.sticky_content, errors.has("sticky_content")) %}{% endcall %}
+                    <p class="ui-field-description">Се прикажува во страничниот дел на страницата за донацијата, на пр. број на сметка.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-end gap-2">
+            <a href="/admin/donation-needs" class="ui-btn ui-btn-outline">Назад</a>
+            {% if donation_need.is_some() %}
+            <button type="submit" class="ui-btn ui-btn-primary">{% call icons::icon("save") %}{% endcall %} Зачувај</button>
+            {% else %}
+            <button type="submit" class="ui-btn ui-btn-primary">{% call icons::icon("plus") %}{% endcall %} Додај потреба</button>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}<script type="module" src="/js/editor.js"></script>{% endblock %}

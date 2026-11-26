@@ -1,0 +1,41 @@
+{#- All news posts, with search. Was pages/Admin/News/Index.vue. `news` is a Paginator<News>. -#}
+{% extends "admin/layouts/app.html" %}
+{% import "admin/components/ui.html" as ui %}
+{% import "admin/components/icons.html" as icons %}
+
+{% block content %}
+<div class="space-y-6">
+    {% call ui::page_header("Новости", "Новостите што се прикажуваат на сајтот, најновите први.") %}
+        <a href="/admin/news/create" class="ui-btn ui-btn-primary">{% call icons::icon("plus") %}{% endcall %} Додај новост</a>
+    {% endcall %}
+
+    <div class="ui-card gap-0 py-0">
+        <div class="flex flex-col gap-3 border-b p-4 sm:flex-row sm:justify-end">
+            {% call ui::search_box("/admin/news", search, "Наслов или опис") %}{% endcall %}
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="ui-table">
+                <thead>
+                    <tr><th class="w-20">Слика</th><th>Наслов</th><th>Краток опис</th><th>Објавено</th></tr>
+                </thead>
+                <tbody>
+                    {% for item in news.items %}
+                    <tr class="cursor-pointer" data-href="/admin/news/{{ item.slug }}/edit">
+                        <td><img src="{{ item.image_url() }}" alt="" class="size-10 rounded-md border object-cover"></td>
+                        <td class="max-w-72"><a href="/admin/news/{{ item.slug }}/edit" class="block truncate font-medium hover:underline">{{ item.title }}</a></td>
+                        <td class="max-w-md text-muted-foreground"><p class="truncate" title="{{ item.short_description }}">{{ item.short_description }}</p></td>
+                        <td class="whitespace-nowrap text-muted-foreground tabular-nums">{{ item.created_at_label() }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if news.items.is_empty() %}
+                        {% call ui::empty_row(4, "newspaper", "Нема новости за ова пребарување.") %}{% endcall %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        {% call ui::pagination(news) %}{% endcall %}
+    </div>
+</div>
+{% endblock %}

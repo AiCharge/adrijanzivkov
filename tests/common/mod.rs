@@ -5,6 +5,7 @@
 
 use adrijanzivkov::rate_limit::RateLimiter;
 use adrijanzivkov::state::AppState;
+use adrijanzivkov::storage::Storage;
 use axum::Router;
 use axum::body::Body;
 use axum::http::{Request, StatusCode, header};
@@ -37,6 +38,9 @@ impl TestClient {
             db,
             cookie_key: Key::generate(),
             rate_limiter: RateLimiter::default(),
+            storage: Storage::local_in(
+                std::env::temp_dir().join(format!("adrijanzivkov-test-{}", std::process::id())),
+            ),
         };
 
         Self {

@@ -1,0 +1,35 @@
+{#- The admin login. Was pages/Admin/Auth/Login.vue. -#}
+{% extends "admin/layouts/auth.html" %}
+{% import "admin/components/ui.html" as ui %}
+
+{% block title %}Најава{% endblock %}
+
+{% block card %}
+<header class="mb-7 space-y-1.5 text-center">
+    <h1 class="text-2xl font-semibold tracking-tight">Најава</h1>
+    <p class="text-sm text-muted-foreground">Добредојдовте назад.</p>
+</header>
+
+<form method="post" action="/admin/login" class="space-y-4" data-submitting>
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
+
+    <div class="ui-field">
+        <label for="email" class="ui-label">Е-пошта</label>
+        <input id="email" name="email" type="email" value="{{ email }}" autocomplete="username" required autofocus class="ui-input" {% if errors.has("email") %}aria-invalid="true" aria-describedby="email-error"{% endif %}>
+        {% call ui::field_error(errors, "email") %}{% endcall %}
+    </div>
+
+    <div class="ui-field">
+        <label for="password" class="ui-label">Лозинка</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required class="ui-input" {% if errors.has("password") %}aria-invalid="true" aria-describedby="password-error"{% endif %}>
+        {% call ui::field_error(errors, "password") %}{% endcall %}
+    </div>
+
+    <label class="flex items-center gap-3 text-sm">
+        <input name="remember" value="1" type="checkbox" class="size-4 shrink-0 accent-primary" {% if remember %}checked{% endif %}>
+        Запомни ме
+    </label>
+
+    <button type="submit" class="ui-btn ui-btn-primary w-full">Најави се</button>
+</form>
+{% endblock %}

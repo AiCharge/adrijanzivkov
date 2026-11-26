@@ -29,7 +29,7 @@ pub async fn index(
     site: Site,
     Query(query): Query<PageQuery>,
 ) -> AppResult<Html<String>> {
-    let news = News::paginate(&state.db, Page::from_query(&query, 12)).await?;
+    let news = News::paginate(&state.db, Page::from_query(&query, 12), "", "/news").await?;
 
     let layout = Layout::new(&site, "Новости").meta(
         "Новости",

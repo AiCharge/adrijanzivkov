@@ -1,0 +1,63 @@
+{#- One story: the visitor's words on the left, the foundation's status and notes on the right.
+    Was StorySubmissions/Edit.vue. -#}
+{% extends "admin/layouts/app.html" %}
+{% import "admin/components/ui.html" as ui %}
+{% import "admin/components/icons.html" as icons %}
+
+{% block content %}
+<div class="space-y-6">
+    {% call ui::back_link("/admin/story-submissions", "Поднесени приказни") %}{% endcall %}
+
+    {#- Inside a Rust `format!` Askama only sees local names, so the field is copied into one first. -#}
+    {% let received_at = submission.received_at() %}
+    {% call ui::page_header(submission.name, format!("Примено на {}", received_at)) %}
+        {% call ui::badge(submission.status().color(), submission.status().label()) %}{% endcall %}
+    {% endcall %}
+
+    <div class="grid items-start gap-6 lg:grid-cols-5">
+        <div class="ui-card lg:col-span-3">
+            <div class="ui-card-header"><h2 class="ui-card-title">Приказна</h2></div>
+            <div class="ui-card-content space-y-6">
+                <dl class="grid gap-4 text-sm sm:grid-cols-2">
+                    <div class="space-y-1">
+                        <dt class="text-muted-foreground">Име и презиме</dt>
+                        <dd class="font-medium">{{ submission.name }}</dd>
+                    </div>
+                    <div class="space-y-1">
+                        <dt class="text-muted-foreground">Телефонски број</dt>
+                        <dd><a href="tel:{{ submission.phone }}" class="inline-flex items-center gap-1.5 font-medium text-primary hover:underline">{% call icons::icon("phone", "size-3.5") %}{% endcall %} {{ submission.phone }}</a></dd>
+                    </div>
+                </dl>
+                <p class="text-sm leading-relaxed whitespace-pre-line">{{ submission.message }}</p>
+            </div>
+        </div>
+
+        <form method="post" action="/admin/story-submissions/{{ submission.id }}" class="space-y-6 lg:col-span-2" data-submitting>
+            <input type="hidden" name="_token" value="{{ ctx.csrf_token }}">
+            <div class="ui-card">
+                <div class="ui-card-header"><h2 class="ui-card-title">Обработка</h2></div>
+                <div class="ui-card-content grid gap-6">
+                    <div class="ui-field">
+                        <label for="status" class="ui-label">Статус</label>
+                        <select id="status" name="status" class="ui-select" {% if errors.has("status") %}aria-invalid="true"{% endif %}>
+                            {% for option in statuses %}
+                            <option value="{{ option.value() }}" {% if option.value() == status %}selected{% endif %}>{{ option.label() }}</option>
+                            {% endfor %}
+                        </select>
+                        {% call ui::field_error(errors, "status") %}{% endcall %}
+                    </div>
+                    <div class="ui-field">
+                        <label for="notes" class="ui-label">Белешки</label>
+                        <textarea id="notes" name="notes" rows="6" class="ui-textarea" {% if errors.has("notes") %}aria-invalid="true"{% endif %}>{{ notes }}</textarea>
+                        {% call ui::field_error(errors, "notes") %}{% endcall %}
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2">
+                <a href="/admin/story-submissions" class="ui-btn ui-btn-outline">Назад</a>
+                <button type="submit" class="ui-btn ui-btn-primary">{% call icons::icon("save") %}{% endcall %} Зачувај</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -13,13 +13,15 @@ pub mod config;
 pub mod db;
 mod error;
 mod format;
-mod models;
+pub mod models;
 mod pagination;
 pub mod rate_limit;
 mod routes;
 pub mod session;
 mod site;
 pub mod state;
+pub mod storage;
+mod upload;
 mod validation;
 
 pub use routes::router as app;

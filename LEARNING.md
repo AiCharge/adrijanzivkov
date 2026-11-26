@@ -15,7 +15,7 @@ the compiler teaches you when you write it.
 
 ```bash
 pnpm install          # once: Tailwind only
-pnpm run build        # builds public/css/app.css from assets/css/app.css (use `pnpm run dev` to rebuild on save)
+pnpm run build        # builds the site and admin CSS (Tailwind) and the admin's editor script (esbuild)
 cargo run             # builds, migrates the database and starts the server on http://localhost:3000
 ```
 
@@ -226,8 +226,81 @@ integration tests can call the app directly.
 4. Run the server against Postgres:
    `DATABASE_URL=postgres://user@localhost/adrijan cargo run` — the migrations create the tables on start.
 
+---
+
+## Chapter 3 — The admin: login, guarded pages, uploads, the editor
+
+**What changed.** The whole admin from `main` is back, server-rendered: login with "remember me" and
+lockout, the green sidebar layout with breadcrumbs, a light/dark/system theme and a foldable sidebar,
+donation needs (list with tabs, search and pages, create, edit, archive and restore with a confirmation
+dialog), news (list, search, create, edit, unique slugs), story submissions (status tabs, status and notes),
+the profile page, image uploads, and the Tiptap rich-text editor with image uploads inside the text.
+
+**Read, in this order**
+
+1. `src/routes/admin/mod.rs` — the routes, and the `Admin` extractor that guards every page.
+2. `src/routes/admin/auth.rs` + `src/models/user.rs` — logging in: bcrypt, lockout, timing-safe failures.
+3. `src/routes/admin/news.rs` — a full CRUD section: list, form, multipart save shared by create and edit.
+4. `src/upload.rs` — reading `multipart/form-data` and recognising images by their bytes.
+5. `src/storage.rs` — where files go, and `OnceLock` for a value set once at startup.
+6. `templates/admin/layouts/app.html` → `templates/admin/components/ui.html` → `templates/admin/pages/news/form.html`.
+7. `assets/css/admin.css` — the shadcn component classes as `ui-*` CSS classes.
+8. `public/js/admin.js` and `assets/js/editor.js` — the only JavaScript, and why the editor needs a bundler.
+9. `tests/admin.rs` — every admin behaviour, including multipart uploads in tests.
+
+**Rust ideas**
+
+- **An extractor as the auth middleware.** `Admin` implements `FromRequestParts` with
+  `type Rejection = Response`. If there's no valid login, axum returns that redirect instead of calling the
+  handler. A handler that takes `admin: Admin` *cannot* run for a guest — the type system enforces it, and
+  there's no route list to forget a middleware on.
+- **Blocking work in an async program.** bcrypt takes ~250 ms of CPU on purpose. `spawn_blocking` moves it
+  to a thread pool meant for that, so the async threads keep serving other visitors meanwhile.
+- **`LazyLock` and `OnceLock`.** Values computed or set once and then shared by every thread: the dummy
+  password hash (`user.rs`) and the storage URL (`storage.rs`).
+- **`let … else`.** `let (true, Some(amount)) = (errors.is_empty(), amount) else { return …; };` either binds
+  the value or leaves the function — no nested `if`s.
+- **Slice patterns and match guards.** `ImageKind::detect` matches file signatures with `[0xFF, 0xD8, 0xFF, ..]`
+  and `_ if bytes.starts_with(b"RIFF") && …`.
+- **Ownership moving out.** `form.take_file("image")` *removes* the bytes from the form and hands them over,
+  so a 10 MB upload is never copied.
+- **Templates are type-checked too.** A `{% call ui::rich_editor(…) %}` with a wrong argument, or a field the
+  page struct doesn't have, fails `cargo build`. One limit found the hard way: inside a Rust `format!` in a
+  template, Askama only sees *local* names, so `edit.html` copies a field into a `{% let %}` first.
+
+**Compared to Laravel + Inertia + Vue**
+
+| Before                                              | Now                                                             |
+| --------------------------------------------------- | --------------------------------------------------------------- |
+| `auth` middleware, `redirect()->intended()`         | `Admin` extractor; the intended page kept in an encrypted cookie |
+| `LoginRequest` lockout via `RateLimiter`            | Same idea: `rate_limiter.too_many(…)` keyed by email and IP     |
+| `Hash::check` / `Hash::make`                         | `bcrypt` in `spawn_blocking`; hashes stay `$2y$`, so both read them |
+| `$request->file('image')->store('news')`            | `MultipartForm` + `check_image` + `storage.put("news", …)`      |
+| shadcn-vue components (Button, Card, Table…)        | the same classes as `ui-*` CSS, and Askama macros in `ui.html`   |
+| Reka UI dialogs, dropdowns                          | the browser's own `<dialog>` and `<details>` elements           |
+| Tiptap inside a Vue component                       | Tiptap bundled by esbuild, filling a hidden input                |
+| Inertia `useForm` keeps typed values on error       | the handler renders the form again with the values it received  |
+
+**One thing that's simpler than before:** every admin page is a normal HTML page. A form posts, the server
+redirects or shows the errors, and the browser's back button, reload and "open in new tab" all just work.
+
+**What changed on purpose**
+
+- Forms post to `POST …/{id}` instead of `PUT`/`PATCH`: HTML forms can only send GET and POST.
+- After a failed upload validation the image must be picked again: browsers don't let a page refill a file input.
+- The admin's password rule is always the strict production one (12+ characters, mixed case, digit, symbol).
+
+**Exercises**
+
+1. Remove `admin: Admin` from `news::index` and run `cargo test`. Which test fails, and why is that the
+   behaviour you want?
+2. Add a "Delete" button for news posts: a `POST /admin/news/{slug}/delete` route, a `News::delete` query,
+   a `confirm_dialog` in `form.html`, and a test.
+3. Show how many stories are "new" next to "Поднесени приказни" in the sidebar. Where would that number come
+   from, and which struct has to carry it to `layouts/app.html`?
+4. Make a Postgres-only bug impossible to miss: run `cargo test` with `DATABASE_URL` pointing at Postgres.
+   (Hint: the test client uses `sqlite::memory:` — what would it take to read it from the environment?)
+
 ## What's next
 
-- **Chapter 3 — The admin:** login with password hashing, protected routes, CRUD with image uploads, the
-  rich-text editor.
 - **Chapter 4 — Production:** Postgres, configuration for Laravel Cloud's Rust runtime, and a deploy.

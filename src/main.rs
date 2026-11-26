@@ -9,6 +9,7 @@ use adrijanzivkov::config::Config;
 use adrijanzivkov::rate_limit::RateLimiter;
 use adrijanzivkov::session::key_from_app_key;
 use adrijanzivkov::state::AppState;
+use adrijanzivkov::storage::Storage;
 use axum_extra::extract::cookie::Key;
 
 // `#[tokio::main]` turns `main` into an async function by starting Tokio, the async runtime.
@@ -47,6 +48,7 @@ async fn main() -> anyhow::Result<()> {
         db,
         cookie_key,
         rate_limiter: RateLimiter::default(),
+        storage: Storage::local(),
     };
 
     // `::` listens on every address, IPv6 and IPv4. Laravel Cloud requires it.

@@ -1,6 +1,7 @@
 //! Every URL the site answers, like `routes/web.php`, plus the static files.
 
 mod about;
+mod admin;
 mod donation_needs;
 mod home;
 mod legal;
@@ -36,6 +37,7 @@ pub fn router(state: AppState) -> Router {
         .route("/story-submissions/create", get(story_submissions::create))
         .route("/story-submissions", post(story_submissions::store))
         .route("/up", get(|| async { "OK" }))
+        .merge(admin::router())
         // Uploaded images, which Laravel served through the `public/storage` link.
         .nest_service("/storage", ServeDir::new("storage/app/public"))
         .fallback_service(public_files)

@@ -47,3 +47,4 @@ Thumbs.db
 # Runtime files Laravel leaves behind when you switch back to main
 /storage/framework
 /storage/logs
+/public/js/editor.js

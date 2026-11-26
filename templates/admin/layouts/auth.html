@@ -1,0 +1,19 @@
+{#- The login page: one card on the foundation's green, with the logo on top. Was AdminAuthLayout.vue. -#}
+{% extends "admin/layouts/base.html" %}
+
+{% block body %}
+<div class="relative isolate flex min-h-svh flex-col items-center justify-center bg-[var(--brand-forest)] px-4 py-10">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_50%_0%,color-mix(in_oklch,var(--brand-green)_55%,transparent),transparent)]"></div>
+
+    <div class="mb-8 flex flex-col items-center gap-2 [&_svg]:h-9 [&_svg]:w-auto">
+        {% include "partials/logo_light.html" %}
+        <span class="text-[10px] font-semibold tracking-[0.22em] text-emerald-200 uppercase">Администрација</span>
+    </div>
+
+    <main class="w-full max-w-sm rounded-lg border bg-card p-8 shadow-2xl shadow-black/30">
+        {% block card %}{% endblock %}
+    </main>
+
+    <p class="mt-6 text-xs text-white/50">Фондација „Адријан Живков" · Администрација</p>
+</div>
+{% endblock %}

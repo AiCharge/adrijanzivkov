@@ -29,6 +29,61 @@ pub fn date_mk(utc: NaiveDateTime) -> String {
     format!("{} {month} {}", local.day(), local.year())
 }
 
+/// A URL slug from a title, e.g. `Одржана хуманитарна акција` → `odrzana-xumanitarna-akcija`.
+/// Cyrillic letters are spelled the way Laravel's `Str::slug` spelled them, so new posts get the same
+/// kind of addresses as old ones.
+pub fn slug(title: &str) -> String {
+    let mut slug = String::with_capacity(title.len());
+
+    for character in title.chars().flat_map(char::to_lowercase) {
+        let latin = match character {
+            'а' => "a",
+            'б' => "b",
+            'в' => "v",
+            'г' => "g",
+            'д' => "d",
+            'ѓ' => "gj",
+            'е' => "e",
+            'ж' => "z",
+            'з' => "z",
+            'ѕ' => "dz",
+            'и' => "i",
+            'ј' => "j",
+            'к' => "k",
+            'л' => "l",
+            'љ' => "lj",
+            'м' => "m",
+            'н' => "n",
+            'њ' => "nj",
+            'о' => "o",
+            'п' => "p",
+            'р' => "r",
+            'с' => "s",
+            'т' => "t",
+            'ќ' => "kj",
+            'у' => "u",
+            'ф' => "f",
+            'х' => "x",
+            'ц' => "c",
+            'ч' => "c",
+            'џ' => "dz",
+            'ш' => "s",
+            'a'..='z' | '0'..='9' => {
+                slug.push(character);
+                continue;
+            }
+            _ => "-",
+        };
+        slug.push_str(latin);
+    }
+
+    // Collapse runs of dashes and trim them from the ends.
+    slug.split('-')
+        .filter(|part| !part.is_empty())
+        .collect::<Vec<_>>()
+        .join("-")
+}
+
 /// `2026-11-26 19:49:57` (UTC) → `26.11.2026 20:49` (Skopje time), for the admin's tables.
 pub fn date_time(utc: NaiveDateTime) -> String {
     utc.and_utc()
@@ -117,6 +172,16 @@ mod tests {
             NaiveDateTime::parse_from_str("2026-11-26 23:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
         // 23:30 UTC is already the 27th in Skopje (UTC+1 in winter).
         assert_eq!(date_mk(utc), "27 ноември 2026");
+    }
+
+    #[test]
+    fn makes_slugs_like_laravel() {
+        assert_eq!(
+            slug("Одржана хуманитарна акција во Кочани"),
+            "odrzana-xumanitarna-akcija-vo-kocani"
+        );
+        assert_eq!(slug("  Нова акција!! 2026 "), "nova-akcija-2026");
+        assert_eq!(slug("Џеб, Ѓорѓи и Љубица"), "dzeb-gjorgji-i-ljubica");
     }
 
     #[test]

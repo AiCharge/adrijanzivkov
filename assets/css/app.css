@@ -1,10 +1,15 @@
-@import 'tailwindcss';
+@import 'tailwindcss' source(none);
 @import 'tw-animate-css';
 @import './fonts.css';
 
-/* Tailwind scans these files for class names: the Rust HTML templates and the small scripts. */
-@source '../../templates';
-@source '../../public/js';
+/* `source(none)` above turns off Tailwind's scan of the whole project; it reads only these files for
+   class names: the public site's templates and its one script (the admin has its own stylesheet). */
+@source '../../templates/layouts';
+@source '../../templates/components';
+@source '../../templates/partials';
+@source '../../templates/pages';
+@source '../../templates/errors';
+@source '../../public/js/app.js';
 
 @theme {
     --color-primary: #054a29;

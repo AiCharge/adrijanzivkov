@@ -6,6 +6,7 @@ use super::render;
 use crate::error::{AppError, AppResult};
 use crate::format;
 use crate::models::DonationNeed;
+use crate::models::donation_need::ArchiveFilter;
 use crate::pagination::{Page, PageQuery, Paginator};
 use crate::site::{Layout, Site};
 use crate::state::AppState;
@@ -30,8 +31,14 @@ pub async fn index(
     site: Site,
     Query(query): Query<PageQuery>,
 ) -> AppResult<Html<String>> {
-    let donation_needs =
-        DonationNeed::paginate_active(&state.db, Page::from_query(&query, 9)).await?;
+    let donation_needs = DonationNeed::paginate(
+        &state.db,
+        Page::from_query(&query, 9),
+        "",
+        ArchiveFilter::Active,
+        "/donation-needs",
+    )
+    .await?;
 
     let layout = Layout::new(&site, "Потреба за донации").meta(
         "Потреба за донации",
