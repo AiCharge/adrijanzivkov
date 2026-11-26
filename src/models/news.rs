@@ -1,5 +1,4 @@
-use chrono::NaiveDateTime;
-use sqlx::SqlitePool;
+use crate::db::{self, Db};
 
 use super::storage_url;
 use crate::format;
@@ -16,7 +15,8 @@ pub struct News {
     pub content: String,
     /// `Option` because the column allows NULL. Rust has no `null`: a value that may be missing
     /// is `Option<T>`, and the compiler makes you handle the `None` case before using it.
-    pub created_at: Option<NaiveDateTime>,
+    /// Read as text (`CAST(… AS TEXT)`), because sqlx's `Any` driver has no date type (see db.rs).
+    pub created_at: Option<String>,
 }
 
 impl News {
@@ -27,12 +27,18 @@ impl News {
 
     /// e.g. `26 ноември 2026`.
     pub fn published_on(&self) -> String {
-        self.created_at.map(format::date_mk).unwrap_or_default()
+        self.created_at
+            .as_deref()
+            .and_then(db::parse_timestamp)
+            .map(format::date_mk)
+            .unwrap_or_default()
     }
 
     /// e.g. `2026-11-26T19:49:57Z`, for the `<time datetime>` attribute.
     pub fn published_at_iso(&self) -> String {
         self.created_at
+            .as_deref()
+            .and_then(db::parse_timestamp)
             .map(|date| {
                 date.and_utc()
                     .to_rfc3339_opts(chrono::SecondsFormat::Secs, true)
@@ -41,30 +47,30 @@ impl News {
     }
 
     /// The newest posts, like `News::latest()->take($limit)->get()`.
-    pub async fn latest(db: &SqlitePool, limit: u32) -> sqlx::Result<Vec<Self>> {
+    pub async fn latest(db: &Db, limit: u32) -> sqlx::Result<Vec<Self>> {
         // `query_as` maps each row to `Self`. `?` placeholders with `.bind()` keep values out of
         // the SQL text, as Eloquent's bindings do. sqlx 0.9 goes further: it only accepts SQL
         // written as a fixed string in the code (a `&'static str`), so text built at runtime,
         // which could contain user input, is refused at compile time.
         sqlx::query_as(
-            "SELECT title, slug, short_description, main_image, content, created_at FROM news ORDER BY created_at DESC LIMIT ?",
+            "SELECT title, slug, short_description, main_image, content, CAST(created_at AS TEXT) AS created_at FROM news ORDER BY created_at DESC LIMIT $1",
         )
-            .bind(limit)
+            .bind(i64::from(limit))
             .fetch_all(db)
             .await
     }
 
     /// One page of posts, newest first, like `News::latest()->paginate(12)`.
-    pub async fn paginate(db: &SqlitePool, page: Page) -> sqlx::Result<Paginator<Self>> {
-        let total: u32 = sqlx::query_scalar("SELECT COUNT(*) FROM news")
+    pub async fn paginate(db: &Db, page: Page) -> sqlx::Result<Paginator<Self>> {
+        let total: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM news")
             .fetch_one(db)
             .await?;
 
         let items = sqlx::query_as(
-            "SELECT title, slug, short_description, main_image, content, created_at FROM news ORDER BY created_at DESC LIMIT ? OFFSET ?",
+            "SELECT title, slug, short_description, main_image, content, CAST(created_at AS TEXT) AS created_at FROM news ORDER BY created_at DESC LIMIT $1 OFFSET $2",
         )
-        .bind(page.size)
-        .bind(page.offset())
+        .bind(i64::from(page.size))
+        .bind(i64::from(page.offset()))
         .fetch_all(db)
         .await?;
 
@@ -72,8 +78,8 @@ impl News {
     }
 
     /// The post at `/news/{slug}`, or `None`, like route-model binding by slug.
-    pub async fn find_by_slug(db: &SqlitePool, slug: &str) -> sqlx::Result<Option<Self>> {
-        sqlx::query_as("SELECT title, slug, short_description, main_image, content, created_at FROM news WHERE slug = ?")
+    pub async fn find_by_slug(db: &Db, slug: &str) -> sqlx::Result<Option<Self>> {
+        sqlx::query_as("SELECT title, slug, short_description, main_image, content, CAST(created_at AS TEXT) AS created_at FROM news WHERE slug = $1")
             .bind(slug)
             .fetch_optional(db)
             .await

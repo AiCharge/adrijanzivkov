@@ -66,5 +66,22 @@ function setUpMenus() {
     }
 }
 
+// Forms marked `data-submitting`: once sent, the button is disabled and shows its spinner, so a
+// double click can't send the form twice.
+function setUpSubmitting() {
+    for (const form of document.querySelectorAll('form[data-submitting]')) {
+        form.addEventListener('submit', () => {
+            const button = form.querySelector('button[type="submit"]');
+            button.disabled = true;
+            button.querySelector('[data-spinner]')?.classList.remove('hidden');
+            const label = button.querySelector('[data-label]');
+            if (label) {
+                label.textContent = label.dataset.label;
+            }
+        });
+    }
+}
+
 setUpReveal();
 setUpMenus();
+setUpSubmitting();

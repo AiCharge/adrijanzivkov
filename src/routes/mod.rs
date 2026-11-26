@@ -11,7 +11,7 @@ use askama::Template;
 use axum::Router;
 use axum::handler::HandlerWithoutStateExt;
 use axum::response::Html;
-use axum::routing::get;
+use axum::routing::{get, post};
 use tower_http::services::ServeDir;
 use tower_http::trace::TraceLayer;
 
@@ -34,6 +34,7 @@ pub fn router(state: AppState) -> Router {
         .route("/terms-of-use", get(legal::terms))
         .route("/privacy-policy", get(legal::privacy))
         .route("/story-submissions/create", get(story_submissions::create))
+        .route("/story-submissions", post(story_submissions::store))
         .route("/up", get(|| async { "OK" }))
         // Uploaded images, which Laravel served through the `public/storage` link.
         .nest_service("/storage", ServeDir::new("storage/app/public"))

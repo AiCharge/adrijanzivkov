@@ -11,6 +11,22 @@ pub struct Paginator<T> {
     pub total: u32,
     /// The page's own path, e.g. `/news`, to build `?page=2` links.
     path: String,
+    /// Other query parameters to keep in the page links, e.g. `search=x`, like `->withQueryString()`.
+    query: String,
+}
+
+/// Percent-encodes a query value: letters, digits and `-_.~` stay, everything else (spaces,
+/// Cyrillic, `&`…) becomes `%XX` bytes.
+pub fn url_encode(value: &str) -> String {
+    value
+        .bytes()
+        .map(|byte| match byte {
+            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' => {
+                (byte as char).to_string()
+            }
+            _ => format!("%{byte:02X}"),
+        })
+        .collect()
 }
 
 /// One button in the page links: a number, `...`, or previous/next.
@@ -22,14 +38,47 @@ pub struct PageLink {
 }
 
 impl<T> Paginator<T> {
-    pub fn new(items: Vec<T>, total: u32, page: Page, path: &str) -> Self {
+    /// `total` comes straight from `COUNT(*)`, which databases return as a 64-bit number.
+    pub fn new(items: Vec<T>, total: i64, page: Page, path: &str) -> Self {
         Self {
             items,
             current_page: page.number,
             per_page: page.size,
-            total,
+            // `try_from` converts between number types and fails instead of silently wrapping.
+            total: u32::try_from(total.max(0)).unwrap_or(u32::MAX),
             path: path.to_string(),
+            query: String::new(),
         }
+    }
+
+    /// Keeps filters in the page links, e.g. `.with_query(&[("search", "кочани")])`.
+    pub fn with_query(mut self, params: &[(&str, &str)]) -> Self {
+        self.query = params
+            .iter()
+            .filter(|(_, value)| !value.is_empty())
+            .map(|(name, value)| format!("{name}={}", url_encode(value)))
+            .collect::<Vec<_>>()
+            .join("&");
+        self
+    }
+
+    /// The first and last item numbers on this page, e.g. `(13, 24)`, or `None` when it's empty.
+    pub fn range(&self) -> Option<(u32, u32)> {
+        if self.items.is_empty() {
+            return None;
+        }
+        let first = (self.current_page - 1) * self.per_page + 1;
+        Some((first, first + self.items.len() as u32 - 1))
+    }
+
+    /// The previous page's link, if there is one.
+    pub fn previous_url(&self) -> Option<String> {
+        (self.current_page > 1).then(|| self.url(self.current_page - 1))
+    }
+
+    /// The next page's link, if there is one.
+    pub fn next_url(&self) -> Option<String> {
+        (self.current_page < self.last_page()).then(|| self.url(self.current_page + 1))
     }
 
     pub fn last_page(&self) -> u32 {
@@ -38,7 +87,11 @@ impl<T> Paginator<T> {
     }
 
     fn url(&self, page: u32) -> String {
-        format!("{}?page={page}", self.path)
+        if self.query.is_empty() {
+            format!("{}?page={page}", self.path)
+        } else {
+            format!("{}?{}&page={page}", self.path, self.query)
+        }
     }
 
     /// The page links, with `...` gaps on long lists, chosen exactly as Laravel's `UrlWindow` does:
@@ -72,7 +125,7 @@ impl<T> Paginator<T> {
         };
 
         let mut links = vec![PageLink {
-            url: (current > 1).then(|| self.url(current - 1)),
+            url: self.previous_url(),
             label: "« Претходно".to_string(),
             active: false,
         }];
@@ -93,7 +146,7 @@ impl<T> Paginator<T> {
         }
 
         links.push(PageLink {
-            url: (current < last).then(|| self.url(current + 1)),
+            url: self.next_url(),
             label: "Следно »".to_string(),
             active: false,
         });
@@ -140,7 +193,7 @@ pub struct PageQuery {
 mod tests {
     use super::*;
 
-    fn labels(total: u32, current: u32) -> Vec<String> {
+    fn labels(total: i64, current: u32) -> Vec<String> {
         let page = Page {
             number: current,
             size: 10,
@@ -208,6 +261,25 @@ mod tests {
         )
         .links();
         assert!(last.last().unwrap().url.is_none());
+    }
+
+    #[test]
+    fn keeps_filters_in_page_links() {
+        let paginator = Paginator::<()>::new(
+            vec![],
+            30,
+            Page {
+                number: 1,
+                size: 10,
+            },
+            "/admin/news",
+        )
+        .with_query(&[("search", "нова вест"), ("status", "")]);
+
+        assert_eq!(
+            paginator.next_url().as_deref(),
+            Some("/admin/news?search=%D0%BD%D0%BE%D0%B2%D0%B0%20%D0%B2%D0%B5%D1%81%D1%82&page=2")
+        );
     }
 
     #[test]

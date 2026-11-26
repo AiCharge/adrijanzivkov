@@ -1,10 +1,16 @@
 //! What every request handler can reach: Laravel's service container, but explicit.
 
-use sqlx::SqlitePool;
+use axum_extra::extract::cookie::Key;
 
-/// Shared by all requests. `Clone` is cheap here: `SqlitePool` is a handle to one shared
-/// pool of connections, so cloning it copies a pointer, not the connections.
+use crate::db::Db;
+use crate::rate_limit::RateLimiter;
+
+/// Shared by all requests. Every field is cheap to `Clone`: each is a handle (a pointer) to one
+/// shared value, so cloning the state for a request copies a few pointers, not the data.
 #[derive(Clone)]
 pub struct AppState {
-    pub db: SqlitePool,
+    pub db: Db,
+    /// Encrypts and signs the session cookies (see `session.rs`).
+    pub cookie_key: Key,
+    pub rate_limiter: RateLimiter,
 }

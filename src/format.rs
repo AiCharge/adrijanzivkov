@@ -29,6 +29,14 @@ pub fn date_mk(utc: NaiveDateTime) -> String {
     format!("{} {month} {}", local.day(), local.year())
 }
 
+/// `2026-11-26 19:49:57` (UTC) → `26.11.2026 20:49` (Skopje time), for the admin's tables.
+pub fn date_time(utc: NaiveDateTime) -> String {
+    utc.and_utc()
+        .with_timezone(&Skopje)
+        .format("%d.%m.%Y %H:%M")
+        .to_string()
+}
+
 /// `120000` → `120.000`, the Macedonian thousands separator.
 pub fn amount(value: i64) -> String {
     let digits = value.unsigned_abs().to_string();

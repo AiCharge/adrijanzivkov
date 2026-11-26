@@ -16,7 +16,7 @@ the compiler teaches you when you write it.
 ```bash
 pnpm install          # once: Tailwind only
 pnpm run build        # builds public/css/app.css from assets/css/app.css (use `pnpm run dev` to rebuild on save)
-cargo run             # builds and starts the server on http://localhost:3000
+cargo run             # builds, migrates the database and starts the server on http://localhost:3000
 ```
 
 | Laravel                     | Here                                   |
@@ -154,10 +154,80 @@ tens of megabytes per worker — but remember this site was never slow; the diff
 5. Harder: the home page runs its two queries with `tokio::try_join!`. Rewrite it with two `.await`s one after
    the other. Both work — why is the first one faster?
 
+---
+
+## Chapter 2 — Forms: sessions, CSRF, validation, rate limiting, writes
+
+**What changed.** The "share your story" form works end to end: it checks a CSRF token, validates with
+the Macedonian messages from Laravel's `StoreStorySubmissionRequest`, keeps what was typed when there are
+errors, saves the story, redirects with a one-time thank-you message, and allows 4 stories a minute per
+visitor. The database is now writable, created and updated by **migrations**, and the same code runs on
+**SQLite locally and Postgres in production**. The project became a *library* plus a small `main.rs`, so
+integration tests can call the app directly.
+
+**Read, in this order**
+
+1. `src/db.rs` — one connection type for both databases, and the migrations in `migrations/`.
+2. `src/session.rs` — the `Session` extractor: encrypted cookies for the CSRF token, flash messages and
+   (in Chapter 3) the admin login.
+3. `src/validation.rs` — the small `Errors` type that replaces Form Requests.
+4. `src/rate_limit.rs` — `Arc<Mutex<HashMap<…>>>`, Rust's safe shared state.
+5. `src/routes/story_submissions.rs` — the two handlers, `create` (GET) and `store` (POST).
+6. `templates/pages/story_submissions/create.html` — errors, kept values, the thank-you message.
+7. `src/models/story_submission.rs` — the `Status` enum and the `INSERT`.
+8. `tests/common/mod.rs` → `tests/story_form.rs` — the test client and the form's tests.
+
+**Rust ideas**
+
+- **Your own extractor that also writes the response.** `Session` implements `FromRequestParts` (read the
+  cookies) *and* `IntoResponseParts` (write `Set-Cookie`). Handlers return `(session, page)` and axum
+  combines them. Nothing is hidden in global state: if a handler changes the session, it must return it.
+- **`&self` vs `&mut self`.** `session.verify_csrf(…)` only reads (`&self`); `session.flash(…)` changes the
+  session, so it takes `&mut self`, and the handler must declare `mut session`. The compiler tracks this.
+- **Shared mutable state needs `Arc<Mutex<…>>`.** Requests run on several threads at once. The compiler
+  refuses to let two threads touch a plain `HashMap` (that would be a data race); wrapping it in a `Mutex`
+  (one thread at a time) inside an `Arc` (shared ownership) is how you say "this is shared, safely".
+- **Enums with behaviour.** `Status` replaces Laravel's backed enum. `match` must list every variant, so
+  adding a status without a label or colour doesn't compile.
+- **`serde` turns form bodies into structs.** `Form<StoryForm>` parses `name=…&phone=…` into a typed struct.
+  `#[serde(default)]` makes missing fields empty instead of rejecting the request.
+- **One code path, two databases.** sqlx's `Any` driver only knows types every database shares, so dates are
+  read as text (`CAST(created_at AS TEXT)`) and written with `CURRENT_TIMESTAMP`. Placeholders are `$1, $2`.
+- **Lifetimes, again.** The test helper `sql(&self, query: &'static str)` must promise the SQL is fixed text
+  in the program, because sqlx refuses SQL built at runtime. The compiler explained this when it was `&str`.
+
+**Compared to Laravel**
+
+| Laravel                                   | Here                                                         |
+| ----------------------------------------- | ------------------------------------------------------------ |
+| Sessions in the `sessions` table          | Encrypted cookies (`PrivateCookieJar`), keyed from `APP_KEY` |
+| `VerifyCsrfToken` middleware, `@csrf`     | `session.csrf_token()` in the form, `verify_csrf` in `store` |
+| Form Request + `$errors` in Blade         | `StoryForm::validate()` returning `Errors`                   |
+| `->with('success', …)` / `session('…')`   | `session.flash(…)` / `session.take_flash()`                  |
+| `throttle:4,1` route middleware           | `state.rate_limiter.hit(…)` inside the handler               |
+| `php artisan migrate`                     | `sqlx::migrate!` runs on every start, before serving         |
+| `RefreshDatabase` + `$this->post(…)`      | `TestClient::new()` (in-memory SQLite) + `post_form(…)`      |
+
+**Security notes worth reading in the code**
+
+- The CSRF comparison is constant-time (`constant_time_eq`), so its timing reveals nothing.
+- Behind a load balancer the visitor's IP is the **last** `X-Forwarded-For` entry; the first can be faked
+  (`site.rs`, `ClientIp`).
+- The rate limiter lives in memory: it resets on restart and each server counts separately. Good enough for
+  one instance; with several, the counts would move to the database.
+
+**Exercises**
+
+1. Submit the form with the "agree" box unticked and read the 422 response. Then find the line that decides
+   a checkbox counts as ticked (`is_accepted`).
+2. Change the limit to 2 stories a minute and run `cargo test`. Which test fails, and why?
+3. Add a rule: the phone number may only contain digits, spaces, `+`, `-` and `/`. Write the check in
+   `StoryForm::validate`, a Macedonian message, and a test in `tests/story_form.rs`.
+4. Run the server against Postgres:
+   `DATABASE_URL=postgres://user@localhost/adrijan cargo run` — the migrations create the tables on start.
+
 ## What's next
 
-- **Chapter 2 — Forms:** the story form end to end: sessions, CSRF tokens, validation with Macedonian messages,
-  flash messages, rate limiting, writes, and SQL migrations.
 - **Chapter 3 — The admin:** login with password hashing, protected routes, CRUD with image uploads, the
   rich-text editor.
 - **Chapter 4 — Production:** Postgres, configuration for Laravel Cloud's Rust runtime, and a deploy.

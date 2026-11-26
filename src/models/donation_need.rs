@@ -1,4 +1,4 @@
-use sqlx::SqlitePool;
+use crate::db::Db;
 
 use super::storage_url;
 use crate::format;
@@ -40,27 +40,27 @@ impl DonationNeed {
     }
 
     /// The newest needs still shown on the site, like `DonationNeed::notArchived()->latest()->take(6)`.
-    pub async fn latest_active(db: &SqlitePool, limit: u32) -> sqlx::Result<Vec<Self>> {
+    pub async fn latest_active(db: &Db, limit: u32) -> sqlx::Result<Vec<Self>> {
         sqlx::query_as(
-            "SELECT id, title, description, sticky_content, image, needed_amount FROM donation_needs WHERE archived_at IS NULL ORDER BY created_at DESC LIMIT ?",
+            "SELECT id, title, description, sticky_content, image, needed_amount FROM donation_needs WHERE archived_at IS NULL ORDER BY created_at DESC LIMIT $1",
         )
-        .bind(limit)
+        .bind(i64::from(limit))
         .fetch_all(db)
         .await
     }
 
     /// One page of the needs still shown on the site, newest first.
-    pub async fn paginate_active(db: &SqlitePool, page: Page) -> sqlx::Result<Paginator<Self>> {
-        let total: u32 =
+    pub async fn paginate_active(db: &Db, page: Page) -> sqlx::Result<Paginator<Self>> {
+        let total: i64 =
             sqlx::query_scalar("SELECT COUNT(*) FROM donation_needs WHERE archived_at IS NULL")
                 .fetch_one(db)
                 .await?;
 
         let items = sqlx::query_as(
-            "SELECT id, title, description, sticky_content, image, needed_amount FROM donation_needs WHERE archived_at IS NULL ORDER BY created_at DESC LIMIT ? OFFSET ?",
+            "SELECT id, title, description, sticky_content, image, needed_amount FROM donation_needs WHERE archived_at IS NULL ORDER BY created_at DESC LIMIT $1 OFFSET $2",
         )
-        .bind(page.size)
-        .bind(page.offset())
+        .bind(i64::from(page.size))
+        .bind(i64::from(page.offset()))
         .fetch_all(db)
         .await?;
 
@@ -68,8 +68,8 @@ impl DonationNeed {
     }
 
     /// The need at `/donation-needs/{id}`. Like the Laravel site, an archived need's page still opens.
-    pub async fn find(db: &SqlitePool, id: i64) -> sqlx::Result<Option<Self>> {
-        sqlx::query_as("SELECT id, title, description, sticky_content, image, needed_amount FROM donation_needs WHERE id = ?")
+    pub async fn find(db: &Db, id: i64) -> sqlx::Result<Option<Self>> {
+        sqlx::query_as("SELECT id, title, description, sticky_content, image, needed_amount FROM donation_needs WHERE id = $1")
             .bind(id)
             .fetch_optional(db)
             .await

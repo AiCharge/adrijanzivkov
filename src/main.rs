@@ -1,28 +1,15 @@
-//! The website of the Adrijan Zhivkov Foundation, served by a single Rust program.
-//!
-//! Reading order for learning: `main.rs` (this file) → `config.rs` → `state.rs` → `routes/mod.rs`
-//! → one handler such as `routes/news.rs` → `models/news.rs` → `templates/pages/news/index.html`.
-
-// `mod` declares a module. Each one maps to a file (`config.rs`) or a folder with a `mod.rs`
-// (`models/mod.rs`). Nothing is loaded automatically like Composer's autoloader: the compiler
-// only sees the files you list here.
-mod config;
-mod error;
-mod format;
-mod models;
-mod pagination;
-mod routes;
-mod site;
-mod state;
+//! Starts the web server. All the site itself lives in the library (`lib.rs`).
 
 use anyhow::Context;
-use sqlx::sqlite::{SqliteConnectOptions, SqlitePoolOptions};
-use std::str::FromStr;
+use std::net::SocketAddr;
 use tokio::net::TcpListener;
 use tracing_subscriber::EnvFilter;
 
-use crate::config::Config;
-use crate::state::AppState;
+use adrijanzivkov::config::Config;
+use adrijanzivkov::rate_limit::RateLimiter;
+use adrijanzivkov::session::key_from_app_key;
+use adrijanzivkov::state::AppState;
+use axum_extra::extract::cookie::Key;
 
 // `#[tokio::main]` turns `main` into an async function by starting Tokio, the async runtime.
 // Rust has `async`/`await` in the language, but no built-in runtime to run it: Tokio is the
@@ -44,19 +31,23 @@ async fn main() -> anyhow::Result<()> {
     // if it returns `Ok(config)`, unwrap the value and carry on. It replaces try/catch.
     let config = Config::from_env()?;
 
-    // Read-only for now: until the forms are ported, this server can't change the data.
-    let connect_options = SqliteConnectOptions::from_str(&config.database_url)
-        .with_context(|| format!("invalid DATABASE_URL `{}`", config.database_url))?
-        .read_only(true);
+    let cookie_key = match &config.app_key {
+        Some(app_key) => key_from_app_key(app_key).context("APP_KEY is not usable")?,
+        None => {
+            tracing::warn!(
+                "APP_KEY is not set: using a random key, so logins end when the server restarts"
+            );
+            Key::generate()
+        }
+    };
 
-    let db = SqlitePoolOptions::new()
-        .max_connections(5)
-        .connect_with(connect_options)
-        .await
-        .context("could not open the database")?;
+    let db = adrijanzivkov::db::connect(&config.database_url).await?;
 
-    let state = AppState { db };
-    let app = routes::router(state);
+    let state = AppState {
+        db,
+        cookie_key,
+        rate_limiter: RateLimiter::default(),
+    };
 
     // `::` listens on every address, IPv6 and IPv4. Laravel Cloud requires it.
     let listener = TcpListener::bind(("::", config.port))
@@ -65,9 +56,13 @@ async fn main() -> anyhow::Result<()> {
 
     tracing::info!("listening on http://localhost:{}", config.port);
 
-    axum::serve(listener, app)
-        .with_graceful_shutdown(shutdown_signal())
-        .await?;
+    // `into_make_service_with_connect_info` gives handlers the visitor's address, for rate limiting.
+    axum::serve(
+        listener,
+        adrijanzivkov::app(state).into_make_service_with_connect_info::<SocketAddr>(),
+    )
+    .with_graceful_shutdown(shutdown_signal())
+    .await?;
 
     Ok(())
 }

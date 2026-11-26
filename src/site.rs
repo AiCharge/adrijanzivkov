@@ -100,3 +100,36 @@ impl Layout {
         self
     }
 }
+
+/// The visitor's IP address, for rate limiting.
+///
+/// Behind Laravel Cloud's load balancer every request arrives from the balancer, and the visitor's
+/// address is in `X-Forwarded-For`. That header is a list each proxy appends to, and a visitor can
+/// put anything at its start, so only the **last** entry (added by the balancer) is trusted.
+/// Without the header (running locally) the connection's own address is used.
+pub struct ClientIp(pub String);
+
+impl<S: Send + Sync> FromRequestParts<S> for ClientIp {
+    type Rejection = Infallible;
+
+    async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
+        let forwarded = parts
+            .headers
+            .get("x-forwarded-for")
+            .and_then(|value| value.to_str().ok())
+            .and_then(|list| list.rsplit(',').next())
+            .map(|ip| ip.trim().to_string())
+            .filter(|ip| !ip.is_empty());
+
+        let connected = parts
+            .extensions
+            .get::<axum::extract::ConnectInfo<std::net::SocketAddr>>()
+            .map(|info| info.0.ip().to_string());
+
+        Ok(Self(
+            forwarded
+                .or(connected)
+                .unwrap_or_else(|| "unknown".to_string()),
+        ))
+    }
+}
