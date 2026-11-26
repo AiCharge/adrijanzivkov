@@ -6,21 +6,31 @@ teaching comments where a Rust idea first appears. Keep both up to date when you
 
 ## Stack
 
-- axum 0.8 (routing), tokio (runtime), sqlx 0.9 (SQLite now, read-only), askama 0.16 (templates), tower-http.
-- Tailwind CSS v4 built by the Tailwind CLI: `assets/css/app.css` → `public/css/app.css`.
-- One small vanilla script, `public/js/app.js` (scroll reveal, mobile menu). No JS framework.
+- axum 0.8 (routing), tokio (runtime), sqlx 0.9 through its `Any` driver (SQLite locally, Postgres in
+  production), askama 0.16 (templates), tower-http, axum-extra (encrypted cookie sessions), bcrypt,
+  object_store (S3 uploads), rust-embed (`public/` built into the binary).
+- Tailwind CSS v4 via its CLI (`assets/css/app.css` → `public/css/app.css`, `assets/css/admin.css` →
+  `public/css/admin.css`) and esbuild for the admin's Tiptap editor (`assets/js/editor.js` → `public/js/editor.js`).
+  The built files are committed (Laravel Cloud's Rust build has no Node); CI checks they're up to date.
+- Plain scripts, no framework: `public/js/app.js` (public site), `public/js/admin.js` (admin).
 
 ## Commands
 
-- `pnpm run build` (or `pnpm run dev`) — build the CSS. Run before `cargo run` on a fresh checkout.
-- `cargo run` — serve on http://localhost:3000 (from the repository root: paths are relative to it).
-- `cargo test`, `cargo fmt`, `cargo clippy --all-targets` — all must be clean before committing.
+- `pnpm install && pnpm run build` — build CSS and the editor script. Commit the results in `public/`.
+- `cargo run` — migrate and serve on http://localhost:3000 (run from the repository root).
+- `cargo test`, `cargo fmt`, `cargo clippy --all-targets -- -D warnings` — all must be clean before committing.
+- `ADMIN_PASSWORD=… cargo run -- create-admin <email> <name>` — add an admin account.
 
 ## Conventions
 
-- Handlers live in `src/routes/<area>.rs`, each with its page struct (`#[derive(Template)]`).
-- Queries live on the model structs in `src/models/`. sqlx 0.9 only accepts SQL as string literals: never build
-  SQL with `format!`, always `.bind()` values.
-- Templates: `templates/layouts` (page shells), `templates/components` (macros), `templates/partials`
-  (includes), `templates/pages` (one per page). Use `|safe` only for HTML written in the admin.
+- Public handlers in `src/routes/<area>.rs`, admin handlers in `src/routes/admin/<area>.rs`, each with its page
+  struct (`#[derive(Template)]`). Every admin handler takes `admin: Admin`, which is the login check.
+- Queries live on the model structs in `src/models/`. sqlx only accepts SQL as string literals: never build SQL
+  with `format!`, always `.bind()` values, use `$1, $2` placeholders, read timestamps with
+  `CAST(col AS TEXT)` and write them with `CURRENT_TIMESTAMP` (the `Any` driver has no date type).
+- Schema changes need a migration in both `migrations/sqlite` and `migrations/postgres`.
+- Forms: a `_token` field (CSRF, `session.verify_csrf`), validation into `validation::Errors` with Macedonian
+  messages, 422 with the form again on errors, flash + redirect on success.
+- Templates: `templates/` (public site) and `templates/admin/` (admin, `ui-*` classes from admin.css, macros in
+  `templates/admin/components/ui.html`). Use `|safe` only for HTML written in the admin.
 - User-facing text is Macedonian.

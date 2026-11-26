@@ -35,8 +35,8 @@
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="stylesheet" href="/css/admin.css">
-    <script src="/js/admin.js" defer></script>
+    <link rel="stylesheet" href="{{ crate::assets::url("css/admin.css") }}">
+    <script src="{{ crate::assets::url("js/admin.js") }}" defer></script>
 </head>
 <body class="font-sans antialiased">
 {% block body %}{% endblock %}

@@ -9,12 +9,13 @@
 
 // `pub mod` makes a module visible outside the crate (to main.rs and the tests); plain `mod` keeps it
 // private to the library.
+mod assets;
 pub mod config;
 pub mod db;
 mod error;
 mod format;
 pub mod models;
-mod pagination;
+pub mod pagination;
 pub mod rate_limit;
 mod routes;
 pub mod session;

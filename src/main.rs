@@ -6,6 +6,7 @@ use tokio::net::TcpListener;
 use tracing_subscriber::EnvFilter;
 
 use adrijanzivkov::config::Config;
+use adrijanzivkov::models::User;
 use adrijanzivkov::rate_limit::RateLimiter;
 use adrijanzivkov::session::key_from_app_key;
 use adrijanzivkov::state::AppState;
@@ -44,11 +45,28 @@ async fn main() -> anyhow::Result<()> {
 
     let db = adrijanzivkov::db::connect(&config.database_url).await?;
 
+    // `cargo run -- create-admin <email> <name>` (or `adrijanzivkov create-admin …` on a server) adds an
+    // admin account and stops, for a fresh database. The password comes from `ADMIN_PASSWORD`, so it
+    // never ends up in the shell's history.
+    let arguments: Vec<String> = std::env::args().collect();
+    if arguments.get(1).map(String::as_str) == Some("create-admin") {
+        let (Some(email), Some(name)) = (arguments.get(2), arguments.get(3)) else {
+            anyhow::bail!(
+                "usage: create-admin <email> <name>, with the password in ADMIN_PASSWORD"
+            );
+        };
+        let password =
+            std::env::var("ADMIN_PASSWORD").context("set ADMIN_PASSWORD to the new password")?;
+        User::create(&db, name, email, &password).await?;
+        println!("Created the admin account {email}.");
+        return Ok(());
+    }
+
     let state = AppState {
         db,
         cookie_key,
         rate_limiter: RateLimiter::default(),
-        storage: Storage::local(),
+        storage: Storage::from_env()?,
     };
 
     // `::` listens on every address, IPv6 and IPv4. Laravel Cloud requires it.

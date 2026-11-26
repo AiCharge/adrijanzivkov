@@ -301,6 +301,76 @@ redirects or shows the errors, and the browser's back button, reload and "open i
 4. Make a Postgres-only bug impossible to miss: run `cargo test` with `DATABASE_URL` pointing at Postgres.
    (Hint: the test client uses `sqlite::memory:` — what would it take to read it from the environment?)
 
+---
+
+## Chapter 4 — Production: Postgres, object storage, one self-contained binary
+
+**What changed.** The program is ready for Laravel Cloud's Rust runtime:
+
+- **Everything is inside the binary.** `public/` (CSS, scripts, fonts, images) is embedded with `rust-embed`,
+  the SQL migrations with `sqlx::migrate!`, the templates by Askama. A deploy is one file.
+- **Postgres** is configured from `DATABASE_URL`, `DB_URL`, or Laravel's own `DB_CONNECTION=pgsql`, `DB_HOST`,
+  `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` and `DB_SSLMODE` (TLS through rustls).
+- **Uploads go to the bucket** when `FILESYSTEM_DISK=s3`, using Laravel's `AWS_*` variables, so an existing
+  Laravel Cloud bucket keeps working and old image paths still resolve against `AWS_URL`.
+- **Cache-safe assets.** Pages link to `/css/app.css?v=<fingerprint>`; those are cached for a year and change
+  name on every deploy. Every file has an ETag, so unchanged files answer `304 Not Modified`.
+- **`create-admin`** adds an admin account to a fresh database: `ADMIN_PASSWORD=… adrijanzivkov create-admin <email> <name>`.
+- **CI** (`.github/workflows/ci.yml`) runs `cargo fmt --check`, `clippy -D warnings`, the tests, and checks
+  the committed CSS/JS match their sources.
+
+**Read, in this order**
+
+1. `src/assets.rs` — embedding, content types, ETags, fingerprinted URLs.
+2. `src/storage.rs` — an `enum` whose variants carry different data (`Local { root }`, `S3(Arc<AmazonS3>)`).
+3. `src/config.rs` — building a database URL from Laravel's variables, with percent-encoding.
+4. `src/main.rs` — the `create-admin` command next to the server.
+5. `.github/workflows/ci.yml`.
+
+**Rust ideas**
+
+- **Compile-time vs runtime.** `#[derive(Embed)]`, `sqlx::migrate!` and `#[derive(Template)]` all read files
+  *while compiling*. A missing template or migration is a build error, not a production surprise.
+- **Enums with data.** `Storage::Local { root }` and `Storage::S3(client)` are one type; `match` forces each
+  method to handle both, so you can't add S3 and forget it in `put`.
+- **Features.** `Cargo.toml` turns on only what's used: sqlx's `any`, `sqlite`, `postgres`, `migrate` and
+  `tls-rustls`; rust-embed's `include-exclude`. Smaller builds, fewer dependencies to trust.
+
+**Deploying to Laravel Cloud** (not yet tried against a real environment — expect to adjust)
+
+1. Create a **separate application** (or environment) on this branch, so the Laravel site keeps running.
+   Cloud detects the `Cargo.toml` at the repository root and builds with `cargo build --release`.
+2. Start command: `adrijanzivkov`. It listens on `::` and Cloud's `$PORT`, and stops cleanly on SIGTERM.
+   Health check: `/up`.
+3. Environment: `APP_KEY` (copy Laravel's so the secret stays the same), attach the database (Cloud provides
+   the `DB_*` variables; set `DB_SSLMODE=require` if it doesn't), attach the bucket and set
+   `FILESYSTEM_DISK=s3`. Logs: `RUST_LOG=adrijanzivkov=info,tower_http=info`.
+4. On first start the migrations run. They use `CREATE TABLE IF NOT EXISTS`, so the tables Laravel created
+   are kept with their data; sqlx adds its own `_sqlx_migrations` table next to Laravel's `migrations` table.
+5. Existing admins log in with their Laravel passwords (the `$2y$` bcrypt hashes are read as they are).
+
+**What's different from Laravel in production**
+
+- Sessions are encrypted cookies, so there's no `sessions` table, and logging out ends the session in that
+  browser only. A changed password doesn't sign out other browsers.
+- Rate limits live in memory per instance (see Chapter 2).
+- Laravel Cloud has no managed queues or scheduled tasks for Rust; this site needs neither.
+
+**Measured locally** (release build, SQLite, no other load): the binary is **27 MB** with the embedded fonts,
+images and the S3 client; it serves a page in **~0.5–0.6 ms** and uses **~14 MB** of memory after 400 requests.
+
+**Exercises**
+
+1. Run `cargo build --release`, copy `target/release/adrijanzivkov` to an empty folder with only a `database/`
+   folder, and run it there. Which files does it still need from the repository? (Answer: none but the database.)
+2. Change a colour in `assets/css/app.css`, run `pnpm run build`, reload a page and look at the CSS link's `?v=`.
+3. Read `config.rs` and write a unit test for `url_from_parts` with a password that contains `@`.
 ## What's next
 
-- **Chapter 4 — Production:** Postgres, configuration for Laravel Cloud's Rust runtime, and a deploy.
+The migration is complete: everything the Laravel site did, this program does. Ideas for going further, in
+rising difficulty:
+
+- Write the exercises' features (news deletion, a "new stories" counter, phone validation).
+- Switch the queries to `sqlx::query_as!`, which checks SQL against a real database at compile time.
+- Run the integration tests against Postgres in CI with a service container.
+- Deploy to a Laravel Cloud environment and compare response times and memory with the Laravel app.

@@ -1,12 +1,16 @@
-//! Where uploaded images go, like Laravel's `Storage` facade with the `public` disk.
+//! Where uploaded images go, like Laravel's `Storage` facade.
 //!
-//! Locally files are written under `storage/app/public` and served at `/storage/…`. On Laravel Cloud
-//! the disk isn't kept between deploys, so files go to its S3-compatible object storage instead
-//! (Chapter 4, `Storage::S3`). The rest of the app only calls `put` and `url`, so it doesn't care which.
+//! Locally files are written under `storage/app/public` and served at `/storage/…`. On Laravel Cloud the
+//! disk isn't kept between deploys, so with `FILESYSTEM_DISK=s3` files go to its S3-compatible object
+//! storage instead, read from the same `AWS_*` variables Laravel used. The rest of the app only calls
+//! `put` and `url`, so it doesn't care which.
 
 use anyhow::Context;
+use object_store::aws::{AmazonS3, AmazonS3Builder};
+use object_store::path::Path as ObjectPath;
+use object_store::{Attribute, Attributes, ObjectStore, PutOptions};
 use std::path::PathBuf;
-use std::sync::OnceLock;
+use std::sync::{Arc, OnceLock};
 
 /// The public address uploads are served from: `/storage` locally, the bucket's URL on Laravel Cloud.
 ///
@@ -30,26 +34,70 @@ pub fn url(path: &str) -> String {
     )
 }
 
-/// Where files are kept.
+/// Where files are kept. An `enum` with data in its variants: each kind of storage carries what it
+/// needs, and `match` makes every method handle both.
 #[derive(Clone)]
 pub enum Storage {
     /// A folder on this machine, served at `/storage`.
     Local { root: PathBuf },
+    /// An S3-compatible bucket. `Arc` shares one client between all requests.
+    S3(Arc<AmazonS3>),
 }
 
 impl Storage {
+    /// Picks the storage from the environment, like Laravel's `FILESYSTEM_DISK`.
+    pub fn from_env() -> anyhow::Result<Self> {
+        match std::env::var("FILESYSTEM_DISK").as_deref() {
+            Ok("s3") => Self::s3_from_env(),
+            _ => Ok(Self::local()),
+        }
+    }
+
     /// Local storage in `storage/app/public`.
     pub fn local() -> Self {
-        PUBLIC_URL.get_or_init(|| "/storage".to_string());
-        Storage::Local {
-            root: PathBuf::from("storage/app/public"),
-        }
+        Self::local_in(PathBuf::from("storage/app/public"))
     }
 
     /// Local storage in another folder, e.g. a temporary one for tests.
     pub fn local_in(root: PathBuf) -> Self {
         PUBLIC_URL.get_or_init(|| "/storage".to_string());
         Storage::Local { root }
+    }
+
+    /// The bucket from Laravel's variables: `AWS_BUCKET`, `AWS_DEFAULT_REGION`, `AWS_ACCESS_KEY_ID`,
+    /// `AWS_SECRET_ACCESS_KEY`, and for S3-compatible services `AWS_ENDPOINT` and
+    /// `AWS_USE_PATH_STYLE_ENDPOINT`. `AWS_URL` is the public address files are served from.
+    fn s3_from_env() -> anyhow::Result<Self> {
+        let variable = |name: &str| {
+            std::env::var(name)
+                .ok()
+                .filter(|value| !value.is_empty())
+                .with_context(|| format!("{name} must be set when FILESYSTEM_DISK=s3"))
+        };
+
+        let bucket = variable("AWS_BUCKET")?;
+        let public_url = variable("AWS_URL")?;
+
+        let mut builder = AmazonS3Builder::new()
+            .with_bucket_name(&bucket)
+            .with_region(variable("AWS_DEFAULT_REGION").unwrap_or_else(|_| "auto".to_string()))
+            .with_access_key_id(variable("AWS_ACCESS_KEY_ID")?)
+            .with_secret_access_key(variable("AWS_SECRET_ACCESS_KEY")?);
+
+        if let Ok(endpoint) = variable("AWS_ENDPOINT") {
+            builder = builder.with_endpoint(endpoint);
+        }
+
+        let path_style =
+            std::env::var("AWS_USE_PATH_STYLE_ENDPOINT").is_ok_and(|value| value == "true");
+        builder = builder.with_virtual_hosted_style_request(!path_style);
+
+        let client = builder
+            .build()
+            .context("could not configure the S3 bucket")?;
+        PUBLIC_URL.get_or_init(|| public_url);
+
+        Ok(Storage::S3(Arc::new(client)))
     }
 
     /// Saves a file under `directory` with a random name, like `$file->store('news')`, and returns its
@@ -72,9 +120,40 @@ impl Storage {
                     .await
                     .with_context(|| format!("could not write {}", full_path.display()))?;
             }
+            Storage::S3(client) => {
+                // The content type lets browsers show the image straight from the bucket.
+                let attributes =
+                    Attributes::from_iter([(Attribute::ContentType, content_type(extension))]);
+                let options = PutOptions {
+                    attributes,
+                    ..PutOptions::default()
+                };
+                client
+                    .put_opts(&ObjectPath::from(path.as_str()), bytes.into(), options)
+                    .await
+                    .with_context(|| format!("could not upload {path} to the bucket"))?;
+            }
         }
 
         Ok(path)
+    }
+
+    /// The local folder, for serving `/storage`; `None` when files are in a bucket.
+    pub fn local_root(&self) -> Option<&PathBuf> {
+        match self {
+            Storage::Local { root } => Some(root),
+            Storage::S3(_) => None,
+        }
+    }
+}
+
+fn content_type(extension: &str) -> &'static str {
+    match extension {
+        "jpg" => "image/jpeg",
+        "png" => "image/png",
+        "gif" => "image/gif",
+        "webp" => "image/webp",
+        _ => "application/octet-stream",
     }
 }
 
@@ -106,5 +185,11 @@ mod tests {
         let name = random_name();
         assert_eq!(name.len(), 40);
         assert_ne!(name, random_name());
+    }
+
+    #[test]
+    fn labels_uploads_with_their_type() {
+        assert_eq!(content_type("webp"), "image/webp");
+        assert_eq!(content_type("exe"), "application/octet-stream");
     }
 }

@@ -33,8 +33,8 @@
         only hide content when the script that reveals it will run. #}
     <script>document.documentElement.classList.add('js');</script>
 
-    <link rel="stylesheet" href="/css/app.css">
-    <script src="/js/app.js" defer></script>
+    <link rel="stylesheet" href="{{ crate::assets::url("css/app.css") }}">
+    <script src="{{ crate::assets::url("js/app.js") }}" defer></script>
 </head>
 <body class="font-sans antialiased">
 {% block body %}{% endblock %}
