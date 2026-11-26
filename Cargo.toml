@@ -1,0 +1,33 @@
+[package]
+name = "adrijanzivkov"
+version = "0.1.0"
+edition = "2024"
+# `if let … && …` chains (used in the admin) need Rust 1.88 or newer.
+rust-version = "1.88"
+description = "The website of the Adrijan Zhivkov Foundation"
+
+[dependencies]
+anyhow = "1.0.105"
+askama = "0.16.1"
+axum = { version = "0.8.9", features = ["multipart"] }
+axum-extra = { version = "0.12.6", features = ["cookie-key-expansion", "cookie-private"] }
+base64 = "0.23.1"
+bcrypt = "0.19.3"
+chrono = "0.4.45"
+chrono-tz = "0.10.4"
+dotenvy = "0.15.7"
+object_store = { version = "0.14.2", features = ["aws"] }
+rand = "0.10.4"
+rust-embed = { version = "8.14.0", features = ["include-exclude", "mime-guess"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+sqlx = { version = "0.9.1", default-features = false, features = ["runtime-tokio", "sqlite", "chrono", "macros", "any", "postgres", "migrate", "tls-rustls"] }
+time = "0.3.55"
+tokio = { version = "1.54.1", features = ["full"] }
+tower-http = { version = "0.7.1", features = ["fs", "trace"] }
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
+
+[dev-dependencies]
+http-body-util = "0.1.5"
+tower = { version = "0.5.3", features = ["util"] }

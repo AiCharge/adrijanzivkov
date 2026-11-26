@@ -1,0 +1,354 @@
+@import 'tailwindcss' source(none);
+
+@import 'tw-animate-css';
+
+/* Inter is served from this site (public/fonts/Inter), never a font CDN. */
+@font-face {
+    font-family: 'Inter Variable';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 100 900;
+    src: url('/fonts/Inter/inter-cyrillic.woff2') format('woff2-variations');
+    unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@font-face {
+    font-family: 'Inter Variable';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 100 900;
+    src: url('/fonts/Inter/inter-latin.woff2') format('woff2-variations');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@custom-variant dark (&:is(.dark *));
+
+/* `source(none)` above turns off Tailwind's scan of the whole project; it reads only the admin's templates
+   and scripts, so the public site's classes stay out of this file. */
+@source '../../templates/admin';
+@source '../js';
+@source '../../public/js/admin.js';
+
+@theme inline {
+    --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --radius-lg: var(--radius);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-sm: calc(var(--radius) - 4px);
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --color-sidebar: var(--sidebar-background);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--border, currentColor);
+    }
+}
+
+/*
+  The admin's look follows the company's other admin panel, recoloured in the foundation's green:
+  the logo's deep green for the sidebar, the site's green (#054a29) for actions and the current page,
+  green-tinted surfaces and crisp 8px corners.
+*/
+:root {
+    --brand-forest: oklch(0.25 0.045 160);
+    --brand-green: oklch(0.37 0.08 155);
+
+    --success: #059669;
+    --info: #2563eb;
+    --destructive: #c0392b;
+
+    --background: oklch(0.982 0.004 160);
+    --foreground: oklch(0.21 0.02 160);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.21 0.02 160);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.21 0.02 160);
+    --primary: var(--brand-green);
+    --primary-foreground: oklch(0.99 0 0);
+    --secondary: oklch(0.955 0.012 160);
+    --secondary-foreground: oklch(0.3 0.06 158);
+    --muted: oklch(0.965 0.006 160);
+    --muted-foreground: oklch(0.52 0.02 160);
+    /* shadcn uses accent for hover backgrounds, not for the brand color */
+    --accent: oklch(0.955 0.014 160);
+    --accent-foreground: oklch(0.26 0.06 158);
+    --destructive-foreground: #ffffff;
+    --border: oklch(0.915 0.01 160);
+    --input: oklch(0.88 0.012 160);
+    --ring: var(--brand-green);
+    --radius: 0.5rem;
+
+    /* Sidebar: deep green in light and dark mode alike */
+    --sidebar-background: var(--brand-forest);
+    --sidebar: var(--brand-forest);
+    --sidebar-foreground: oklch(0.86 0.025 160);
+    --sidebar-primary: oklch(0.8 0.13 155);
+    --sidebar-primary-foreground: oklch(0.2 0.04 160);
+    --sidebar-accent: oklch(0.32 0.05 160);
+    --sidebar-accent-foreground: oklch(0.99 0 0);
+    --sidebar-border: oklch(1 0 0 / 9%);
+    --sidebar-ring: oklch(0.8 0.13 155);
+}
+
+.dark {
+    --background: oklch(0.165 0.015 160);
+    --foreground: oklch(0.96 0.005 160);
+    --card: oklch(0.205 0.018 160);
+    --card-foreground: oklch(0.96 0.005 160);
+    --popover: oklch(0.205 0.018 160);
+    --popover-foreground: oklch(0.96 0.005 160);
+    --primary: oklch(0.7 0.14 155);
+    --primary-foreground: oklch(0.16 0.03 160);
+    --secondary: oklch(0.27 0.025 160);
+    --secondary-foreground: oklch(0.96 0.005 160);
+    --muted: oklch(0.25 0.018 160);
+    --muted-foreground: oklch(0.7 0.02 160);
+    --accent: oklch(0.27 0.025 160);
+    --accent-foreground: oklch(0.96 0.005 160);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 9%);
+    --input: oklch(1 0 0 / 14%);
+    --ring: oklch(0.7 0.14 155);
+
+    --sidebar-background: oklch(0.15 0.02 160);
+    --sidebar: oklch(0.15 0.02 160);
+    --sidebar-foreground: oklch(0.86 0.025 160);
+    --sidebar-primary: oklch(0.8 0.13 155);
+    --sidebar-primary-foreground: oklch(0.2 0.04 160);
+    --sidebar-accent: oklch(0.25 0.03 160);
+    --sidebar-accent-foreground: oklch(0.99 0 0);
+    --sidebar-border: oklch(1 0 0 / 8%);
+    --sidebar-ring: oklch(0.8 0.13 155);
+}
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+    body {
+        @apply bg-background text-foreground;
+        letter-spacing: -0.006em;
+        font-feature-settings: 'cv11', 'ss01';
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Sidebar states, set as attributes on <html> by public/js/admin.js (and the inline script in the head,
+   so the first paint is already right): folded to icons on desktop, open as a drawer on phones. */
+@custom-variant sidebar-collapsed (&:where([data-sidebar-collapsed] *));
+@custom-variant sidebar-open (&:where([data-sidebar-open] *));
+
+/*
+  The admin's building blocks. These are the class lists of the shadcn-vue components the Inertia admin
+  used (Button, Input, Card, Table, Badge…), turned into CSS classes with `@apply`, so the server-rendered
+  templates look the same without repeating long class lists on every element.
+*/
+@layer components {
+    .ui-btn {
+        @apply inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 [&_svg]:pointer-events-none [&_svg]:shrink-0;
+    }
+    .ui-btn-primary {
+        @apply bg-primary text-primary-foreground hover:bg-primary/90;
+    }
+    .ui-btn-outline {
+        @apply border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50;
+    }
+    .ui-btn-ghost {
+        @apply hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50;
+    }
+    .ui-btn-destructive {
+        @apply bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60;
+    }
+    .ui-btn-sm {
+        @apply h-8 gap-1.5 px-3 has-[>svg]:px-2.5;
+    }
+    .ui-btn-icon {
+        @apply size-8 px-0 has-[>svg]:px-0;
+    }
+
+    .ui-input {
+        @apply h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:aria-invalid:ring-destructive/40;
+    }
+    .ui-textarea {
+        @apply flex min-h-16 w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30;
+    }
+    .ui-select {
+        @apply h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive dark:bg-input/30;
+    }
+    .ui-label {
+        @apply flex w-fit gap-2 text-sm leading-snug font-medium select-none;
+    }
+    .ui-field {
+        @apply flex w-full flex-col gap-3;
+    }
+    .ui-field-error {
+        @apply text-sm font-normal text-destructive;
+    }
+    .ui-field-description {
+        @apply text-sm leading-normal font-normal text-muted-foreground;
+    }
+
+    .ui-card {
+        @apply flex flex-col gap-6 rounded-xl border bg-card py-6 text-card-foreground shadow-sm;
+    }
+    .ui-card-header {
+        @apply grid auto-rows-min items-start gap-1.5 px-6;
+    }
+    .ui-card-title {
+        @apply leading-none font-semibold;
+    }
+    .ui-card-description {
+        @apply text-sm text-muted-foreground;
+    }
+    .ui-card-content {
+        @apply px-6;
+    }
+
+    .ui-table {
+        @apply w-full caption-bottom text-sm;
+    }
+    .ui-table thead tr {
+        @apply border-b;
+    }
+    .ui-table tbody tr {
+        @apply border-b transition-colors last:border-0 hover:bg-muted/50;
+    }
+    .ui-table th {
+        @apply h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground first:pl-4 last:pr-4;
+    }
+    .ui-table td {
+        @apply p-2 align-middle first:pl-4 last:pr-4;
+    }
+
+    .ui-tabs {
+        @apply inline-flex h-auto max-w-full flex-wrap items-center justify-start rounded-lg bg-muted p-0.75 text-muted-foreground;
+    }
+    .ui-tab {
+        @apply inline-flex h-[calc(100%-1px)] items-center justify-center gap-1.5 rounded-md border border-transparent px-2.5 py-1 text-sm font-medium whitespace-nowrap text-foreground/70 transition hover:text-foreground aria-[current=page]:bg-background aria-[current=page]:text-foreground aria-[current=page]:shadow-sm dark:aria-[current=page]:border-input dark:aria-[current=page]:bg-input/30;
+    }
+
+    .ui-badge {
+        @apply inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-md border px-2 py-0.5 text-xs font-medium whitespace-nowrap [&>svg]:size-3;
+    }
+    .ui-badge-success {
+        @apply border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400;
+    }
+    .ui-badge-warning {
+        @apply border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-400;
+    }
+    .ui-badge-danger {
+        @apply border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-400;
+    }
+    .ui-badge-info {
+        @apply border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-400;
+    }
+    .ui-badge-neutral {
+        @apply border-border bg-muted text-muted-foreground;
+    }
+
+    .ui-dialog {
+        @apply m-auto w-full max-w-[calc(100%-2rem)] gap-4 rounded-lg border bg-background p-6 text-foreground shadow-lg backdrop:bg-black/60 sm:max-w-lg;
+    }
+
+    .ui-menu {
+        @apply absolute z-50 min-w-56 overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-md;
+    }
+    .ui-menu-item {
+        @apply relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground [&_svg]:size-4 [&_svg]:text-muted-foreground;
+    }
+
+    /* The rich-text editor's content, styled like the public site's articles (see public templates). */
+    .admin-rich-content p {
+        margin-bottom: 0.75rem;
+        line-height: 1.7;
+    }
+    .admin-rich-content h2 {
+        margin: 1.25rem 0 0.75rem;
+        font-size: 1.375rem;
+        font-weight: 700;
+    }
+    .admin-rich-content h3 {
+        margin: 1rem 0 0.5rem;
+        font-size: 1.125rem;
+        font-weight: 700;
+    }
+    .admin-rich-content ul,
+    .admin-rich-content ol {
+        margin-bottom: 0.75rem;
+        padding-left: 1.5rem;
+    }
+    .admin-rich-content ul {
+        list-style: disc;
+    }
+    .admin-rich-content ol {
+        list-style: decimal;
+    }
+    .admin-rich-content blockquote {
+        margin-bottom: 0.75rem;
+        border-left: 3px solid var(--border);
+        padding-left: 1rem;
+        color: var(--muted-foreground);
+        font-style: italic;
+    }
+    .admin-rich-content a {
+        color: var(--primary);
+        text-decoration: underline;
+    }
+    .admin-rich-content img {
+        margin: 1rem 0;
+        max-height: 24rem;
+        border-radius: 0.5rem;
+    }
+    .admin-rich-content img.ProseMirror-selectednode {
+        outline: 3px solid color-mix(in oklch, var(--ring) 50%, transparent);
+    }
+}

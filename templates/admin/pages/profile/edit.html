@@ -1,0 +1,58 @@
+{#- The logged-in admin's own name, email and password. Was pages/Admin/Profile/Edit.vue. -#}
+{% extends "admin/layouts/app.html" %}
+{% import "admin/components/ui.html" as ui %}
+{% import "admin/components/icons.html" as icons %}
+
+{% block content %}
+<div class="max-w-3xl space-y-6">
+    {% call ui::page_header("Мој профил", "Вашите податоци и лозинката за најава.") %}{% endcall %}
+
+    <form method="post" action="/admin/profile" class="space-y-6" data-submitting>
+        <input type="hidden" name="_token" value="{{ ctx.csrf_token }}">
+
+        <div class="ui-card">
+            <div class="ui-card-header"><h2 class="ui-card-title">Лични податоци</h2></div>
+            <div class="ui-card-content grid gap-6 md:grid-cols-2">
+                <div class="ui-field">
+                    <label for="name" class="ui-label">Име</label>
+                    <input id="name" name="name" value="{{ name }}" autocomplete="name" required class="ui-input" {% if errors.has("name") %}aria-invalid="true"{% endif %}>
+                    {% call ui::field_error(errors, "name") %}{% endcall %}
+                </div>
+                <div class="ui-field">
+                    <label for="email" class="ui-label">Е-пошта</label>
+                    <input id="email" name="email" type="email" value="{{ email }}" autocomplete="username" required class="ui-input" {% if errors.has("email") %}aria-invalid="true"{% endif %}>
+                    {% call ui::field_error(errors, "email") %}{% endcall %}
+                </div>
+            </div>
+        </div>
+
+        <div class="ui-card">
+            <div class="ui-card-header">
+                <h2 class="ui-card-title">Промена на лозинка</h2>
+                <p class="ui-card-description">Оставете ги полињата празни ако не сакате да ја промените лозинката.</p>
+            </div>
+            <div class="ui-card-content grid gap-6 md:grid-cols-2">
+                <div class="ui-field md:col-span-2">
+                    <label for="current_password" class="ui-label">Тековна лозинка</label>
+                    <input id="current_password" name="current_password" type="password" autocomplete="current-password" class="ui-input md:max-w-[calc(50%-0.75rem)]" {% if errors.has("current_password") %}aria-invalid="true"{% endif %}>
+                    {% call ui::field_error(errors, "current_password") %}{% endcall %}
+                </div>
+                <div class="ui-field">
+                    <label for="password" class="ui-label">Нова лозинка</label>
+                    <input id="password" name="password" type="password" autocomplete="new-password" class="ui-input" {% if errors.has("password") %}aria-invalid="true"{% endif %}>
+                    <p class="ui-field-description">Најмалку 12 знаци, мали и големи букви, број и симбол.</p>
+                    {% call ui::field_error(errors, "password") %}{% endcall %}
+                </div>
+                <div class="ui-field">
+                    <label for="password_confirmation" class="ui-label">Потврди нова лозинка</label>
+                    <input id="password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" class="ui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-end">
+            <button type="submit" class="ui-btn ui-btn-primary">{% call icons::icon("save") %}{% endcall %} Зачувај</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

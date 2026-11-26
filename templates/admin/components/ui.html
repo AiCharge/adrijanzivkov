@@ -1,0 +1,168 @@
+{#-
+    The admin's shared pieces, the server-rendered versions of the Vue components in main's
+    resources/js/components/admin (PageHeader, Pagination, AdminImageInput, AdminRichEditor…).
+    The `ui-*` classes are defined in assets/css/admin.css.
+-#}
+{% import "admin/components/icons.html" as icons %}
+
+{#- A page's title, description and actions (the actions go between `{% call %}` and `{% endcall %}`). -#}
+{% macro page_header(title, description = "") %}
+<div class="flex flex-wrap items-start justify-between gap-4">
+    <div class="min-w-0">
+        <h1 class="text-2xl font-semibold tracking-tight">{{ title }}</h1>
+        {% if !description.is_empty() %}<p class="mt-1 text-muted-foreground">{{ description }}</p>{% endif %}
+    </div>
+    <div class="flex flex-wrap items-center gap-2">{{ caller() }}</div>
+</div>
+{% endmacro %}
+
+{#- "← Back to the list" at the top of a record page. -#}
+{% macro back_link(href, label) %}
+<a href="{{ href }}" class="ui-btn ui-btn-ghost ui-btn-sm -ml-3">{% call icons::icon("arrow-left") %}{% endcall %} {{ label }}</a>
+{% endmacro %}
+
+{#- A coloured label: `success`, `warning`, `danger`, `info` or `neutral`. -#}
+{% macro badge(color, label) %}
+<span class="ui-badge ui-badge-{{ color }}">{{ label }}</span>
+{% endmacro %}
+
+{#- The error under a field, if it has one. -#}
+{% macro field_error(errors, field) %}
+{% if let Some(message) = errors.get(field) %}<p id="{{ field }}-error" class="ui-field-error">{{ message }}</p>{% endif %}
+{% endmacro %}
+
+{#- Filter tabs above a list; each one is a link with its count. -#}
+{% macro tabs(tabs) %}
+<nav class="ui-tabs" aria-label="Филтри">
+    {% for tab in tabs %}
+    <a href="{{ tab.href }}" class="ui-tab" {% if tab.active %}aria-current="page"{% endif %}>
+        {{ tab.label }} <span class="ui-badge ui-badge-neutral">{{ tab.count }}</span>
+    </a>
+    {% endfor %}
+</nav>
+{% endmacro %}
+
+{#- A search box that sends its form as you type, keeping one other filter (e.g. the current tab). -#}
+{% macro search_box(action, search, placeholder, keep_name = "", keep_value = "") %}
+<form method="get" action="{{ action }}" class="relative sm:w-72 lg:ml-auto" role="search">
+    {% if !keep_value.is_empty() %}<input type="hidden" name="{{ keep_name }}" value="{{ keep_value }}">{% endif %}
+    <span class="absolute top-1/2 left-2.5 -translate-y-1/2 text-muted-foreground">{% call icons::icon("search") %}{% endcall %}</span>
+    <input type="search" name="search" value="{{ search }}" placeholder="{{ placeholder }}" aria-label="Пребарај" class="ui-input pl-8" data-auto-submit>
+</form>
+{% endmacro %}
+
+{#- The footer of a list: which rows show, previous/next and the page numbers. Was Pagination.vue. -#}
+{% macro pagination(paginator) %}
+{% if let Some((first, last)) = paginator.range() %}
+<div class="flex flex-wrap items-center justify-between gap-2 border-t p-4 text-sm text-muted-foreground">
+    <span>{{ first }}–{{ last }} од {{ paginator.total }}</span>
+    {% if paginator.last_page() > 1 %}
+    <nav class="flex flex-wrap items-center gap-1" aria-label="Страници">
+        {% if let Some(url) = paginator.previous_url() %}
+        <a href="{{ url }}" class="ui-btn ui-btn-outline ui-btn-sm">{% call icons::icon("chevron-left") %}{% endcall %} Претходна</a>
+        {% endif %}
+        {% for link in paginator.links() %}
+            {% if loop.first || loop.last %}
+            {% else if let Some(url) = link.url %}
+            <a href="{{ url }}" class="ui-btn ui-btn-sm ui-btn-icon tabular-nums {% if link.active %}ui-btn-primary{% else %}ui-btn-ghost{% endif %}" {% if link.active %}aria-current="page"{% endif %}>{{ link.label }}</a>
+            {% else %}
+            <span class="px-1">…</span>
+            {% endif %}
+        {% endfor %}
+        {% if let Some(url) = paginator.next_url() %}
+        <a href="{{ url }}" class="ui-btn ui-btn-outline ui-btn-sm">Следна {% call icons::icon("chevron-right") %}{% endcall %}</a>
+        {% endif %}
+    </nav>
+    {% endif %}
+</div>
+{% endif %}
+{% endmacro %}
+
+{#- A table row shown when a list is empty. -#}
+{% macro empty_row(colspan, icon, message) %}
+<tr class="hover:bg-transparent">
+    <td colspan="{{ colspan }}" class="h-40 text-center">
+        <div class="flex flex-col items-center gap-2 text-muted-foreground">
+            {% call icons::icon(icon, "size-6") %}{% endcall %}
+            {{ message }}
+        </div>
+    </td>
+</tr>
+{% endmacro %}
+
+{#- An image picker with a preview of the chosen file, or of the image the record already has.
+    Was AdminImageInput.vue; the preview is done by public/js/admin.js (`data-image-input`). -#}
+{% macro image_input(name, current_url, invalid) %}
+<div data-image-input class="flex flex-col gap-4 rounded-md border border-dashed bg-muted/30 p-4 sm:flex-row sm:items-center {% if invalid %}border-destructive{% else %}border-input{% endif %}">
+    <div class="flex aspect-video w-full shrink-0 items-center justify-center overflow-hidden rounded-md border bg-muted sm:w-48">
+        <img data-image-preview src="{{ current_url }}" alt="" class="size-full object-cover" {% if current_url.is_empty() %}hidden{% endif %} />
+        <span data-image-placeholder class="text-muted-foreground/50" {% if !current_url.is_empty() %}hidden{% endif %}>{% call icons::icon("image", "size-8") %}{% endcall %}</span>
+    </div>
+    <div class="flex min-w-0 flex-col gap-2 text-sm">
+        <div class="flex flex-wrap items-center gap-2">
+            <button type="button" data-image-choose class="ui-btn ui-btn-outline ui-btn-sm">
+                {% call icons::icon("image-up") %}{% endcall %} {% if current_url.is_empty() %}Избери слика{% else %}Замени слика{% endif %}
+            </button>
+            <button type="button" data-image-clear hidden class="ui-btn ui-btn-ghost ui-btn-sm">{% call icons::icon("x") %}{% endcall %} Поништи</button>
+        </div>
+        <p data-image-name hidden class="truncate text-muted-foreground"></p>
+        <p class="text-xs text-muted-foreground">JPG, PNG, WEBP или GIF, до 10 MB.</p>
+        <input id="{{ name }}" name="{{ name }}" type="file" accept="image/jpeg,image/png,image/gif,image/webp" class="sr-only" {% if invalid %}aria-invalid="true"{% endif %} />
+    </div>
+</div>
+{% endmacro %}
+
+{#- One toolbar button of the rich-text editor; `command` is handled in assets/js/editor.js. -#}
+{% macro editor_button(command, icon, title) %}
+<button type="button" data-command="{{ command }}" title="{{ title }}" aria-label="{{ title }}" class="ui-btn ui-btn-ghost ui-btn-icon text-muted-foreground aria-pressed:bg-accent aria-pressed:text-primary">{% call icons::icon(icon) %}{% endcall %}</button>
+{% endmacro %}
+
+{#- The rich-text editor (Tiptap). Its HTML lives in a hidden input named `name`, so the form sends it.
+    Was AdminRichEditor.vue. Pages using it load /js/editor.js. -#}
+{% macro rich_editor(name, value, invalid) %}
+<div data-rich-editor data-id="{{ name }}" class="overflow-hidden rounded-md border bg-transparent shadow-xs transition-[color,box-shadow] focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 data-uploading:opacity-70 dark:bg-input/30 {% if invalid %}border-destructive ring-destructive/20{% else %}border-input{% endif %}">
+    <div data-toolbar class="flex flex-wrap items-center gap-0.5 border-b bg-muted/50 px-1.5 py-1">
+        {% call editor_button("bold", "bold", "Задебелено") %}{% endcall %}
+        {% call editor_button("italic", "italic", "Закосено") %}{% endcall %}
+        {% call editor_button("underline", "underline", "Подвлечено") %}{% endcall %}
+        {% call editor_button("strike", "strikethrough", "Прецртано") %}{% endcall %}
+        {% call editor_button("link", "link-2", "Линк") %}{% endcall %}
+        <span class="mx-1 h-5 w-px bg-border" aria-hidden="true"></span>
+        {% call editor_button("h2", "heading-2", "Наслов 2") %}{% endcall %}
+        {% call editor_button("h3", "heading-3", "Наслов 3") %}{% endcall %}
+        {% call editor_button("alignLeft", "align-left", "Порамни лево") %}{% endcall %}
+        {% call editor_button("alignCenter", "align-center", "Центрирај") %}{% endcall %}
+        {% call editor_button("alignRight", "align-right", "Порамни десно") %}{% endcall %}
+        <span class="mx-1 h-5 w-px bg-border" aria-hidden="true"></span>
+        {% call editor_button("bulletList", "list", "Листа") %}{% endcall %}
+        {% call editor_button("orderedList", "list-ordered", "Нумерирана листа") %}{% endcall %}
+        {% call editor_button("blockquote", "quote", "Цитат") %}{% endcall %}
+        {% call editor_button("image", "image-plus", "Прикачи слика") %}{% endcall %}
+        <span class="mx-1 h-5 w-px bg-border" aria-hidden="true"></span>
+        {% call editor_button("undo", "undo-2", "Врати") %}{% endcall %}
+        {% call editor_button("redo", "redo-2", "Повтори") %}{% endcall %}
+    </div>
+    <div data-editor-content></div>
+    <input type="hidden" name="{{ name }}" value="{{ value }}" data-editor-input>
+    <input type="file" accept="image/jpeg,image/png,image/gif,image/webp" hidden data-editor-image>
+</div>
+{% endmacro %}
+
+{#- A confirmation dialog that sends a small form, opened by a button with `data-dialog-open="{id}"`.
+    Was ConfirmDialog.vue; uses the browser's own <dialog> element. -#}
+{% macro confirm_dialog(id, title, description, action, confirm_label, csrf_token, back) %}
+<dialog id="{{ id }}" class="ui-dialog">
+    <form method="post" action="{{ action }}" class="grid gap-4">
+        <input type="hidden" name="_token" value="{{ csrf_token }}">
+        <input type="hidden" name="_back" value="{{ back }}">
+        <div class="flex flex-col gap-2 text-center sm:text-left">
+            <h2 class="text-lg leading-none font-semibold">{{ title }}</h2>
+            <p class="text-sm text-muted-foreground">{{ description }}</p>
+        </div>
+        <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <button type="button" data-dialog-close class="ui-btn ui-btn-outline">Откажи</button>
+            <button type="submit" class="ui-btn ui-btn-primary">{{ confirm_label }}</button>
+        </div>
+    </form>
+</dialog>
+{% endmacro %}

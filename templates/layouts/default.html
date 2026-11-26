@@ -1,0 +1,16 @@
+{#- The layout of every page but the home page: a sticky navbar on top, the footer below.
+    Was resources/js/layouts/DefaultLayout.vue. -#}
+{% extends "layouts/base.html" %}
+{% import "components/navbar.html" as navigation %}
+
+{% block body %}
+<div class="flex min-h-screen flex-col">
+    <div class="sticky top-0 z-40 px-3 pt-3">
+        {% call navigation::navbar(false) %}{% endcall %}
+    </div>
+    <main class="grow">
+        {% block content %}{% endblock %}
+    </main>
+    {% include "partials/footer.html" %}
+</div>
+{% endblock %}

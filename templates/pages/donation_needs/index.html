@@ -1,0 +1,26 @@
+{#- All active donation needs, 9 per page. Was pages/DonationNeeds/Index.vue. -#}
+{% extends "layouts/default.html" %}
+{% import "components/sections.html" as sections %}
+{% import "components/cards.html" as cards %}
+
+{% block content %}
+{% call sections::page_hero("Потреба за донации", eyebrow = "Помогни") %}{% endcall %}
+
+<section class="py-10 md:py-20">
+    <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+        {% if donation_needs.items.is_empty() %}
+            {% call sections::empty_state("Моментално нема активни потреби за донации.", "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z", class = "px-6 py-24") %}{% endcall %}
+        {% else %}
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {% for item in donation_needs.items %}
+                    {% call cards::donation_need_card(item, (loop.index0 % 3) * 100) %}{% endcall %}
+                {% endfor %}
+            </div>
+
+            {% if donation_needs.last_page() > 1 %}
+                {% call sections::pagination(donation_needs.links()) %}{% endcall %}
+            {% endif %}
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

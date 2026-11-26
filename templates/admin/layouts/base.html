@@ -1,0 +1,44 @@
+{#-
+    The admin's HTML shell, like main's resources/views/admin.blade.php. Pages extend `layouts/app.html`
+    (with the sidebar) or `layouts/auth.html` (the login card), which extend this.
+-#}
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="robots" content="noindex, nofollow">
+    {% block head %}{% endblock %}
+
+    {#- Applies the saved theme (or the system's) and the folded sidebar before the page draws, so
+        neither flashes the other way. #}
+    <script>
+        (function () {
+            var theme = 'system';
+            try { theme = localStorage.getItem('admin-theme') || 'system'; } catch (e) {}
+            var dark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', dark);
+            try {
+                if (localStorage.getItem('admin-sidebar') === 'collapsed') {
+                    document.documentElement.setAttribute('data-sidebar-collapsed', '');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    <style>
+        html { background-color: oklch(0.982 0.004 160); color-scheme: light; }
+        html.dark { background-color: oklch(0.165 0.015 160); color-scheme: dark; }
+    </style>
+
+    <title>{% block title %}{% endblock %} - adrijanzivkov.org</title>
+
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="stylesheet" href="{{ crate::assets::url("css/admin.css") }}">
+    <script src="{{ crate::assets::url("js/admin.js") }}" defer></script>
+</head>
+<body class="font-sans antialiased">
+{% block body %}{% endblock %}
+</body>
+</html>

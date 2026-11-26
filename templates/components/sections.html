@@ -1,0 +1,105 @@
+{#-
+    Building blocks shared by several pages. A *macro* is Askama's version of a small Vue component:
+    it takes arguments, and `{{ caller() }}` renders whatever was written between `{% call %}` and
+    `{% endcall %}`, like a Vue slot.
+-#}
+
+{#- The green banner at the top of inner pages. Was PageHero.vue (without the aside slot). -#}
+{% macro page_hero(title, eyebrow = "", description = "") %}
+<div class="m-3 rounded-3xl bg-primary">
+    <div class="mx-auto w-full max-w-7xl px-5 py-14 sm:px-6 md:py-20 lg:px-8 lg:py-24">
+        <div class="flex max-w-3xl flex-col gap-6">
+            {% if !eyebrow.is_empty() %}
+            <p class="animate-rise text-xs font-semibold tracking-[0.2em] text-white/60 uppercase">{{ eyebrow }}</p>
+            {% endif %}
+            <h1 class="animate-rise text-4xl leading-[1.05] font-bold tracking-tight text-balance text-white [animation-delay:80ms] md:text-5xl lg:text-6xl">
+                {{ title }}
+            </h1>
+            {% if !description.is_empty() %}
+            <p class="max-w-2xl animate-rise text-base leading-relaxed text-pretty text-white/70 [animation-delay:160ms] lg:text-lg">
+                {{ description }}
+            </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{#- A section's small label, big title and optional link. Was SectionHeading.vue. -#}
+{% macro section_heading(eyebrow, title, description = "", link_label = "", link_href = "", centered = false, inverted = false, class = "") %}
+<div data-reveal class="flex flex-col gap-6 {% if centered %}items-center text-center{% else %}md:flex-row md:items-end md:justify-between{% endif %} {{ class }}">
+    <div class="flex max-w-2xl flex-col gap-4 {% if centered %}items-center{% endif %}">
+        <p class="text-xs font-semibold tracking-[0.2em] uppercase {% if inverted %}text-white/60{% else %}text-primary{% endif %}">{{ eyebrow }}</p>
+        <h2 class="text-3xl leading-[1.1] font-bold tracking-tight text-balance md:text-4xl lg:text-[44px] {% if inverted %}text-white{% else %}text-gray-900{% endif %}">
+            {{ title }}
+        </h2>
+        {% if !description.is_empty() %}
+        <p class="text-base leading-relaxed text-pretty lg:text-lg {% if inverted %}text-white/70{% else %}text-gray-600{% endif %}">{{ description }}</p>
+        {% endif %}
+    </div>
+
+    {% if !link_label.is_empty() && !centered %}
+    <a href="{{ link_href }}" class="group hidden shrink-0 items-center gap-2 text-sm font-semibold text-primary transition-colors hover:text-primary-dark md:inline-flex">
+        {{ link_label }}
+        <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-6-6 6 6-6 6" />
+        </svg>
+    </a>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{#- "Need help?" banner linking to the story form. Was HelpCtaSection.vue. -#}
+{% macro help_cta() %}
+<section class="px-3 pt-10 md:pt-16">
+    <div data-reveal class="rounded-3xl bg-primary py-16 md:py-20">
+        <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+            <div class="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
+                <h2 class="text-3xl leading-[1.1] font-bold tracking-tight text-balance text-white md:text-4xl lg:text-[44px]">
+                    Имаш потреба од помош?
+                </h2>
+                <p class="text-base leading-relaxed text-white/70 md:text-lg">
+                    Доколку поминуваш низ тежок период, сподели ја својата приказна. Ќе направиме сè што е во наша моќ да помогнеме.
+                </p>
+                <a href="/story-submissions/create" class="group mt-2 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-primary transition-colors hover:bg-primary-light">
+                    Побарај помош
+                    <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-6-6 6 6-6 6" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endmacro %}
+
+{#- Page links under a list. Was AppPagination.vue. `links` is a Vec<PageLink> (src/pagination.rs). -#}
+{% macro pagination(links) %}
+<nav class="mt-14 flex items-center justify-center" aria-label="Страници">
+    <div class="flex flex-wrap items-center justify-center gap-1.5">
+        {% for link in links %}
+            {% if let Some(url) = link.url %}
+            <a
+                href="{{ url }}"
+                {% if link.active %}aria-current="page"{% endif %}
+                class="min-w-10 rounded-full border px-4 py-2 text-center text-sm font-semibold transition-colors duration-200 {% if link.active %}border-primary bg-primary text-white{% else %}border-gray-200 bg-white text-gray-700 hover:border-primary hover:text-primary{% endif %}"
+            >{{ link.label }}</a>
+            {% else %}
+            <span class="min-w-10 cursor-not-allowed rounded-full border border-gray-100 px-4 py-2 text-center text-sm font-semibold text-gray-300">{{ link.label }}</span>
+            {% endif %}
+        {% endfor %}
+    </div>
+</nav>
+{% endmacro %}
+
+{#- The empty state shown when a list has nothing in it. `icon` is an SVG path. -#}
+{% macro empty_state(message, icon, class = "py-16") %}
+<div class="flex flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white text-center {{ class }}">
+    <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary-light">
+        <svg class="h-7 w-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ icon }}" />
+        </svg>
+    </div>
+    <p class="text-sm font-medium text-gray-500">{{ message }}</p>
+</div>
+{% endmacro %}

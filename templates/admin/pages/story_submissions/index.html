@@ -1,0 +1,40 @@
+{#- Stories sent through the public form, with status tabs and search. Was StorySubmissions/Index.vue. -#}
+{% extends "admin/layouts/app.html" %}
+{% import "admin/components/ui.html" as ui %}
+
+{% block content %}
+<div class="space-y-6">
+    {% call ui::page_header("Поднесени приказни", "Приказните испратени преку формата „Сподели ја својата приказна“ на сајтот.") %}{% endcall %}
+
+    <div class="ui-card gap-0 py-0">
+        <div class="flex flex-col gap-3 border-b p-4 lg:flex-row lg:items-center">
+            {% call ui::tabs(tabs) %}{% endcall %}
+            {% call ui::search_box("/admin/story-submissions", search, "Име", "status", status) %}{% endcall %}
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="ui-table">
+                <thead>
+                    <tr><th>Име</th><th>Телефон</th><th>Приказна</th><th>Статус</th><th>Примено</th></tr>
+                </thead>
+                <tbody>
+                    {% for submission in submissions.items %}
+                    <tr class="cursor-pointer" data-href="/admin/story-submissions/{{ submission.id }}/edit">
+                        <td><a href="/admin/story-submissions/{{ submission.id }}/edit" class="font-medium whitespace-nowrap hover:underline">{{ submission.name }}</a></td>
+                        <td class="whitespace-nowrap tabular-nums">{{ submission.phone }}</td>
+                        <td class="max-w-md text-muted-foreground"><p class="truncate" title="{{ submission.message }}">{{ submission.message }}</p></td>
+                        <td>{% call ui::badge(submission.status().color(), submission.status().label()) %}{% endcall %}</td>
+                        <td class="whitespace-nowrap text-muted-foreground tabular-nums">{{ submission.received_at() }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if submissions.items.is_empty() %}
+                        {% call ui::empty_row(5, "inbox", "Нема приказни за овие филтри.") %}{% endcall %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        {% call ui::pagination(submissions) %}{% endcall %}
+    </div>
+</div>
+{% endblock %}

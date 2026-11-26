@@ -1,0 +1,128 @@
+{#-
+    Every admin page after login: the green sidebar, a header with the breadcrumb and theme menu, and
+    the page itself. Was AdminLayout.vue (shadcn-vue's Sidebar). `ctx` is an `AdminContext`
+    (src/routes/admin/mod.rs); its `section` highlights the menu and names the breadcrumb.
+-#}
+{% extends "admin/layouts/base.html" %}
+{% import "admin/components/icons.html" as icons %}
+
+{% block head %}<meta name="csrf-token" content="{{ ctx.csrf_token }}">{% endblock %}
+{% block title %}{{ ctx.title }}{% endblock %}
+
+{%- macro nav_link(href, label, icon, active) -%}
+<a href="{{ href }}" title="{{ label }}" {% if active %}aria-current="page"{% endif %}
+   class="relative flex h-9 items-center gap-2 overflow-hidden rounded-md p-2 text-sm text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground aria-[current=page]:bg-sidebar-accent aria-[current=page]:font-medium aria-[current=page]:text-sidebar-accent-foreground aria-[current=page]:before:absolute aria-[current=page]:before:inset-y-1.5 aria-[current=page]:before:left-0 aria-[current=page]:before:w-0.5 aria-[current=page]:before:rounded-full aria-[current=page]:before:bg-sidebar-primary aria-[current=page]:[&>svg]:text-sidebar-primary md:sidebar-collapsed:justify-center">
+    {% call icons::icon(icon) %}{% endcall %}
+    <span class="truncate md:sidebar-collapsed:hidden">{{ label }}</span>
+</a>
+{%- endmacro -%}
+
+{% block body %}
+<div class="flex min-h-svh w-full">
+    {#- On phones the sidebar is a drawer over a dimmed page. -#}
+    <div data-sidebar-close class="fixed inset-0 z-40 hidden bg-black/50 sidebar-open:block md:sidebar-open:hidden"></div>
+
+    <aside class="fixed inset-y-0 left-0 z-50 flex w-64 -translate-x-full flex-col bg-sidebar text-sidebar-foreground transition-[transform,width] duration-200 sidebar-open:translate-x-0 md:translate-x-0 md:sidebar-collapsed:w-14">
+        <div class="flex min-h-14 items-center gap-2 px-4 pt-4 pb-2 md:sidebar-collapsed:justify-center md:sidebar-collapsed:px-2">
+            <img src="/favicon.svg" alt="" class="hidden size-8 rounded-md ring-1 ring-sidebar-border md:sidebar-collapsed:block" />
+            <a href="/admin" class="flex flex-col gap-1 md:sidebar-collapsed:hidden [&_svg]:h-6 [&_svg]:w-auto" aria-label="Почетна на администрацијата">
+                {% include "partials/logo_light.html" %}
+                <span class="text-[10px] font-semibold tracking-[0.18em] text-sidebar-primary uppercase">Администрација</span>
+            </a>
+        </div>
+
+        <nav class="flex flex-1 flex-col gap-4 overflow-y-auto px-2 py-3">
+            <div class="flex flex-col gap-1">
+                <p class="px-2 pb-1 text-[11px] font-semibold tracking-wider text-sidebar-foreground/55 uppercase md:sidebar-collapsed:hidden">Содржина</p>
+                {% call nav_link("/admin/donation-needs", "Донации", "heart-handshake", ctx.is_section("donation-needs")) %}{% endcall %}
+                {% call nav_link("/admin/news", "Новости", "newspaper", ctx.is_section("news")) %}{% endcall %}
+            </div>
+            <div class="flex flex-col gap-1">
+                <p class="px-2 pb-1 text-[11px] font-semibold tracking-wider text-sidebar-foreground/55 uppercase md:sidebar-collapsed:hidden">Заедница</p>
+                {% call nav_link("/admin/story-submissions", "Поднесени приказни", "inbox", ctx.is_section("story-submissions")) %}{% endcall %}
+            </div>
+        </nav>
+
+        <div class="p-2">
+            <details data-menu class="relative">
+                <summary class="flex cursor-pointer list-none items-center gap-2 rounded-md p-2 text-sm ring-1 ring-sidebar-border hover:bg-sidebar-accent md:sidebar-collapsed:justify-center md:sidebar-collapsed:p-1 md:sidebar-collapsed:ring-0 [&::-webkit-details-marker]:hidden">
+                    <span class="flex size-8 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-xs font-semibold text-sidebar-primary-foreground">{{ ctx.user.initials() }}</span>
+                    <span class="grid flex-1 text-left leading-tight md:sidebar-collapsed:hidden">
+                        <span class="truncate font-medium">{{ ctx.user.name }}</span>
+                        <span class="truncate text-xs text-sidebar-foreground/70">{{ ctx.user.email }}</span>
+                    </span>
+                    <span class="md:sidebar-collapsed:hidden">{% call icons::icon("chevrons-up-down") %}{% endcall %}</span>
+                </summary>
+                <div class="ui-menu bottom-full left-0 mb-2 w-full md:sidebar-collapsed:w-56">
+                    <p class="px-2 py-1.5 text-xs text-muted-foreground">Профил</p>
+                    <a href="/admin/profile" class="ui-menu-item">{% call icons::icon("user-round") %}{% endcall %} Мој профил</a>
+                    <a href="/" target="_blank" rel="noopener" class="ui-menu-item">{% call icons::icon("external-link") %}{% endcall %} Кон сајтот</a>
+                    <div class="-mx-1 my-1 h-px bg-border"></div>
+                    <form method="post" action="/admin/logout">
+                        <input type="hidden" name="_token" value="{{ ctx.csrf_token }}">
+                        <button type="submit" class="ui-menu-item text-destructive [&_svg]:text-destructive">{% call icons::icon("log-out") %}{% endcall %} Одјава</button>
+                    </form>
+                </div>
+            </details>
+        </div>
+    </aside>
+
+    <div class="flex min-w-0 flex-1 flex-col bg-background transition-[padding] duration-200 md:pl-64 md:sidebar-collapsed:pl-14">
+        <header class="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b bg-card px-4 md:px-6">
+            <button type="button" data-sidebar-toggle class="ui-btn ui-btn-ghost ui-btn-icon -ml-1 size-7" aria-label="Мени">
+                {% call icons::icon("panel-left") %}{% endcall %}
+            </button>
+            <div class="mr-2 h-4 w-px bg-border"></div>
+
+            <nav aria-label="Патека" class="min-w-0">
+                <ol class="flex items-center gap-1.5 text-sm break-words text-muted-foreground sm:gap-2.5">
+                    {% if !ctx.is_section("profile") %}
+                    <li class="hidden md:block">{{ ctx.group() }}</li>
+                    <li class="hidden md:block">{% call icons::icon("chevron-right", "size-3.5") %}{% endcall %}</li>
+                    {% endif %}
+                    {% if let Some(record) = ctx.breadcrumb %}
+                    <li><a href="{{ ctx.section_href() }}" class="transition-colors hover:text-foreground">{{ ctx.section_label() }}</a></li>
+                    <li>{% call icons::icon("chevron-right", "size-3.5") %}{% endcall %}</li>
+                    <li class="max-w-48 truncate font-normal text-foreground sm:max-w-80">{{ record }}</li>
+                    {% else %}
+                    <li class="font-normal text-foreground">{{ ctx.section_label() }}</li>
+                    {% endif %}
+                </ol>
+            </nav>
+
+            <details data-menu class="relative ml-auto">
+                <summary class="ui-btn ui-btn-ghost ui-btn-icon list-none [&::-webkit-details-marker]:hidden" aria-label="Изглед">
+                    <span class="dark:hidden">{% call icons::icon("sun") %}{% endcall %}</span>
+                    <span class="hidden dark:inline">{% call icons::icon("moon") %}{% endcall %}</span>
+                </summary>
+                <div class="ui-menu top-full right-0 mt-1 min-w-36">
+                    <button type="button" data-theme-choice="light" class="ui-menu-item">{% call icons::icon("sun") %}{% endcall %} Светла</button>
+                    <button type="button" data-theme-choice="dark" class="ui-menu-item">{% call icons::icon("moon") %}{% endcall %} Темна</button>
+                    <button type="button" data-theme-choice="system" class="ui-menu-item">{% call icons::icon("monitor") %}{% endcall %} Системска</button>
+                </div>
+            </details>
+        </header>
+
+        <main class="mx-auto w-full max-w-screen-2xl flex-1 px-4 py-8 md:px-8 md:py-10">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</div>
+
+{#- Toasts. The server's flash message is read by public/js/admin.js from `data-flash`. -#}
+<div data-toasts class="pointer-events-none fixed top-4 right-4 z-[60] flex w-80 max-w-[calc(100%-2rem)] flex-col gap-2"></div>
+{% if let Some(message) = ctx.flash %}<div data-flash="{{ message }}" hidden></div>{% endif %}
+<template id="toast-success">
+    <div role="status" class="pointer-events-auto flex animate-in items-start gap-2 rounded-lg border border-emerald-500/30 bg-popover p-4 text-sm text-popover-foreground shadow-lg fade-in-0 slide-in-from-top-2">
+        <span class="text-emerald-600 dark:text-emerald-400">{% call icons::icon("circle-check") %}{% endcall %}</span>
+        <span data-toast-message></span>
+    </div>
+</template>
+<template id="toast-error">
+    <div role="alert" class="pointer-events-auto flex animate-in items-start gap-2 rounded-lg border border-destructive/40 bg-popover p-4 text-sm text-popover-foreground shadow-lg fade-in-0 slide-in-from-top-2">
+        <span class="text-destructive">{% call icons::icon("triangle-alert") %}{% endcall %}</span>
+        <span data-toast-message></span>
+    </div>
+</template>
+{% block scripts %}{% endblock %}
+{% endblock %}

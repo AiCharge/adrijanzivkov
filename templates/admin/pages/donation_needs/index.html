@@ -1,0 +1,52 @@
+{#- All donation needs, with archive tabs and search. Was pages/Admin/DonationNeeds/Index.vue. -#}
+{% extends "admin/layouts/app.html" %}
+{% import "admin/components/ui.html" as ui %}
+{% import "admin/components/icons.html" as icons %}
+
+{% block content %}
+<div class="space-y-6">
+    {% call ui::page_header("Донации", "Потребите за донации на сајтот. Потреба што повеќе не е актуелна се архивира.") %}
+        <a href="/admin/donation-needs/create" class="ui-btn ui-btn-primary">{% call icons::icon("plus") %}{% endcall %} Додај потреба</a>
+    {% endcall %}
+
+    <div class="ui-card gap-0 py-0">
+        <div class="flex flex-col gap-3 border-b p-4 lg:flex-row lg:items-center">
+            {% call ui::tabs(tabs) %}{% endcall %}
+            {% call ui::search_box("/admin/donation-needs", search, "Наслов", "archived", archived) %}{% endcall %}
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="ui-table">
+                <thead>
+                    <tr><th class="w-20">Слика</th><th>Наслов</th><th>Потребен износ</th><th>Статус</th><th>Додадено</th><th><span class="sr-only">Акции</span></th></tr>
+                </thead>
+                <tbody>
+                    {% for need in donation_needs.items %}
+                    <tr class="cursor-pointer" data-href="/admin/donation-needs/{{ need.id }}/edit">
+                        <td><img src="{{ need.image_url() }}" alt="" class="size-10 rounded-md border object-cover"></td>
+                        <td class="max-w-80"><a href="/admin/donation-needs/{{ need.id }}/edit" class="block truncate font-medium hover:underline">{{ need.title }}</a></td>
+                        <td class="whitespace-nowrap tabular-nums">{{ need.amount() }} МКД</td>
+                        <td>{% if need.is_archived() %}{% call ui::badge("warning", "Архивирано") %}{% endcall %}{% else %}{% call ui::badge("success", "Активно") %}{% endcall %}{% endif %}</td>
+                        <td class="whitespace-nowrap text-muted-foreground tabular-nums">{{ need.created_at_label() }}</td>
+                        <td class="text-right">
+                            {% if need.is_archived() %}
+                            <button type="button" data-dialog-open="unarchive-{{ need.id }}" class="ui-btn ui-btn-outline ui-btn-sm">{% call icons::icon("archive-restore") %}{% endcall %} Врати</button>
+                            {% call ui::confirm_dialog(format!("unarchive-{}", need.id), "Врати донациска потреба", "Дали сте сигурни дека сакате да ја вратите оваа донациска потреба? Таа ќе биде повторно видлива на сајтот.", format!("/admin/donation-needs/{}/unarchive", need.id), "Врати", ctx.csrf_token, current_url) %}{% endcall %}
+                            {% else %}
+                            <button type="button" data-dialog-open="archive-{{ need.id }}" class="ui-btn ui-btn-outline ui-btn-sm">{% call icons::icon("archive") %}{% endcall %} Архивирај</button>
+                            {% call ui::confirm_dialog(format!("archive-{}", need.id), "Архивирај донациска потреба", "Дали сте сигурни дека сакате да ја архивирате оваа донациска потреба? Таа нема да биде видлива на сајтот.", format!("/admin/donation-needs/{}/archive", need.id), "Архивирај", ctx.csrf_token, current_url) %}{% endcall %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% if donation_needs.items.is_empty() %}
+                        {% call ui::empty_row(6, "heart-handshake", "Нема донациски потреби за овие филтри.") %}{% endcall %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        {% call ui::pagination(donation_needs) %}{% endcall %}
+    </div>
+</div>
+{% endblock %}

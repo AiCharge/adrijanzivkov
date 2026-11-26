@@ -1,0 +1,229 @@
+{#- The home page. Was Home.vue and the seven sections in components/pages/home. It uses the base layout
+    directly, because its navbar sits inside the green hero instead of a sticky bar. -#}
+{% extends "layouts/base.html" %}
+{% import "components/navbar.html" as navigation %}
+{% import "components/sections.html" as sections %}
+{% import "components/cards.html" as cards %}
+
+{% block body %}
+<div>
+    {#- Hero -#}
+    <div class="m-3 rounded-3xl bg-primary">
+        {% call navigation::navbar(true) %}{% endcall %}
+
+        <div class="mx-auto w-full max-w-7xl px-5 pt-10 pb-12 sm:px-6 md:pt-16 md:pb-16 lg:px-8 lg:pt-20 lg:pb-20">
+            <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
+                <div class="flex flex-col gap-7 lg:col-span-6">
+                    <p class="animate-rise text-xs font-semibold tracking-[0.2em] text-white/60 uppercase">Фондација Адријан Живков</p>
+
+                    <h1 class="animate-rise text-[40px] leading-[1.05] font-bold tracking-tight text-balance text-white [animation-delay:80ms] sm:text-5xl lg:text-[64px]">
+                        Да внесеме топлина таму каде што е студено.
+                    </h1>
+
+                    <p class="max-w-[480px] animate-rise text-base leading-relaxed text-white/70 [animation-delay:160ms] lg:text-lg">
+                        Нашата мисија е да донесеме надеж и поддршка таму каде што најмногу недостига, кај луѓе што се соочуваат со болест, неправда
+                        или тежок животен предизвик.
+                    </p>
+
+                    <div class="flex animate-rise flex-wrap items-center gap-3 pt-2 [animation-delay:240ms]">
+                        <a href="/#donations" class="group inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-primary transition-colors duration-200 hover:bg-primary-light">
+                            Донирај
+                            <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-6-6 6 6-6 6" />
+                            </svg>
+                        </a>
+                        <a href="/story-submissions/create" class="inline-flex items-center rounded-full border border-white/30 px-7 py-3.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/10">
+                            Побарај помош
+                        </a>
+                    </div>
+                </div>
+
+                <div class="flex animate-rise justify-center [animation-delay:200ms] lg:col-span-6 lg:justify-end">
+                    <img src="/images/pages/home/hero-section/hero-image.webp" alt="" class="w-full max-w-[520px] animate-zoom-out" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {#- Latest news -#}
+    <section id="news" class="py-10 md:py-20">
+        <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+            {% call sections::section_heading("Актуелно", "Новости", link_label = "Сите новости", link_href = "/news", class = "mb-10 md:mb-12") %}{% endcall %}
+
+            {% if latest_news.is_empty() %}
+                {% call sections::empty_state("Нема достапни новости.", "M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z") %}{% endcall %}
+            {% else %}
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {% for item in latest_news %}
+                        {% call cards::news_card(item, loop.index0 * 100) %}{% endcall %}
+                    {% endfor %}
+                </div>
+                <div class="mt-8 md:hidden">
+                    <a href="/news" class="flex items-center justify-center rounded-full border border-gray-300 bg-white px-6 py-3.5 text-sm font-semibold text-gray-900 transition-colors hover:border-primary hover:text-primary">Сите новости</a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    {#- Who is Adrijan -#}
+    <section id="about-adrijan" class="bg-white py-10 md:py-20">
+        <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
+                <div data-reveal class="lg:col-span-5">
+                    <img src="/images/pages/home/who-is-adrijan-section/adrijan-desktop.webp" alt="Adrijan Zhivkov" class="hidden w-full rounded-2xl lg:block" />
+                    <img src="/images/pages/home/who-is-adrijan-section/adrijan-mobile.webp" alt="Adrijan Zhivkov" class="w-full rounded-2xl lg:hidden" />
+                </div>
+
+                <div data-reveal="120" class="flex flex-col gap-8 lg:col-span-7">
+                    <div class="flex flex-col gap-4">
+                        <p class="text-xs font-semibold tracking-[0.2em] text-primary uppercase">За Адријан</p>
+                        <h2 class="text-3xl leading-[1.1] font-bold tracking-tight text-gray-900 md:text-4xl lg:text-[44px]">Кој е Адријан Живков?</h2>
+                    </div>
+
+                    <blockquote class="border-l-2 border-primary pl-6">
+                        <p class="text-lg leading-relaxed font-medium text-gray-900 italic md:text-xl">
+                            „Во тие кобни моменти, Адријан херојски и без двоумење го жртвуваше сопствениот живот, обидувајќи се да спаси што е можно
+                            поголем број луѓе."
+                        </p>
+                    </blockquote>
+
+                    <div class="flex flex-col gap-5 text-base leading-relaxed text-gray-600">
+                        <p>
+                            Адријан Живков е еден од трагично загинатите во пожарот во дискотеката „Пулс" во Кочани на 16 март 2025 година, во
+                            најголемата трагедија што ја погоди Македонија, во која животот го загубија 63 лица.
+                        </p>
+                        <p>
+                            Во чест на неговата храброст, човечност и пожртвуваност, ја основавме Фондацијата „Адријан Живков". Нашата мисија е да
+                            пружиме поддршка и помош од секаков вид на сите оние на кои им е потребна, водејќи се од вредностите што Адријан ги
+                            живееше и ги остави: солидарност, емпатија и несебичност.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {#- Bible verse, a different one on each visit (picked in src/routes/home.rs) -#}
+    <section class="px-3">
+        <div data-reveal class="rounded-3xl bg-primary-light py-16 md:py-24">
+            <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+                <figure class="mx-auto flex max-w-3xl flex-col items-center gap-8 text-center">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-white text-primary">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                    </span>
+                    <blockquote>
+                        <p class="text-xl leading-relaxed font-medium text-balance text-gray-900 italic md:text-2xl lg:text-[28px] lg:leading-snug">
+                            „{{ verse.text }}"
+                        </p>
+                    </blockquote>
+                    <figcaption class="text-sm font-semibold tracking-[0.15em] text-primary uppercase">{{ verse.reference }}</figcaption>
+                </figure>
+            </div>
+        </div>
+    </section>
+
+    {#- Our mission -#}
+    <section id="our-mission" class="bg-white py-10 md:py-20">
+        <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+            {% call sections::section_heading("Нашата мисија", "Нашата мисија", class = "mb-10 md:mb-12") %}{% endcall %}
+
+            <div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-12 lg:gap-8">
+                <div data-reveal class="overflow-hidden rounded-2xl lg:col-span-5">
+                    <img src="/images/pages/home/our-mission-section/our-mission.webp" alt="Helping hands" class="w-full" />
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-7 lg:gap-6">
+                    {% for pillar in pillars %}
+                    <div data-reveal="{{ loop.index0 * 100 }}" class="flex flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-6 sm:p-7">
+                        <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-light text-primary">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ pillar.icon }}" />
+                            </svg>
+                        </span>
+                        <p class="text-sm leading-relaxed text-gray-600 lg:text-base">{{ pillar.text }}</p>
+                    </div>
+                    {% endfor %}
+
+                    <div data-reveal="300" class="flex flex-col gap-5 rounded-2xl bg-primary p-6 sm:p-7">
+                        <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-white">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </span>
+                        <p class="text-sm leading-relaxed text-white/80 lg:text-base">
+                            Фондацијата е финансирана исклучиво преку доброволни донации од пријателите и семејството на Адријан.
+                            <strong class="font-semibold text-white">Не прифаќаме донации од трети лица.</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {#- Donation needs -#}
+    <section id="donations" class="py-10 md:py-20">
+        <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+            {% call sections::section_heading("Помогни", "Потреба за донации", link_label = "Сите потреби", link_href = "/donation-needs", class = "mb-10 md:mb-12") %}{% endcall %}
+
+            {% if donation_needs.is_empty() %}
+                {% call sections::empty_state("Моментално нема активни донациски потреби.", "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z") %}{% endcall %}
+            {% else %}
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {% for item in donation_needs %}
+                        {% call cards::donation_need_card(item, (loop.index0 % 3) * 100) %}{% endcall %}
+                    {% endfor %}
+                </div>
+                <div class="mt-8 md:hidden">
+                    <a href="/donation-needs" class="flex items-center justify-center rounded-full border border-gray-300 bg-white px-6 py-3.5 text-sm font-semibold text-gray-900 transition-colors hover:border-primary hover:text-primary">Сите потреби</a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    {#- Contact -#}
+    <section id="contact" class="px-3 pt-10 md:pt-16">
+        <div data-reveal class="rounded-3xl bg-primary py-16 md:py-24">
+            <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-end">
+                    <div class="flex flex-col gap-5 lg:col-span-6">
+                        <p class="text-xs font-semibold tracking-[0.2em] text-white/60 uppercase">Контакт</p>
+                        <h2 class="text-3xl leading-[1.1] font-bold tracking-tight text-balance text-white md:text-4xl lg:text-[44px]">
+                            Стапи во контакт со Фондацијата
+                        </h2>
+                        <p class="max-w-md text-base leading-relaxed text-white/70 lg:text-lg">
+                            Нашата мисија е да донесеме надеж и поддршка таму каде што најмногу недостига.
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col gap-3 lg:col-span-6 lg:col-start-7">
+                        {% for contact in contacts %}
+                        <a
+                            href="{{ contact.href }}"
+                            {% if contact.external %}target="_blank" rel="noopener"{% endif %}
+                            class="group flex items-center gap-4 rounded-2xl border border-white/15 px-5 py-4 transition-colors duration-200 hover:bg-white/10"
+                        >
+                            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-white">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="{{ contact.icon }}" />
+                                </svg>
+                            </span>
+                            <span class="flex min-w-0 flex-1 flex-col">
+                                <span class="text-xs font-medium text-white/60">{{ contact.label }}</span>
+                                <span class="truncate text-sm font-semibold text-white md:text-base">{{ contact.value }}</span>
+                            </span>
+                            <svg class="h-4 w-4 shrink-0 text-white/40 transition-all duration-300 group-hover:translate-x-1 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-6-6 6 6-6 6" />
+                            </svg>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include "partials/footer.html" %}
+</div>
+{% endblock %}

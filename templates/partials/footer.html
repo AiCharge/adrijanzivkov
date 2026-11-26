@@ -1,0 +1,35 @@
+{#- The site footer. Was AppFooter.vue. An `include` sees the page's own fields, so `layout.year` works here. -#}
+<footer class="mt-10 border-t border-gray-200 bg-white md:mt-16">
+    <div class="mx-auto w-full max-w-7xl px-5 pt-14 pb-8 sm:px-6 md:pt-16 lg:px-8">
+        <div class="grid grid-cols-1 gap-10 md:grid-cols-12">
+            <div class="flex flex-col gap-5 md:col-span-6">
+                <a href="/" class="w-fit" aria-label="Почетна">{% include "partials/logo_dark.html" %}</a>
+                <p class="max-w-xs text-sm leading-relaxed text-gray-600">
+                    Фондација посветена на помош, надеж и инспирација за луѓе кои имаат потреба.
+                </p>
+            </div>
+
+            <div class="flex flex-col gap-4 md:col-span-3">
+                <p class="text-xs font-semibold tracking-[0.2em] text-gray-400 uppercase">Навигација</p>
+                <nav class="flex flex-col gap-3">
+                    {% for (label, href) in [("За Адријан", "/#about-adrijan"), ("Нашата мисија", "/#our-mission"), ("За фондацијата", "/about"), ("Новости", "/news"), ("Контакт", "/#contact")] %}
+                    <a href="{{ href }}" class="w-fit text-sm text-gray-600 transition-colors hover:text-primary">{{ label }}</a>
+                    {% endfor %}
+                    <a href="/story-submissions/create" class="w-fit text-sm font-semibold text-primary transition-colors hover:text-primary-dark">Побарај помош</a>
+                </nav>
+            </div>
+
+            <div class="flex flex-col gap-4 md:col-span-3">
+                <p class="text-xs font-semibold tracking-[0.2em] text-gray-400 uppercase">Правни информации</p>
+                <nav class="flex flex-col gap-3">
+                    <a href="/terms-of-use" class="w-fit text-sm text-gray-600 transition-colors hover:text-primary">Услови на користење</a>
+                    <a href="/privacy-policy" class="w-fit text-sm text-gray-600 transition-colors hover:text-primary">Политика за приватност</a>
+                </nav>
+            </div>
+        </div>
+
+        <div class="mt-12 border-t border-gray-200 pt-6 text-xs text-gray-400">
+            &copy; {{ layout.year }} Фондација „Адријан Живков". Сите права задржани.
+        </div>
+    </div>
+</footer>
